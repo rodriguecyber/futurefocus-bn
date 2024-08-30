@@ -16,7 +16,7 @@ const app = express();
 // CORS configuration
 app.use(
   cors({
-    origin: "https://futurefocus-bn.onrender.com",
+    origin: "https://futurefocus-self.vercel.app/",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
