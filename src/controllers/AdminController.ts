@@ -98,12 +98,12 @@ export class AdminControllers {
 
   static getUser = async (req: Request, res: Response) => {
     try {
-      const token = req.headers.authorization?.split(" ")[1]; // Assuming token is sent in the Authorization header
+      const token = req.headers.authorization?.split(" ")[1]; 
       if (!token) {
         return res.status(401).json({ message: "Token not provided" });
       }
 
-      const user = await decodeToken(token); // Ensure this is an async function
+      const user = await decodeToken(token); 
       if (!user) {
         return res.status(401).json({ message: "User not authenticated" });
       }
