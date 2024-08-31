@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import Admin from "../models/Admin";
 import { decodeToken, generateToken } from "../utils/token";
-import { resetTemplates } from "../utils/emailTemplate";
+import { resetTemplates, SubscriptionEmail } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
 import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
-import { strict } from "assert";
+import Subscriber from "../models/subscriber";
 
 export class AdminControllers {
   static forgotPassword = async (req: Request, res: Response) => {
@@ -98,12 +98,12 @@ export class AdminControllers {
 
   static getUser = async (req: Request, res: Response) => {
     try {
-      const token = req.headers.authorization?.split(" ")[1]; 
+      const token = req.headers.authorization?.split(" ")[1];
       if (!token) {
         return res.status(401).json({ message: "Token not provided" });
       }
 
-      const user = await decodeToken(token); 
+      const user = await decodeToken(token);
       if (!user) {
         return res.status(401).json({ message: "User not authenticated" });
       }
@@ -115,4 +115,27 @@ export class AdminControllers {
         .json({ message: `Error occurred: ${error.message}` });
     }
   };
+  static subscribe = async (req: Request, res: Response) => {
+    const email = req.body.email;
+     const mailOptions = {
+       from: process.env.OUR_EMAIL as string,
+       to: email,
+       subject: "Subscribed",
+       html: SubscriptionEmail(),
+     };
+    
+    try {
+      const subscriber = await Subscriber.findOne({ email: email });
+      if (subscriber) {
+        return res.status(400).json({ message: "already subscribed" });
+      }
+      await Subscriber.create({email:email})
+      await sendEmail(mailOptions)
+      res.status(200).json({message:"thank you for subscribing "})
+    } catch (error:any) {
+      res.status(500).json({message:`Error ${error.message} occured`})
+    }
+  };
+
+  
 }
