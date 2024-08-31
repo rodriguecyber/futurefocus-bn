@@ -1,15 +1,12 @@
-// mediaModel.ts
-
-
-// mediaController.ts
 import { Request, Response } from "express";
 import { v2 as cloudinary } from "cloudinary";
-import Media, { IMedia } from '../models/media';
+import Media, { IMedia } from "../models/media";
 
+// Cloudinary configuration
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
+  cloud_name: "dxy33wiax",
+  api_key: "991555379284442",
+  api_secret:"ekuY9MDxVtiIeUGqKbLS0V8MTV4",
 });
 
 export const uploadMedia = async (req: Request, res: Response) => {
@@ -19,17 +16,21 @@ export const uploadMedia = async (req: Request, res: Response) => {
     }
 
     const { type, content, youtubeUrl, link } = req.body;
-    let file, thumbnail;
+    let file = req.files?.file;
+    let thumbnail = req.files?.thumbnail;
 
-    if (type === "image") {
-      file = req.body.file;
-    } else if (type === "video") {
-      thumbnail = req.body.thumbnail;
+    if (!file && type === "image") {
+      return res.status(400).json({ error: "No image file provided." });
+    }
+
+    if (!thumbnail && type === "video") {
+      return res.status(400).json({ error: "No thumbnail file provided." });
     }
 
     let uploadResult, thumbnailResult;
 
     if (file) {
+      // @ts-ignore
       uploadResult = await cloudinary.uploader.upload(file.tempFilePath, {
         resource_type: "auto",
       });
@@ -37,6 +38,7 @@ export const uploadMedia = async (req: Request, res: Response) => {
 
     if (thumbnail) {
       thumbnailResult = await cloudinary.uploader.upload(
+        // @ts-ignore
         thumbnail.tempFilePath,
         {
           resource_type: "image",
@@ -61,13 +63,15 @@ export const uploadMedia = async (req: Request, res: Response) => {
       message: "Media uploaded successfully",
       media: newMedia,
     });
-  } catch (error:any) {
+  } catch (error: any) {
     console.error("Error in uploadMedia:", error);
-    res
-      .status(500)
-      .json({ error: `An error occurred while uploading the media. ${error.message}` });
+    res.status(500).json({
+      error: `An error occurred while uploading the media. ${error}`,
+    });
   }
 };
+
+// Other methods (getAllMedia, getMediaById, deleteMedia) remain unchanged
 
 export const getAllMedia = async (req: Request, res: Response) => {
   try {
@@ -130,4 +134,3 @@ export const deleteMedia = async (req: Request, res: Response) => {
 };
 
 // mediaRoutes.ts
-
