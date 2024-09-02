@@ -1,19 +1,18 @@
 import express from "express";
-import * as mediaController from '../controllers/mediaControllers'
-import fileUpload from "express-fileupload";
+import {
+  uploadMedia,
+  updateMedia,
+  deleteMedia,
+  getMedia,
+} from "../controllers/mediaControllers";
+import { upload } from "../config/multer"; 
 
-const router = express.Router();
+const MediRouters = express.Router();
 
-router.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: "/tmp/",
-  })
-);
+MediRouters.post("/", upload.single('file'), uploadMedia);
+MediRouters.put("/:id", upload.single("file"), updateMedia);
+MediRouters.delete("/:id", deleteMedia);
+MediRouters.get("/", getMedia);
 
-router.post("/upload", mediaController.uploadMedia);
-router.get("/", mediaController.getAllMedia);
-router.get("/:id", mediaController.getMediaById);
-router.delete("/:id", mediaController.deleteMedia);
-
-export default router;
+export default MediRouters;
+ 

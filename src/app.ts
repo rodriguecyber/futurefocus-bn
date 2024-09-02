@@ -7,7 +7,7 @@ import { StudentRoutes } from "./routes/StudentsRoutes";
 import { TeamRoute } from "./routes/TeamRoutes";
 import { ServiceRoute } from "./routes/ServiceRoutes";
 import { CourseRoute } from "./routes/CourseRoute";
-import mediaRouter from "./routes/mediaRouter";
+import MediaRouter from "./routes/mediaRouter";
 // import mediaRoute from "./routes/mediaRouter";
 
 dotenv.config();
@@ -38,7 +38,7 @@ app.use("/students", StudentRoutes);
 app.use("/member", TeamRoute);
 app.use("/service", ServiceRoute);
 app.use("/course", CourseRoute);
-app.use("/media",mediaRouter)
+app.use("/media",MediaRouter)
 
 app.listen(PORT, () => {
   console.log(`app is listening to http://localhost:${PORT}`);

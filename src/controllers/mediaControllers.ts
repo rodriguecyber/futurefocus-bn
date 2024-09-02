@@ -1,136 +1,116 @@
 import { Request, Response } from "express";
-import { v2 as cloudinary } from "cloudinary";
-import Media, { IMedia } from "../models/media";
+import cloudinary from "cloudinary";
+import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { Media } from "../models/media";
 
 // Cloudinary configuration
-cloudinary.config({
-  cloud_name: "dxy33wiax",
-  api_key: "991555379284442",
-  api_secret:"ekuY9MDxVtiIeUGqKbLS0V8MTV4",
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY || '991555379284442',
+  api_secret: process.env.CLOUDINARY_SECRET,
 });
 
+// Define the folder for uploads
+const CLOUDINARY_FOLDER = "media_uploads";
+
+// Configure Multer with Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary.v2,
+  params: {
+    //@ts-ignore
+    folder: CLOUDINARY_FOLDER,
+    allowed_formats: ["jpg", "png", "jpeg", "gif", "mp4", "avi"],
+  },
+});
+
+const upload = multer({ storage });
+
+// Controller to handle media upload
 export const uploadMedia = async (req: Request, res: Response) => {
   try {
-    if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).json({ error: "No files were uploaded." });
+    const { type, content, videoUrl } = req.body;
+    let fileUrl = "";
+
+    if (req.file) {
+      // Use the Cloudinary URL provided by multer-storage-cloudinary
+      fileUrl = req.file.path;
+    } else {
+      return res.status(400).json({ message: "File is required." });
     }
 
-    const { type, content, youtubeUrl, link } = req.body;
-    let file = req.files?.file;
-    let thumbnail = req.files?.thumbnail;
+   
 
-    if (!file && type === "image") {
-      return res.status(400).json({ error: "No image file provided." });
-    }
+    const media = new Media({
+      type,
+      url: fileUrl,
+      content,
+      videoUrl: type === "video" ? videoUrl : undefined,
+    });
 
-    if (!thumbnail && type === "video") {
-      return res.status(400).json({ error: "No thumbnail file provided." });
-    }
+    await media.save();
+    res.status(201).json(media);
+  } catch (error) {
+    console.error("Error uploading media:", error);
+    res.status(500).json({ message: "Error uploading media", error });
+  }
+};
 
-    let uploadResult, thumbnailResult;
+// Controller to handle media update
+export const updateMedia = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { type, content, videoUrl, thumbnailUrl } = req.body;
 
-    if (file) {
-      // @ts-ignore
-      uploadResult = await cloudinary.uploader.upload(file.tempFilePath, {
-        resource_type: "auto",
-      });
-    }
-
-    if (thumbnail) {
-      thumbnailResult = await cloudinary.uploader.upload(
-        // @ts-ignore
-        thumbnail.tempFilePath,
-        {
-          resource_type: "image",
-        }
-      );
-    }
-
-    const newMedia: IMedia = new Media({
+    const updates: any = {
       type,
       content,
-      url: uploadResult ? uploadResult.secure_url : null,
-      publicId: uploadResult ? uploadResult.public_id : null,
-      thumbnailUrl: thumbnailResult ? thumbnailResult.secure_url : null,
-      youtubeUrl: type === "video" ? youtubeUrl : null,
-      link,
-      format: uploadResult ? uploadResult.format : null,
-    });
+      videoUrl: type === "video" ? videoUrl : undefined,
+      thumbnailUrl: type === "video" ? thumbnailUrl : undefined,
+    };
 
-    await newMedia.save();
-
-    res.status(201).json({
-      message: "Media uploaded successfully",
-      media: newMedia,
-    });
-  } catch (error: any) {
-    console.error("Error in uploadMedia:", error);
-    res.status(500).json({
-      error: `An error occurred while uploading the media. ${error}`,
-    });
-  }
-};
-
-// Other methods (getAllMedia, getMediaById, deleteMedia) remain unchanged
-
-export const getAllMedia = async (req: Request, res: Response) => {
-  try {
-    const media = await Media.find().sort({ createdAt: -1 });
-    res.status(200).json(media);
-  } catch (error) {
-    console.error("Error in getAllMedia:", error);
-    res.status(500).json({ error: "An error occurred while fetching media." });
-  }
-};
-
-export const getMediaById = async (req: Request, res: Response) => {
-  try {
-    const media = await Media.findById(req.params.id);
-    if (!media) {
-      return res.status(404).json({ error: "Media not found." });
+    if (req.file) {
+      // Use the Cloudinary URL provided by multer-storage-cloudinary
+      updates.url = req.file.path;
     }
-    res.status(200).json(media);
+
+    const media = await Media.findByIdAndUpdate(id, updates, { new: true });
+    if (!media) {
+      return res.status(404).json({ message: "Media not found" });
+    }
+
+    res.json(media);
   } catch (error) {
-    console.error("Error in getMediaById:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching the media." });
+    console.error("Error updating media:", error);
+    res.status(500).json({ message: "Error updating media", error });
   }
 };
 
+// Controller to handle media deletion
 export const deleteMedia = async (req: Request, res: Response) => {
   try {
-    const media = await Media.findById(req.params.id);
+    const { id } = req.params;
+    const media = await Media.findByIdAndDelete(id);
     if (!media) {
-      return res.status(404).json({ error: "Media not found." });
+      return res.status(404).json({ message: "Media not found" });
     }
-
-    // Delete from Cloudinary
-    if (media.publicId) {
-      await cloudinary.uploader.destroy(media.publicId);
-    }
-
-    // Delete thumbnail if exists
-    if (media.thumbnailUrl) {
-      const thumbnailPublicId = media.thumbnailUrl
-        .split("/")
-        .pop()
-        ?.split(".")[0];
-      if (thumbnailPublicId) {
-        await cloudinary.uploader.destroy(thumbnailPublicId);
-      }
-    }
-
-    // Delete from database
-    await Media.findByIdAndDelete(req.params.id);
-
-    res.status(200).json({ message: "Media deleted successfully" });
+    res.json({ message: "Media deleted successfully" });
   } catch (error) {
-    console.error("Error in deleteMedia:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while deleting the media." });
+    console.error("Error deleting media:", error);
+    res.status(500).json({ message: "Error deleting media", error });
   }
 };
 
-// mediaRoutes.ts
+// Controller to get all media
+export const getMedia = async (req: Request, res: Response) => {
+  try {
+    const media = await Media.find();
+    res.json(media);
+  } catch (error) {
+    console.error("Error fetching media:", error);
+    res.status(500).json({ message: "Error fetching media", error });
+  }
+};
+
+// Export the upload middleware for use in routes
+export { upload };
