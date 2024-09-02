@@ -18,7 +18,7 @@ const app = express();
 // CORS configuration
 app.use(
   cors({
-    origin: `${process.env.CORS_ALLOW}`,
+    origin: `${process.env.CORS_ALLOW}` || "https://www.futurefocus.co.rw",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
