@@ -5,11 +5,16 @@ export class StudentControllers {
   static apply = async (req: Request, res: Response) => {
     const studentData = req.body;
     try {
+       const alreadyExist = await Student.findOne({email:studentData.email}) || await Student.findOne({phone:studentData.phone})
+       if(alreadyExist){
+        return res.status(400).json({message:"You have already applied "})
+       }
       await Student.create(studentData);
       return res.status(200).json({ message: "Your apllication submitted" });
       
+      
     } catch (error: any) {
-      return res.status(500).json({ messge: `Error ${error.message} Occured` });
+      return res.status(500).json({ message: `failed to apply! try again` });
     }
   };
 
