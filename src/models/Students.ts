@@ -8,6 +8,9 @@ const StudentSchema  = new Schema<StudentTypes>({
   selectedCourse: {type:String, required:true},
   selectedShift: {type:String, required:true},
   message: {type:String, required:true} 
+},
+{
+  timestamps:true
 })
 const Student = model<StudentTypes>("Student",StudentSchema)
 export default Student

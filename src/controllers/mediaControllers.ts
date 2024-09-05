@@ -11,7 +11,7 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-// Define the folder for uploads
+// Define the folder for uploadss
 const CLOUDINARY_FOLDER = "media_uploads";
 
 // Configure Multer with Cloudinary storage

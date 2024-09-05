@@ -10,7 +10,7 @@ export class TeamControllers {
         return res.status(400).json({ message: "member already exist" });
       }
       await Team.create({ name, title, image, email,role, instagram });
-      return res.status(200).json({ message: "member added" });
+      return res.status(200).json({ messsage: "member added" });
     } catch (error: any) {
       return res
         .status(500)

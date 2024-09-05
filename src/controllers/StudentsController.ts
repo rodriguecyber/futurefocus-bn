@@ -12,12 +12,13 @@ export class StudentControllers {
       return res.status(500).json({ messge: `Error ${error.message} Occured` });
     }
   };
-  static students = async (req: Request, res: Response) => {
-    try {
-      const students = await Student.find();
-      return res.status(200).json(students);
-    } catch (error: any) {
-      res.status(500).json({ message: `Error ${error.message} Occured` });
-    }
-  };
+
+static students = async (req: Request, res: Response) => {
+  try {
+    const students = await Student.find().sort({ createdAt: -1 });
+    return res.status(200).json(students);
+  } catch (error: any) {
+    res.status(500).json({ message: `Error ${error.message} occurred` });
+  }
+};
 }
