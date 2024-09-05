@@ -21,4 +21,20 @@ static students = async (req: Request, res: Response) => {
     res.status(500).json({ message: `Error ${error.message} occurred` });
   }
 };
+static delete = async (req:Request, res:Response)=>{
+  const id=req.params.id;
+  try {
+    const student = await Student.findByIdAndDelete(id);
+  if (!student) {
+    return res.status(404).json({ message: "Student not found" });
+
+  }
+  res.status(200).json({message:"student deleted successfully"})
+  } catch (error:any) {
+    res.status(500).json({message:`Error ${error.message} occured`})
+    
+  }
+
+
+}
 }
