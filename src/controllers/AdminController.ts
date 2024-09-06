@@ -58,10 +58,12 @@ export class AdminControllers {
 
       const hashedPassword = await hashingPassword(password);
       await Admin.findOneAndUpdate(
-        { _id: user._id },
+         {_id:user.id},
         { password: hashedPassword }
       );
-      return res.status(200).json({ message: "Password changed successfully" });
+      console.log(password)
+      console.log(user.id)
+      return res.status(200).json({ message: "Password changed" });
     } catch (error: any) {
       return res
         .status(500)
@@ -85,7 +87,7 @@ export class AdminControllers {
       const token = await generateToken(user);
       res.cookie("token", token as string, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Set to true in production
+        secure: process.env.NODE_ENV === "production", 
         maxAge: 24 * 60 * 60 * 1000,
       });
       return res.status(200).json({ message: "Login successful", token });
