@@ -49,7 +49,7 @@ export class AdminControllers {
         return res.status(400).json({ message: "Password not provided" });
       }
 
-      const user = await decodeToken(token); // Ensure this is an async function
+      const user = await decodeToken(token);
       if (!user) {
         return res
           .status(400)
@@ -135,7 +135,7 @@ export class AdminControllers {
     } catch (error:any) {
       res.status(500).json({message:`Error ${error.message} occured`})
     }
-  };
-
-  
+  };  
 }
+
+
