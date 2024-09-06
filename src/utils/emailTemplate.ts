@@ -98,7 +98,7 @@ export const SubscriptionEmail = () => {
   <body>
       <div class="email-container">
           <div class="email-header">
-              <h1>Password Reset Request</h1>
+              <h1>Futurefocus</h1>
           </div>
           <div class="email-body">
               <p>Hello </p>
