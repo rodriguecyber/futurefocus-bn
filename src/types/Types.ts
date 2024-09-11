@@ -2,7 +2,8 @@ import { Document } from "mongoose";
 
 export interface AdminTypes extends Document {
     email:string,
-    password:string
+    password:string,
+    isSuperAdmin:Boolean
 }
 export interface StudentTypes extends Document {
   name: string;

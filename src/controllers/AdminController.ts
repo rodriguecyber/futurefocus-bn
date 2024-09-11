@@ -1,3 +1,4 @@
+'use client'
 import { Request, Response } from "express";
 import Admin from "../models/Admin";
 import { decodeToken, generateToken } from "../utils/token";
@@ -138,6 +139,60 @@ export class AdminControllers {
       res.status(500).json({message:`Error ${error.message} occured`})
     }
   };  
+  static addAdmin = async (req:Request, res:Response)=>{
+    const {email} =  req.body
+    try {
+      const admin = await Admin.findOne({ email: email });
+      if (admin) {
+        return res.status(400).json({ message: "admin already registered" });
+      }
+      await Admin.create({
+        email:email
+      })
+      res.status(200).json({message:"admin added"})
+    
+    } catch (error:any) {
+      res.status(500).json({message:`Error ${error.message} Occured`})
+    }
+  }
+  static updateAdmin =  async(req:Request, res:Response)=>{
+    try {
+      const { email } = req.body;
+      const admin = await Admin.findOne({ email: email });
+      if (!admin) {
+        return res.status(400).json({ message: "admin not available" });
+      }
+      await Admin.findByIdAndUpdate(admin._id, { isSuperAdmin: true });
+      res.status(200).json({ message: "admin updated" });
+    } catch (error:any) {
+      res.status(500).json({message:`Error ${error.message} occured`})
+    }
+      
+  }
+  static view =  async(req:Request, res:Response)=>{
+    try {
+      const admins = await Admin.find();
+      res.status(200).json({ admins });
+    } catch (error:any) {
+      res.status(500).json({message:`Error '${error.message} occured`})
+    }
+
+
+  }
+  static  delete =  async(req:Request, res:Response)=>{
+    try {
+      const { id } = req.params;
+      const admin = await Admin.findById(id);
+      if (!admin) {
+        return res.status(400).json({ message: "admin not available" });
+      }
+      await Admin.findByIdAndDelete(id)
+      res.status(200).json({message:"admin deleted succesfully"})
+    }
+    catch(error:any){
+res.status(500).json({message: `Error ${error.message} occured`})
+    }
+
 }
 
-
+}

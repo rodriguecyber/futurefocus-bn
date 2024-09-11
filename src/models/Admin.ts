@@ -5,9 +5,11 @@ const adminSchema = new Schema<AdminTypes>({
   email: {
     type: String,
     required: true,
-    default: "rodrirwigara@gmail.com",
+    
   },
   password: { type: String, required: true, default:"000000" },
+  isSuperAdmin: { type: Boolean, required: true, default:false },
+  
 });
 const Admin = model<AdminTypes>("Admin",adminSchema)
 export default Admin
