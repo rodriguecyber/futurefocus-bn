@@ -7,7 +7,8 @@ const StudentSchema  = new Schema<StudentTypes>({
   phone: {type:String, required:true},
   selectedCourse: {type:String, required:true},
   selectedShift: {type:String, required:true},
-  message: {type:String, required:false} 
+  message: {type:String, required:false},
+  status:{type:String, required:true, default:"pendig"}
 },
 {
   timestamps:true

@@ -12,6 +12,7 @@ export interface StudentTypes extends Document {
   selectedCourse: string;
   selectedShift: string;
   message: string;
+  status:string
 }
 export interface TeamTypes extends Document {
   name: string;

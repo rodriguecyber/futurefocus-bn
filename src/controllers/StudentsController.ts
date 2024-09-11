@@ -42,4 +42,19 @@ static delete = async (req:Request, res:Response)=>{
 
 
 }
+static update = async (req:Request,res:Response)=>{
+const id =  req.params.id
+try {
+  const student = Student.findById(id);
+  if (!student) {
+    return res.status(404).json({ message: "Student not found" });
+  }
+  await Student.findByIdAndUpdate(id,{status:'accepted'})
+  res.status(200).json({message:"student aadmitted"})
+} catch (error:any) {
+  res.status(500).json({message:`${error.message} occured`})
+  
+}
+
+}
 }
