@@ -4,17 +4,14 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { Media } from "../models/media";
 
-// Cloudinary configuration
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_KEY || '991555379284442',
   api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-// Define the folder for uploadss
 const CLOUDINARY_FOLDER = "media_uploads";
 
-// Configure Multer with Cloudinary storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary.v2,
   params: {
@@ -26,14 +23,13 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-// Controller to handle media upload
 export const uploadMedia = async (req: Request, res: Response) => {
   try {
     const { type, content, videoUrl } = req.body;
     let fileUrl = "";
 
     if (req.file) {
-      // Use the Cloudinary URL provided by multer-storage-cloudinary
+   
       fileUrl = req.file.path;
     } else {
       return res.status(400).json({ message: "File is required." });
@@ -56,7 +52,6 @@ export const uploadMedia = async (req: Request, res: Response) => {
   }
 };
 
-// Controller to handle media update
 export const updateMedia = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, Schema } from "mongoose";
 
 export interface AdminTypes extends Document {
     email:string,
@@ -33,5 +33,21 @@ export interface  CourseTypes extends Document {
   description: string;
   rating: number;
   image: string;
+  paymentStatus:string
 }
 
+export interface attendanceTypes{
+  studentId:Schema.Types.ObjectId,
+  status:string,
+}
+export interface paymentTypes{
+  studentId:Schema.Types.ObjectId,
+  status:string,
+  amountDue:number,
+  amountPaid:number,
+}
+export interface transactionTypes{
+  studentId:Schema.Types.ObjectId,
+  amount:number,
+  reason:string
+}
