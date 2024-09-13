@@ -43,4 +43,25 @@ export class CourseController {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
+  static addShift = async(req:Request,res:Response)=>{
+    const {id} = req.params
+    const  {shift} = req.body
+    try {
+      const course =await Course.findById(id)
+      if(!course){
+        return res.status(400).json({message:"course not found"})
+      }
+      if(course.shifts.includes(shift)){
+       return  res.json(400).json({message:"shift available"})
+      }
+      course.shifts.push(shift)
+      await course.save()
+      res.json(200).json({message:"shift added"})
+    } catch (error:any) {
+      res.status(500).json({message:`Error ${error.message} occured`})
+    }
+
+  }
+ 
+   
 }

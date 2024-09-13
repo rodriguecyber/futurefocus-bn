@@ -17,7 +17,7 @@ export class StudentControllers {
       
       
     } catch (error: any) {
-      return res.status(500).json({ message: `failed to apply! try again` });
+      return res.status(500).json({ message: `failed to apply! try again ${error.message}` });
     }
   };
 

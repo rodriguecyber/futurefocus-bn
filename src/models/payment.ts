@@ -7,6 +7,7 @@ const paymentSchema = new Schema<paymentTypes>(
     status:{type:String, enum:['paid','unpaid','partial'], default:"unpaid", required:true},
     amountDue:{type:Number,required:true},
     amountPaid:{type:Number, default:0, required:true}
+    
   },
   {
     timestamps: true,

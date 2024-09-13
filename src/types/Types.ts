@@ -13,6 +13,7 @@ export interface StudentTypes extends Document {
   selectedShift: string;
   message: string;
   status:string
+  intake:string
 }
 export interface TeamTypes extends Document {
   name: string;
@@ -33,7 +34,9 @@ export interface  CourseTypes extends Document {
   description: string;
   rating: number;
   image: string;
-  paymentStatus:string
+  scholarship:number
+  nonScholarship:number
+  shifts:string[],
 }
 
 export interface attendanceTypes{
@@ -45,6 +48,7 @@ export interface paymentTypes{
   status:string,
   amountDue:number,
   amountPaid:number,
+
 }
 export interface transactionTypes{
   studentId:Schema.Types.ObjectId,
