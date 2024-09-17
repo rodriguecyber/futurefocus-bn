@@ -8,6 +8,9 @@ import { TeamRoute } from "./routes/TeamRoutes";
 import { ServiceRoute } from "./routes/ServiceRoutes";
 import { CourseRoute } from "./routes/CourseRoute";
 import MediaRouter from "./routes/mediaRouter";
+import { paymantRouter } from "./routes/paymantRouter";
+import { endIntake, startIntake } from "./jobs/StudentAutomation";
+import { dailyAttendance } from "./jobs/AttendanceAutomation";
 // import mediaRoute from "./routes/mediaRouter";
 
 dotenv.config();
@@ -30,9 +33,11 @@ app.use(
 app.use(express.json());
 
 connection();
-
+startIntake()
+endIntake()
+dailyAttendance()
 app.get("/", (req, res) => {
-  res.send("welcome to future focus");
+  res.send("welcome to future focus"); 
 });
 
 app.use("/admin", AdminRoutes);
@@ -41,6 +46,7 @@ app.use("/member", TeamRoute);
 app.use("/service", ServiceRoute);
 app.use("/course", CourseRoute);
 app.use("/media",MediaRouter)
+app.use("/payment",paymantRouter)
 
 app.listen(PORT, () => {
   console.log(`app is listening to http://localhost:${PORT}`);
