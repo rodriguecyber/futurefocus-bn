@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Attendance } from "../models/Attendance";
 import Student from "../models/Students";
-import { StudentTypes } from "../types/Types";
+
 
 type Shift =
   | "Morning A (8:30 AM - 10:30 AM)"
@@ -55,14 +55,14 @@ export const updateAttendance = async (req: Request, res: Response) => {
 
     if (currentTime < shift.start || currentTime > shift.end) {
       return res.status(400).json({
-        message: "Attendance can only be marked during the assigned shift",
+        message: "You can only attend on your shift",
       });
     }
 
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     let attendance = await Attendance.findOne({
       studentId: studentId,
-      createdAt: { $gte: today },
+      createdAt: today ,
     });
 
     if (attendance) {
@@ -71,7 +71,7 @@ export const updateAttendance = async (req: Request, res: Response) => {
     } else {
       attendance = new Attendance({
         studentId: studentId,
-        status: status,
+        status: 'present',
       });
     }
 
@@ -79,9 +79,19 @@ export const updateAttendance = async (req: Request, res: Response) => {
 
     res
       .status(200)
-      .json({ message: "Attendance updated successfully", attendance });
+      .json({ message: "Attending successfully", attendance });
   } catch (error) {
-    console.error("Error updating attendance:", error);
+    console.error("Error attending:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+export const getAttendance = async (req:Request,res:Response)=>{
+  try {
+    const attendance = await Attendance.find().populate("studentId");
+    res.status(200).json(attendance)
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+    
+  }
+
+}

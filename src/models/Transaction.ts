@@ -3,9 +3,13 @@ import { transactionTypes } from "../types/Types";
 
 const transactionSchema = new Schema<transactionTypes>(
   {
-    studentId:{type:mongoose.Types.ObjectId, required:true},
-    amount:{type:Number, required:true},
-    reason:{type:String, default:""}
+    studentId: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "Student",
+    },
+    amount: { type: Number, required: true },
+    reason: { type: String, default: "" },
   },
   {
     timestamps: true,

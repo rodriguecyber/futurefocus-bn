@@ -48,5 +48,16 @@ export class PaymentController {
         
     }
   }
+  static getTansactions = async(req:Request,res:Response)=>{
+    try {
+      
+      const transactions = await Transaction.find().populate("studentId");
+      res.status(200).json(transactions)
+
+    } catch (error:any) {
+      res.status(500).json({ message: `Eror ${error.message} occured` });
+      
+    }
+  }
 
 }

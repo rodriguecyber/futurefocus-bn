@@ -14,4 +14,19 @@ export const dailyAttendance = () => {
     console.log(students);
   });
 };
+export const dropout = ()=>{
+  cron.schedule("0 8 * * *", async()=>{
+       const students = await Student.find({status:"started"});
+     students.forEach(async(student)=>{
+    const absence = await Attendance.find({$and:[{
+      studentId:student._id,
+      status:"absent"
+    }]})
+    if(absence.length>14){
+    student.status = 'dropedout'
+    await student.save()
+    }
+     })
+     })
+}
 
