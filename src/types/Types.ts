@@ -50,8 +50,16 @@ export interface paymentTypes{
   amountPaid:number,
 
 }
+
 export interface transactionTypes{
   studentId:Schema.Types.ObjectId,
   amount:number,
   reason:string
+}
+export interface cashflowTypes{
+  type:string
+  user:string,
+  amount:number,
+  reason:string,
+  payment:string
 }
