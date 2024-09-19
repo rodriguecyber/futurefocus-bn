@@ -4,14 +4,14 @@ import { Attendance } from "../models/Attendance";
 
 
 export const dailyAttendance = () => {
-  cron.schedule("0 8 * * *", async () => {
+  cron.schedule("0 9 * * *", async () => {
     const students = await Student.find({ status: "started" });
-    students.forEach(async (student) => {
+  const attendance=  students.forEach(async (student) => {
       await Attendance.create({
         studentId: student._id,
       });
     });
-    console.log(students);
+    console.log(attendance);
   });
 };
 export const dropout = ()=>{
