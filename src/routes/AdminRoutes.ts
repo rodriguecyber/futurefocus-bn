@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { AdminControllers } from "../controllers/AdminController";
+import { getDashboardSummary } from "../controllers/DashboardControllers";
 
 export const AdminRoutes = Router()
 AdminRoutes.post('/forgot-password', AdminControllers.forgotPassword)
@@ -13,4 +14,5 @@ AdminRoutes.get('/admins', AdminControllers.view)
 AdminRoutes.put('/reset-password/:token', AdminControllers.resetPassword)
 AdminRoutes.put('/update', AdminControllers.updateAdmin)
 AdminRoutes.delete('/delete/:id', AdminControllers.delete)
-AdminRoutes.delete('/intake/:id', AdminControllers.deleteIntake)  
+AdminRoutes.delete('/intake/:id', AdminControllers.deleteIntake) 
+AdminRoutes.get('/dashboard', getDashboardSummary)  // get a single intake
