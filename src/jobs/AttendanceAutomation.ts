@@ -4,7 +4,7 @@ import { Attendance } from "../models/Attendance";
 import { Request, Response } from "express";
 
 export const dailyAttendance = () => {
-  cron.schedule("42 9 * * *", async () => {
+  cron.schedule("0 12 * * *", async () => {
     try {
       const students = await Student.find({ status: "started" });
       for (const student of students) {
