@@ -10,7 +10,7 @@ import { CourseRoute } from "./routes/CourseRoute";
 import MediaRouter from "./routes/mediaRouter";
 import { paymantRouter } from "./routes/paymantRouter";
 import { endIntake, startIntake } from "./jobs/StudentAutomation";
-// import { dailyAttendance } from "./jobs/AttendanceAutomation";
+import { dailyAttendance } from "./jobs/AttendanceAutomation";
 import { cashRouter } from "./routes/cashFlow";
 import { JobRouter } from "./routes/Job";
 // import mediaRoute from "./routes/mediaRouter";
@@ -37,7 +37,7 @@ app.use(express.json());
 connection();
 startIntake()
 endIntake()
-// dailyAttendance()
+dailyAttendance()
 app.get("/", (req, res) => {
   res.send("welcome to future focus"); 
 });
