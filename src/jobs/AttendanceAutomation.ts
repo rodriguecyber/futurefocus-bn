@@ -11,7 +11,7 @@ export const dailyAttendance = () => {
         studentId: student._id,
       });
     });
-    console.log(attendance);
+    console.log('attendance created');
   });
 };
 export const dropout = ()=>{
