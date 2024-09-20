@@ -2,31 +2,39 @@ import cron from "node-cron";
 import Student from "../models/Students";
 import { Attendance } from "../models/Attendance";
 
-
 export const dailyAttendance = () => {
-  cron.schedule("10 9 * * *", async () => {
-    const students = await Student.find({ status: "started" });
-  const attendance=  students.forEach(async (student) => {
-      await Attendance.create({
-        studentId: student._id,
-      });
-    });
-    console.log('attendance created');
+  cron.schedule("27 9 * * *", async () => {
+    try {
+      const students = await Student.find({ status: "started" });
+      for (const student of students) {
+        await Attendance.create({
+          studentId: student._id,
+        });
+      }
+      console.log("Attendance created");
+    } catch (error) {
+      console.error("Error in dailyAttendance:", error);
+    }
   });
 };
-export const dropout = ()=>{
-  cron.schedule("0 8 * * *", async()=>{
-       const students = await Student.find({status:"started"});
-     students.forEach(async(student)=>{
-    const absence = await Attendance.find({$and:[{
-      studentId:student._id,
-      status:"absent"
-    }]})
-    if(absence.length>14){
-    student.status = 'dropedout'
-    await student.save()
-    }
-     })
-     })
-}
 
+export const dropout = () => {
+  cron.schedule("0 8 * * *", async () => {
+    try {
+      const students = await Student.find({ status: "started" });
+      for (const student of students) {
+        const absences = await Attendance.countDocuments({
+          studentId: student._id,
+          status: "absent",
+        });
+        if (absences > 14) {
+          student.status = "droppedout";
+          await student.save();
+        }
+      }
+      console.log("Dropout check completed");
+    } catch (error) {
+      console.error("Error in dropout:", error);
+    }
+  });
+};
