@@ -141,14 +141,15 @@ export class AdminControllers {
     }
   };  
   static addAdmin = async (req:Request, res:Response)=>{
-    const {email} =  req.body
+    const {email,name} =  req.body
     try {
       const admin = await Admin.findOne({ email: email });
       if (admin) {
         return res.status(400).json({ message: "admin already registered" });
       }
       await Admin.create({
-        email:email
+        email,
+        name
       })
       res.status(200).json({message:"admin added"})
     
