@@ -13,33 +13,34 @@ import { endIntake, startIntake } from "./jobs/StudentAutomation";
 import { dailyAttendance } from "./jobs/AttendanceAutomation";
 import { cashRouter } from "./routes/cashFlow";
 import { JobRouter } from "./routes/Job";
-// import mediaRoute from "./routes/mediaRouter";
 
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-// CORS configuration
+const allowedOrigins = process.env.CORS_ALLOW
+  ? process.env.CORS_ALLOW.split(",")
+  : ["https://www.futurefocus.co.rw"];
+
 app.use(
-  cors(
-    {
-    origin: process.env.CORS_ALLOW as string || "https://www.futurefocus.co.rw",
+  cors({
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  }
-)
+  })
 );
 
 app.use(express.json());
 
 connection();
-startIntake()
-endIntake()
-dailyAttendance()
+startIntake();
+endIntake();
+dailyAttendance();
+
 app.get("/", (req, res) => {
-  res.send("welcome to future focus"); 
+  res.send("Welcome to Future Focus");
 });
 
 app.use("/admin", AdminRoutes);
@@ -47,13 +48,13 @@ app.use("/students", StudentRoutes);
 app.use("/member", TeamRoute);
 app.use("/service", ServiceRoute);
 app.use("/course", CourseRoute);
-app.use("/media",MediaRouter)
-app.use("/payment",paymantRouter)
-app.use("/cashflow",cashRouter)
-app.use("/job",JobRouter)
+app.use("/media", MediaRouter);
+app.use("/payment", paymantRouter);
+app.use("/cashflow", cashRouter);
+app.use("/job", JobRouter);
 
 app.listen(PORT, () => {
-  console.log(`app is listening to http://localhost:${PORT}`);
+  console.log(`App is listening at http://localhost:${PORT}`);
 });
 
 export default app;

@@ -218,7 +218,7 @@ static getIntakes = async (req:Request, res:Response)=>{
   } catch (error) {
     res.status(500).json({message:"failed to load intakes"})
     
-  }
+  } 
 }
 static deleteIntake = async(req:Request, res:Response)=>{
   const {id} = req.params

@@ -31,12 +31,12 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
     // Aggregate total amount paid
     const totalAmountPaid = await Payment.aggregate([
       {
-        $group: {
+        $group: { 
           _id: null,
           totalAmount: { $sum: "$amountPaid" },
         },
       },
-    ]);
+    ]); 
 
     const totalAmountTobePaid = await Payment.aggregate([
       {

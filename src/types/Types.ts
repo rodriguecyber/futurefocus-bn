@@ -4,6 +4,7 @@ export interface AdminTypes extends Document {
     email:string,
     password:string,
     isSuperAdmin:Boolean
+    name:string
 }
 export interface StudentTypes extends Document {
   name: string;

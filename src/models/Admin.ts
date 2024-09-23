@@ -2,6 +2,9 @@ import { model, Schema } from "mongoose";
 import { AdminTypes } from "../types/Types";
 
 const adminSchema = new Schema<AdminTypes>({
+  name:{
+    type:String, required:true
+  },
   email: {
     type: String,
     required: true,
