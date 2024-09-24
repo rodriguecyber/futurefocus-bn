@@ -44,7 +44,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
 });
 
-app.use("/clear", clearRoute);
+
 app.use("/admin", AdminRoutes);
 app.use("/students", StudentRoutes);
 app.use("/member", TeamRoute);
