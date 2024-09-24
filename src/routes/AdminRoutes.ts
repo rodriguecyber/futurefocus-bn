@@ -12,7 +12,7 @@ AdminRoutes.get('/intake',  AdminControllers.getIntakes)
 AdminRoutes.get('/', AdminControllers.getUser)
 AdminRoutes.get('/admins', AdminControllers.view)
 AdminRoutes.put('/reset-password/:token', AdminControllers.resetPassword)
-AdminRoutes.put('/update', AdminControllers.updateAdmin)
+AdminRoutes.put('/:id', AdminControllers.updateAdmin)
 AdminRoutes.delete('/delete/:id', AdminControllers.delete)
 AdminRoutes.delete('/intake/:id', AdminControllers.deleteIntake) 
 AdminRoutes.get('/dashboard', getDashboardSummary)  // get a single intake

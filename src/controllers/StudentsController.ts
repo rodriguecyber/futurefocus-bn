@@ -107,9 +107,7 @@ try {
  if (!course) {
   return res.status(404).json({ message: "Course not found" });
   }
-  const alreadyExist =
-    (await Student.findOne({ email: student.email })) ||
-    (await Student.findOne({ phone: student.phone }));
+  const alreadyExist =await Student.findOne({ phone: student.phone });
   if (alreadyExist) {
     return res.status(400).json({ message: "You have already registered" });
   }
