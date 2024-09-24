@@ -64,7 +64,7 @@ if (!course) {
   if (status === "registered"){
      await Transaction.create({
        studentId: student._id,
-       amount: 100000,
+       amount: 10000,
        reason: "Registration fees",
      });
      await Payment.create({
@@ -116,7 +116,7 @@ try {
  await registerStudent.save()
  await Transaction.create({
   studentId:registerStudent._id,
-  amount:100000,
+  amount:10000,
   reason:"Registration fees"
  })
  

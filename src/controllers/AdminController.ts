@@ -159,12 +159,12 @@ export class AdminControllers {
   static updateAdmin = async (req: Request, res: Response) => {
     try {
       const {id} = req.params
-      const { name, email} = req.body;
+      const { name, email,isSuperAdmin} = req.body;
       const admin = await Admin.findById(id);
       if (!admin) {
         return res.status(400).json({ message: "admin not available" });
       }
-      await Admin.findByIdAndUpdate(id, {name,email});
+      await Admin.findByIdAndUpdate(id, {name,email,isSuperAdmin});
       res.status(200).json({ message: "admin updated" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });

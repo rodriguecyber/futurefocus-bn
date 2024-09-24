@@ -5,7 +5,7 @@ import { StudentTypes } from "../types/Types";
 const StudentSchema = new Schema<StudentTypes>(
   {
     name: { type: String, required:false },
-    email: { type: String, required: true },
+    email: { type: String, required:true, default:"academic@futurefocus.rw" },
     phone: { type: String, required: true },
     selectedCourse: { type: String, required: true },
     selectedShift: { type: String, required: true },

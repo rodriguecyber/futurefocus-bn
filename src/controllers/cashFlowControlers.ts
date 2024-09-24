@@ -14,7 +14,7 @@ export class cashflowControler {
       });
       res.status(201).json({ message: `${type} created successfully` });
     } catch (error:any) {
-        res.status(200).json({message:`Error ${error.message} ocuured`})
+        res.status(500).json({message:`Error ${error.message} ocuured`})
     }
   };
    static getAll = async(req:Request,res:Response)=>{
@@ -22,7 +22,7 @@ export class cashflowControler {
         const  cashflow = await Cashflow.find();
   res.status(200).json(cashflow)
     } catch (error:any) {
-        res.status(200).json({ message: `Error ${error.message} ocuured` });
+        res.status(500).json({ message: `Error ${error.message} ocuured` });
         
     }
    }

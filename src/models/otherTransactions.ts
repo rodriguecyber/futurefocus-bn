@@ -1,5 +1,5 @@
 import mongoose, { model, Schema } from "mongoose";
-import { cashflowTypes, paymentTypes } from "../types/Types";
+import { cashflowTypes } from "../types/Types";
 
 const CashflowSchema = new Schema<cashflowTypes>(
   {
