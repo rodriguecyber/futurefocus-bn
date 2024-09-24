@@ -13,7 +13,7 @@ import { endIntake, startIntake } from "./jobs/StudentAutomation";
 import { dailyAttendance } from "./jobs/AttendanceAutomation";
 import { cashRouter } from "./routes/cashFlow";
 import { JobRouter } from "./routes/Job";
-import { clearRoute } from "./routes/clear";
+
 
 dotenv.config();
 
