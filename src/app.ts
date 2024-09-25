@@ -13,6 +13,7 @@ import { endIntake, startIntake } from "./jobs/StudentAutomation";
 import { dailyAttendance } from "./jobs/AttendanceAutomation";
 import { cashRouter } from "./routes/cashFlow";
 import { JobRouter } from "./routes/Job";
+import { RoleRouter } from "./routes/RoleRoute";
 
 
 dotenv.config();
@@ -54,6 +55,7 @@ app.use("/media", MediaRouter);
 app.use("/payment", paymantRouter);
 app.use("/cashflow", cashRouter);
 app.use("/job", JobRouter);
+app.use("/role",RoleRouter)
 
 app.listen(PORT, () => {
   console.log(`App is listening at http://localhost:${PORT}`);

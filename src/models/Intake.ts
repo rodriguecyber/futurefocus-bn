@@ -5,7 +5,7 @@ interface IIntake{
     intake:string
 }
    const IntakeSchema = new Schema<IIntake>({
-     intake:"string",
+     intake:{type:String,required:true},
    },
    {
     timestamps:true

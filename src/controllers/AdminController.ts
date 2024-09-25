@@ -76,7 +76,15 @@ export class AdminControllers {
   static login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-      const user = await Admin.findOne({ email });
+     const user = await Admin.findOne({ email }).populate({
+       path: "role",
+       populate: {
+         path: "permission",
+         populate: {
+           path: "feature",
+         },
+       },
+     });
       if (!user) {
         return res.status(401).json({ message: "Email not found" });
       }
@@ -172,8 +180,8 @@ export class AdminControllers {
   };
   static view = async (req: Request, res: Response) => {
     try {
-      const admins = await Admin.find();
-      res.status(200).json({ admins });
+      const admins = await Admin.find().populate("role");
+      res.status(200).json( admins);
     } catch (error: any) {
       res.status(500).json({ message: `Error '${error.message} occured` });
     }

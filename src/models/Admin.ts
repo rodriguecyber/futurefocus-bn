@@ -11,7 +11,7 @@ const adminSchema = new Schema<AdminTypes>({
     
   },
   password: { type: String, required: true, default:"000000" },
-  isSuperAdmin: { type: Boolean, required: true, default:false },
+  role: { type: Schema.Types.ObjectId, required: true,ref:"Role" },
   
 });
 const Admin = model<AdminTypes>("Admin",adminSchema)
