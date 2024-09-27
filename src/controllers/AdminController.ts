@@ -76,15 +76,7 @@ export class AdminControllers {
   static login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-     const user = await Admin.findOne({ email }).populate({
-       path: "role",
-       populate: {
-         path: "permission",
-         populate: {
-           path: "feature",
-         },
-       },
-     });
+     const user = await Admin.findOne({ email })
       if (!user) {
         return res.status(401).json({ message: "Email not found" });
       }
@@ -119,7 +111,15 @@ export class AdminControllers {
       if (!userinfo) {
         return res.status(401).json({ message: "User not authenticated" });
       }
-      const user = await  Admin.findById(userinfo._id)
+      const user = await Admin.findById(userinfo._id).populate({
+        path: "role",
+        populate: {
+          path: "permission",
+          populate: {
+            path: "feature",
+          },
+        },
+      });
       if(!user){
         res.status(401).json({message:"user not found"})
       }
