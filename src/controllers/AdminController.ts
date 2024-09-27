@@ -94,7 +94,7 @@ export class AdminControllers {
         return res.status(401).json({ message: "Password does not match" });
       }
 
-      const token = await generateToken(user);
+      const token = await generateToken({id:user._id,});
       res.cookie("token", token as string, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -115,9 +115,13 @@ export class AdminControllers {
         return res.status(401).json({ message: "Token not provided" });
       }
 
-      const user = await decodeToken(token);
-      if (!user) {
+      const userinfo = await decodeToken(token);
+      if (!userinfo) {
         return res.status(401).json({ message: "User not authenticated" });
+      }
+      const user = await  Admin.findById(userinfo._id)
+      if(!user){
+        res.status(401).json({message:"user not found"})
       }
 
       return res.status(200).json( user );
