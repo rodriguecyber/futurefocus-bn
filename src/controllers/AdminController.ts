@@ -111,7 +111,7 @@ export class AdminControllers {
       if (!userinfo) {
         return res.status(401).json({ message: "User not authenticated" });
       }
-      const user = await Admin.findById(userinfo._id).populate({
+      const user = await Admin.findById(userinfo.id).populate({
         path: "role",
         populate: {
           path: "permission",
