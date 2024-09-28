@@ -48,6 +48,8 @@ export interface paymentTypes {
   status: string;
   amountDue: number;
   amountPaid: number;
+  amountDiscounted:number
+  extraAmount:number
 }
 
 export interface transactionTypes {

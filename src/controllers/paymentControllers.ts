@@ -18,14 +18,17 @@ export class PaymentController {
           .status(404)
           .json({ message: "unable to find student payment" });
       }
-      payment.status =
-        payment.amountDue === 0
-          ? "unpaid"
-          : payment.amountDue > payment.amountPaid
-          ? "partial"
-          : payment.amountDue === payment.amountPaid
-          ? "paid"
-          : "overpaid";
+    if (payment.amountDue === 0) {
+      payment.status = "unpaid";
+    } else if (payment.amountDue > payment.amountPaid) {
+      payment.status = "partial";
+    } else if (payment.amountDue === payment.amountPaid) {
+      payment.status = "paid";
+    } else if (payment.amountDue < payment.amountPaid) {
+      payment.status = "overpaid";
+    } else {
+      payment.status = ""; // Handle unexpected cases
+    }
       await payment.save();
       await Transaction.create({
         studentId: id,

@@ -16,6 +16,8 @@ const paymentSchema = new Schema<paymentTypes>(
     },
     amountDue: { type: Number, required: true },
     amountPaid: { type: Number, default: 0, required: true },
+    amountDiscounted: { type: Number, default: 0, required: true },
+    extraAmount: { type: Number, default: 0, required: true },
   },
   {
     timestamps: true,
