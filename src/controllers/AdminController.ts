@@ -162,6 +162,7 @@ export class AdminControllers {
       await Admin.create({
         email, 
         name,
+        role:null
       });
       res.status(200).json({ message: "admin added" });
     } catch (error: any) {
