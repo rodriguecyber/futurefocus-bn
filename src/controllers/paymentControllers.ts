@@ -104,7 +104,7 @@ export class PaymentController {
       }
       payment.amountDiscounted = payment.amountDiscounted
         ? payment.amountDiscounted + amount
-        : amount;
+        : amount; 
       payment.amountDue = payment.amountDue - amount;
       await payment.save();
       res.status(200).json({ message: "user payment updated" });
