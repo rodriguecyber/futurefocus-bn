@@ -8,7 +8,7 @@ import { TeamRoute } from "./routes/TeamRoutes";
 import { ServiceRoute } from "./routes/ServiceRoutes";
 import { CourseRoute } from "./routes/CourseRoute";
 import MediaRouter from "./routes/mediaRouter";
-import { paymantRouter } from "./routes/paymantRouter";
+import { paymentRouter } from "./routes/paymentRouter";
 import { endIntake, startIntake } from "./jobs/StudentAutomation";
 import { dailyAttendance } from "./jobs/AttendanceAutomation";
 import { cashRouter } from "./routes/cashFlow";
@@ -52,7 +52,7 @@ app.use("/member", TeamRoute);
 app.use("/service", ServiceRoute);
 app.use("/course", CourseRoute);
 app.use("/media", MediaRouter);
-app.use("/payment", paymantRouter);
+app.use("/payment", paymentRouter);
 app.use("/cashflow", cashRouter);
 app.use("/job", JobRouter);
 app.use("/role",RoleRouter)

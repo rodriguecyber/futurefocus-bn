@@ -123,52 +123,20 @@ export class StudentControllers {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
-  static addExtra = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { amount } = req.body;
+  static Update = async(req:Request,res:Response)=>{
+    const {id} = req.params
+    const {data} = req.body
     try {
-      const payment = await Payment.findOne({ studentId: id });
-      if (!payment) {
-        return res
-          .status(400)
-          .json({ message: "no payment record for that user" });
+      const student= await Student.findById(id)
+      if(!student){
+        return res.status(400).json({message:"no student found"})
       }
-      if (payment.amountDiscounted && payment.amountDiscounted > 0) {
-        return res
-          .status(400)
-          .json({ message: "you can't add extra and dicount at same time" });
-      }
-      payment.extraAmount = amount;
-
-      await payment.save();
-      res.status(200).json({ message: "user payment updated" });
+      await student.updateOne(data)
+      await student.save()
+        return res.status(200).json({ message: "student updated" });
+        
     } catch (error) {
-      res.status(500).json({ message: "internal sever error", error });
+        return res.status(500).json({ message: "internal server error" });
     }
-  };
-  static addDiscount = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { amount } = req.body;
-    try {
-      const payment = await Payment.findOne({ studentId: id });
-      if (!payment) {
-        return res
-          .status(400)
-          .json({ message: "no payment record for that user" });
-      }
-      if (payment.extraAmount && payment.extraAmount > 0) {
-        return res
-          .status(400)
-          .json({ message: "you can't add extra and dicount at same time" });
-      }
-      payment.amountDiscounted = payment.amountDiscounted
-        ? payment.amountDiscounted + amount
-        : amount;
-
-      await payment.save();
-      res.status(200).json({ message: "user payment updated" });
-    } catch (error) {
-      res.status(500).json({ message: "internal sever error", error });
-    }
-  };
+  }
 }
