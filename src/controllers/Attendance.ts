@@ -69,10 +69,11 @@ export const updateAttendance = async (req: Request, res: Response) => {
      
       attendance.status = "present";
     } else {
-      attendance = new Attendance({
-        studentId: studentId,
-        status: 'present',
-      });
+      // attendance = new Attendance({
+      //   studentId: studentId,
+      //   status: 'present',
+      // });
+      return res.status(400).json({message:"attendance today available"})
     }
 
     await attendance.save();
