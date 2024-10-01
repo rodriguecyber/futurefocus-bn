@@ -13,12 +13,12 @@ type Shift =
 
 
 const shiftTimes: Record<Shift, { start: number; end: number }> = {
-  "Morning A (8:30 AM - 10:30 AM)": { start: 8.5 * 60, end: 10.5 * 60 }, 
-  "Morning B (11:00 PM- 1:00PM)": { start: 11 * 60, end: 13 * 60 }, 
-  "Afternoon (3:00PM - 5:00 PM)": { start: 15 * 60, end: 17 * 60 }, 
-  "Evening (6:00 AM - 8:00PM)": { start: 18 * 60, end: 20 * 60 }, 
-  "Weekend (Saturday: 8:30 AM - 5:30 PM)": { start: 8 * 60, end: 17.5 * 60 }, 
-  Online: { start: 8 * 60, end: 17.5 * 60 },
+  "Morning A (8:30 AM - 10:30 AM)": { start: 6.5 * 60, end: 8.5 * 60 }, 
+  "Morning B (11:00 PM- 1:00PM)": { start: 9 * 60, end: 11 * 60 }, 
+  "Afternoon (3:00PM - 5:00 PM)": { start: 13 * 60, end: 15 * 60 }, 
+  "Evening (6:00 AM - 8:00PM)": { start: 16 * 60, end: 18 * 60 }, 
+  "Weekend (Saturday: 8:30 AM - 5:30 PM)": { start: 6 * 60, end: 15.5 * 60 }, 
+  Online: { start: 6 * 60, end: 15.5 * 60 },
 };
 
 function isValidShift(shift: string): shift is Shift {
