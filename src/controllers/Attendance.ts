@@ -13,7 +13,7 @@ type Shift =
 
 
 const shiftTimes: Record<Shift, { start: number; end: number }> = {
-  "Morning A (8:30 AM - 10:30 AM)": { start: 6.5 * 60, end: 8.5 * 60 }, 
+  "Morning A (8:30 AM - 10:30 AM)": { start: 8.5 * 60, end: 11.5 * 60 }, 
   "Morning B (11:00 PM- 1:00PM)": { start: 9 * 60, end: 11 * 60 }, 
   "Afternoon (3:00PM - 5:00 PM)": { start: 13 * 60, end: 15 * 60 }, 
   "Evening (6:00 AM - 8:00PM)": { start: 16 * 60, end: 18 * 60 }, 
@@ -59,12 +59,19 @@ export const updateAttendance = async (req: Request, res: Response) => {
       });
     }
 
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
     let attendance = await Attendance.findOne({
       studentId: studentId,
-      createdAt: today ,
-    });
-
+      createdAt: {
+        $gte: startOfDay,
+        $lt: endOfDay,
+      },
+    }).exec();
     if (attendance) {
      
       attendance.status = "present";
@@ -73,7 +80,7 @@ export const updateAttendance = async (req: Request, res: Response) => {
       //   studentId: studentId,
       //   status: 'present',
       // });
-      return res.status(400).json({message:"attendance today available"})
+      return res.status(400).json({message:"attendance today not available"})
     }
 
     await attendance.save();
