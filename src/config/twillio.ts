@@ -7,13 +7,13 @@ const authToken = "62b132e0ae997c0bf1235e524810751e";
 const client = twilio(accountSid, authToken);
 
 async function createMessage() {
-  const message = await client.messages.create({
-    // body: "Test message",
-    // from: "+13343261147",
-    // to: "+250786605505",
-  });
+//   const message = await client.messages.create({
+//     // body: "Test message",
+//     // from: "+13343261147",
+//     // to: "+250786605505",
+//   });
 
-  console.log(message.body);
+//   console.log(message.body);
 }
 
 createMessage();
