@@ -4,6 +4,7 @@ import { StudentTypes } from "../types/Types";
 import Transaction from "../models/Transaction";
 import Payment from "../models/payment";
 import Course from "../models/Course";
+import Cashflow from "../models/otherTransactions";
 
 export class StudentControllers {
   static apply = async (req: Request, res: Response) => {
@@ -63,6 +64,13 @@ export class StudentControllers {
           studentId: student._id,
           amount: 10000,
           reason: "Registration fees",
+        });
+        await Cashflow.create({
+          user: "",
+          amount: 10000,
+          reason: "Registration fees",
+          payment:'cash',
+          type:'income'
         });
         await Payment.create({
           studentId: student._id,
@@ -132,6 +140,22 @@ export class StudentControllers {
         return res.status(400).json({message:"no student found"})
       }
       await student.updateOne(data)
+      await student.save()
+        return res.status(200).json({ message: "student updated" });
+        
+    } catch (error) {
+        return res.status(500).json({ message: "internal server error" });
+    }
+  }
+  static AddComment = async(req:Request,res:Response)=>{
+    const {id} = req.params
+    const {comment} = req.body
+    try {
+      const student= await Student.findById(id)
+      if(!student){
+        return res.status(400).json({message:"no student found"})
+      }
+      await student.updateOne({comment})
       await student.save()
         return res.status(200).json({ message: "student updated" });
         

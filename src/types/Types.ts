@@ -13,6 +13,7 @@ export interface StudentTypes extends Document {
   selectedCourse: string;
   selectedShift: string;
   message: string;
+  comment: string;
   status: string;
   intake: string;
 }

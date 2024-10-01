@@ -11,6 +11,7 @@ const StudentSchema = new Schema<StudentTypes>(
     selectedShift: { type: String, required: true },
     intake: { type: String, required: true },
     message: { type: String, required: false },
+    comment: { type: String, required: false },
     status: {
       type: String,
       required: true,

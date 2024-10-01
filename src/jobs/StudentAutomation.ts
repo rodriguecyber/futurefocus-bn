@@ -22,7 +22,7 @@ const startIntake = () => {
   cron.schedule("0 0 0 1 * *", async () => {
     try {
       const updated = await Student.updateMany(
-        { intake: getCurrentMonthYear() },
+        { intake: getCurrentMonthYear(),status:"Registered" },
         { status: "started" }
       );
       console.log(updated);

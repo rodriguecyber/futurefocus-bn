@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import Payment from "../models/payment";
 import Transaction from "../models/Transaction";
+import Cashflow from "../models/otherTransactions";
 
 export class PaymentController {
   static SchoollFees = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { amount } = req.body;
+    const { amount,method,user } = req.body;
     try {
       const payment = await Payment.findOneAndUpdate(
         { studentId: id },
@@ -27,7 +28,7 @@ export class PaymentController {
       } else if (payment.amountDue < payment.amountPaid) {
         payment.status = "overpaid";
       } else {
-        payment.status = ""; // Handle unexpected cases
+        payment.status = ""; 
       }
       await payment.save();
       await Transaction.create({
@@ -35,6 +36,14 @@ export class PaymentController {
         amount: amount,
         reason: "school fees",
       });
+      await Cashflow.create({
+        amount:amount,
+        reason:"School Fees",
+        user:user,
+        payment:method,
+        type:"income"
+
+      })
       res
         .status(200)
         .json({
@@ -46,7 +55,6 @@ export class PaymentController {
   };
   static payment = async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
       const payment = await Payment.find();
       res.status(200).json(payment);
     } catch (error: any) {
