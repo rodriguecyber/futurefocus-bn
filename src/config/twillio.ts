@@ -8,9 +8,9 @@ const client = twilio(accountSid, authToken);
 
 async function createMessage() {
   const message = await client.messages.create({
-    body: "Test message",
-    from: "+13343261147",
-    to: "+250786605505",
+    // body: "Test message",
+    // from: "+13343261147",
+    // to: "+250786605505",
   });
 
   console.log(message.body);
