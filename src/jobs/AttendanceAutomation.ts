@@ -1,4 +1,4 @@
-import cron from "node-cron";
+import cron from "node-cron"; 
 import Student from "../models/Students";
 import { Attendance } from "../models/Attendance";  
 

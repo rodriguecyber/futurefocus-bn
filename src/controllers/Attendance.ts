@@ -5,18 +5,18 @@ import Student from "../models/Students";
 
 type Shift =
   | "Morning A (8:30 AM - 10:30 AM)"
-  | "Morning B (11:00 PM- 1:00PM)"
-  | "Afternoon (3:00PM - 5:00 PM)"
-  | "Evening (6:00 AM - 8:00PM)"
+  | "Morning B (11:00 AM - 1:00 PM)"
+  | "Afternoon (3:00 PM - 5:00 PM)"
+  | "Evening (6:00 PM - 8:00 PM)"
   | "Weekend (Saturday: 8:30 AM - 5:30 PM)"
   | "Online";
 
 
 const shiftTimes: Record<Shift, { start: number; end: number }> = {
   "Morning A (8:30 AM - 10:30 AM)": { start: 6.5 * 60, end: 10.5 * 60 }, 
-  "Morning B (11:00 PM- 1:00PM)": { start: 9 * 60, end: 11 * 60 }, 
-  "Afternoon (3:00PM - 5:00 PM)": { start: 13 * 60, end: 15 * 60 }, 
-  "Evening (6:00 AM - 8:00PM)": { start: 16 * 60, end: 18 * 60 }, 
+  "Morning B (11:00 AM - 1:00 PM)": { start: 9 * 60, end: 11 * 60 }, 
+  "Afternoon (3:00 PM - 5:00 PM)": { start: 13 * 60, end: 15 * 60 }, 
+  "Evening (6:00 PM - 8:00 PM)": { start: 16 * 60, end: 18 * 60 }, 
   "Weekend (Saturday: 8:30 AM - 5:30 PM)": { start: 6 * 60, end: 15.5 * 60 }, 
   Online: { start: 6 * 60, end: 15.5 * 60 },
 };
@@ -24,9 +24,9 @@ const shiftTimes: Record<Shift, { start: number; end: number }> = {
 function isValidShift(shift: string): shift is Shift {
   return [
     "Morning A (8:30 AM - 10:30 AM)",
-    "Morning B (11:00 PM- 1:00PM)",
-    "Afternoon (3:00PM - 5:00 PM)",
-    "Evening (6:00 AM - 8:00PM)",
+    "Morning B (11:00 AM - 1:00 PM)",
+    "Afternoon (3:00 PM - 5:00 PM)",
+    "Evening (6:00 PM - 8:00PM)",
     "Weekend (Saturday: 8:30 AM - 5:30 PM)",
     "Online",
   ].includes(shift);
