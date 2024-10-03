@@ -4,6 +4,7 @@ import Transaction from "../models/Transaction";
 import Cashflow from "../models/otherTransactions";
 import { decodeToken } from "../utils/token";
 import Admin from "../models/Admin"; 
+import Student from "../models/Students";
 
 export class PaymentController {
   static SchoollFees = async (req: Request, res: Response) => {
@@ -143,10 +144,11 @@ export class PaymentController {
   static deletePayment = async(req:Request,res:Response)=>{
     const  {id}=req.params;
     try {
-    const payment =await Payment.findByIdAndDelete(id);
+    const payment =await Payment.findOneAndDelete({studentId:id});
     if(!payment){
       return res.status(400).json({message:"no payment  found"})
       }
+      await Student.findByIdAndDelete(id)
       return res.status(200).json({ message: "deleted successfully" });
       
     } catch (error) {
