@@ -3,9 +3,12 @@ import Student from "../models/Students";
 import { Attendance } from "../models/Attendance";  
 
 export const dailyAttendance = () => {
-  cron.schedule("25 6 * * *", async () => { 
+  cron.schedule("25 6 * * 1-5", async () => { 
     try {
-      const students = await Student.find({ status: "started" });
+      const students = await Student.find({
+        status: "started",
+        selectedShift: { $ne: "Weekend (Saturday: 8:30 AM - 5:30 PM)" },
+      });
       for (const student of students) {
         await Attendance.create({
           studentId: student._id,
@@ -17,6 +20,23 @@ export const dailyAttendance = () => {
     }
   });
 };
+  cron.schedule("25 6 * * 6", async () => { 
+    try {
+      const students = await Student.find({
+        status: "started",
+        selectedShift: "Weekend (Saturday: 8:30 AM - 5:30 PM)" ,
+      });
+      for (const student of students) {
+        await Attendance.create({
+          studentId: student._id,
+        });
+      }
+      console.log("Attendance for weekend created");
+    } catch (error) {
+      console.error("Error in dailyAttendance:", error);
+    }
+  });
+
 
 export const dropout = () => {
   cron.schedule("0 8 * * *", async () => {

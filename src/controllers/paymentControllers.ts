@@ -3,14 +3,14 @@ import Payment from "../models/payment";
 import Transaction from "../models/Transaction";
 import Cashflow from "../models/otherTransactions";
 import { decodeToken } from "../utils/token";
-import Admin from "../models/Admin";
+import Admin from "../models/Admin"; 
 
 export class PaymentController {
   static SchoollFees = async (req: Request, res: Response) => {
     const { id } = req.params;
      const token = req.headers.authorization?.split(" ")[1];
      const userId  = decodeToken(token as string)
-     const user = Admin.find
+     const user = Admin.find 
     const { amount,method } = req.body;
     try {
       const payment = await Payment.findOneAndUpdate(
