@@ -143,9 +143,9 @@ export class StudentControllers {
       await student.save()
         return res.status(200).json({ message: "student updated" });
         
-    } catch (error) {
+    } catch (error) { 
         return res.status(500).json({ message: "internal server error" });
-    }
+    } 
   }
   static AddComment = async(req:Request,res:Response)=>{
     const {id} = req.params
@@ -160,7 +160,7 @@ export class StudentControllers {
         return res.status(200).json({ message: "student updated" });
         
     } catch (error) {
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: `Internal server error ${error}` });
     }
   }
 }
