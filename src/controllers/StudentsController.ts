@@ -124,7 +124,7 @@ export class StudentControllers {
 
       await Payment.create({
         studentId: registerStudent._id,
-        amountDue: course.nonScholarship,
+        amountDue: course.nonScholarship, 
       });
       res.status(201).json({ message: "new student registered" });
     } catch (error: any) {
@@ -133,18 +133,16 @@ export class StudentControllers {
   };
   static Update = async(req:Request,res:Response)=>{
     const {id} = req.params
-    const {data} = req.body
+    const data = req.body
     try {
-      const student= await Student.findById(id)
+      const student= await Student.findByIdAndUpdate(id,data)
       if(!student){
         return res.status(400).json({message:"no student found"})
       }
-      await student.updateOne(data)
-      await student.save()
         return res.status(200).json({ message: "student updated" });
         
     } catch (error) { 
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: `internal server error ${error}` });
     } 
   }
   static AddComment = async(req:Request,res:Response)=>{

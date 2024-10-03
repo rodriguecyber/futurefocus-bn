@@ -12,3 +12,6 @@ StudentRoutes.post('/register',StudentControllers.registerNew)
 StudentRoutes.put("/attend/:studentId", updateAttendance);
 StudentRoutes.get("/attendance", getAttendance);
 StudentRoutes.put("/comment/:id", StudentControllers.AddComment);
+StudentRoutes.put("/update/:id", StudentControllers.Update);
+
+
