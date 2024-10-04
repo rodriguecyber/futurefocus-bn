@@ -103,7 +103,7 @@ export class StudentControllers {
     }
   };
   static registerNew = async (req: Request, res: Response) => {
-    const student: StudentTypes = req.body;
+    const student = req.body;
     try {
       const course = await Course.findOne({ title: student.selectedCourse });
       if (!course) {
@@ -115,17 +115,23 @@ export class StudentControllers {
       }
       const registerStudent = new Student(student);
       registerStudent.status = "registered";
-      await registerStudent.save();
-      await Transaction.create({
-        studentId: registerStudent._id,
-        amount: 10000,
-        reason: "Registration fees",
-      });
-
       await Payment.create({
         studentId: registerStudent._id,
         amountDue: course.nonScholarship, 
       });
+       await Transaction.create({
+         studentId: registerStudent._id,
+         amount: 10000,
+         reason: "Registration fees",
+       });
+       await Cashflow.create({
+         amount: 10000,
+         reason: "registration fees",
+         user: student.user,
+         payment: "momo pay",
+         type: "income",
+       });
+      await registerStudent.save();
       res.status(201).json({ message: "new student registered" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
