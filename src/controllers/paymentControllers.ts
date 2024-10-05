@@ -7,55 +7,55 @@ import Admin from "../models/Admin";
 import Student from "../models/Students";
 
 export class PaymentController {
-  static SchoollFees = async (req: Request, res: Response) => {
+  static SchoolFees = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { amount,method,user } = req.body;
+    const { amount, method, user } = req.body;
+
     try {
-      const payment = await Payment.findOneAndUpdate(
-        { studentId: id },
-        {
-          $inc: { amountPaid: amount },
-        }
-      );
+      const payment = await Payment.findOne({ studentId: id });
+
       if (!payment) {
         return res
           .status(404)
-          .json({ message: "unable to find student payment" });
+          .json({ message: "Unable to find student payment" });
       }
-      if (payment.amountDue === 0) {
-        payment.status = "unpaid";
-      } else if (payment.amountDue > payment.amountPaid) {
-        payment.status = "partial";
-      } else if (payment.amountDue === payment.amountPaid) {
-        payment.status = "paid";
-      } else if (payment.amountDue < payment.amountPaid) {
-        payment.status = "overpaid";
+
+      payment.amountPaid += amount; 
+      const totalAmountDue = payment.amountDue; 
+
+       if (payment.amountPaid < totalAmountDue) {
+        payment.status = "partial"; 
+      } else if (payment.amountPaid === totalAmountDue) {
+        payment.status = "paid"; 
       } else {
-        payment.status = ""; 
+        payment.status = "overpaid"; 
       }
-      await payment.save();
+
+      await payment.save(); 
+
+     
       await Transaction.create({
         studentId: id,
         amount: amount,
         reason: "school fees",
       });
-      await Cashflow.create({
-        amount:amount,
-        reason:"School Fees",
-        user:user,
-        payment:method,
-        type:"income"
 
-      })
-      res
-        .status(200)
-        .json({
-          message: `you have successfuly paid school fees of  ${amount}`,
-        });
+      await Cashflow.create({
+        amount: amount,
+        reason: "School Fees",
+        user: user,
+        payment: method,
+        type: "income",
+      });
+
+      res.status(200).json({
+        message: `You have successfully paid school fees of ${amount}`,
+      });
     } catch (error: any) {
-      res.status(500).json({ message: `Eror ${error.message} occured` });
+      res.status(500).json({ message: `Error: ${error.message} occurred` });
     }
   };
+
   static payment = async (req: Request, res: Response) => {
     try {
       const payment = await Payment.find();
@@ -115,7 +115,7 @@ export class PaymentController {
       }
       payment.amountDiscounted = payment.amountDiscounted
         ? payment.amountDiscounted + amount
-        : amount; 
+        : amount;
       payment.amountDue = payment.amountDue - amount;
       await payment.save();
       res.status(200).json({ message: "user payment updated" });
@@ -123,34 +123,30 @@ export class PaymentController {
       res.status(500).json({ message: "internal sever error", error });
     }
   };
-  static deleteTransaction = async(req:Request,res:Response)=>{
-    const  {id}=req.params;
+  static deleteTransaction = async (req: Request, res: Response) => {
+    const { id } = req.params;
     try {
-    const transaction =await Transaction.findById(id);
-    if(!transaction){
-      return res.status(400).json({message:"no transaction found"})
+      const transaction = await Transaction.findById(id);
+      if (!transaction) {
+        return res.status(400).json({ message: "no transaction found" });
       }
-      await Transaction.deleteOne({_id:id})
+      await Transaction.deleteOne({ _id: id });
       return res.status(200).json({ message: "deleted successfully" });
-      
     } catch (error) {
       return res.status(500).json({ message: "interanl server error" });
-    
     }
-  }
-  static deletePayment = async(req:Request,res:Response)=>{
-    const  {id}=req.params;
+  };
+  static deletePayment = async (req: Request, res: Response) => {
+    const { id } = req.params;
     try {
-    const payment =await Payment.findOneAndDelete({studentId:id});
-    if(!payment){
-      return res.status(400).json({message:"no payment  found"})
+      const payment = await Payment.findOneAndDelete({ studentId: id });
+      if (!payment) {
+        return res.status(400).json({ message: "no payment  found" });
       }
-      await Student.findByIdAndDelete(id)
+      await Student.findByIdAndDelete(id);
       return res.status(200).json({ message: "deleted successfully" });
-      
     } catch (error) {
       return res.status(500).json({ message: "interanl server error" });
-    
     }
-  }
+  };
 }

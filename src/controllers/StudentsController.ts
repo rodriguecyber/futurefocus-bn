@@ -34,7 +34,7 @@ export class StudentControllers {
     }
   };
   static delete = async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const id = req.params.id; 
     try {
       const student = await Student.findByIdAndDelete(id);
       if (!student) {
