@@ -3,7 +3,7 @@ import Student from "../models/Students";
 import { Attendance } from "../models/Attendance";  
 
 export const dailyAttendance = () => {
-  cron.schedule("25 6 * * 1-5", async () => { 
+  cron.schedule("25 6 * * 1-4", async () => { 
     try {
       const students = await Student.find({
         status: "started",
