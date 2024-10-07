@@ -3,12 +3,10 @@ import Payment from "../models/payment";
 import Transaction from "../models/Transaction";
 import Cashflow from "../models/otherTransactions";
 import { decodeToken } from "../utils/token";
-import Admin from "../models/Admin"; 
+import Admin from "../models/Admin";
 import Student from "../models/Students";
 
 export class PaymentController {
-
-
   static SchoolFees = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { amount, method, user } = req.body;
@@ -57,6 +55,9 @@ export class PaymentController {
         student: student.name,
         amount,
         reason: "School fees",
+        paid: payment.amountPaid,
+        remaining: payment.amountDue - payment.amountPaid,
+        status: payment.status,
       };
 
       res.status(200).json({
