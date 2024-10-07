@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { PaymentController } from "../controllers/paymentControllers";
-
+import { PaymentController } from "../controllers/paymentControllers"
 export const paymentRouter = Router()
 paymentRouter.get('/',PaymentController.payment)
 paymentRouter.delete('/:id',PaymentController.deletePayment)

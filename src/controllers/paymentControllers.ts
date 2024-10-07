@@ -7,33 +7,38 @@ import Admin from "../models/Admin";
 import Student from "../models/Students";
 
 export class PaymentController {
+
+
   static SchoolFees = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { amount, method, user } = req.body;
 
     try {
+      const student = await Student.findById(id);
       const payment = await Payment.findOne({ studentId: id });
 
+      if (!student) {
+        return res.status(404).json({ message: "Unable to find student info" });
+      }
       if (!payment) {
         return res
           .status(404)
           .json({ message: "Unable to find student payment" });
       }
 
-      payment.amountPaid += amount; 
-      const totalAmountDue = payment.amountDue; 
+      payment.amountPaid += amount;
+      const totalAmountDue = payment.amountDue;
 
-       if (payment.amountPaid < totalAmountDue) {
-        payment.status = "partial"; 
+      if (payment.amountPaid < totalAmountDue) {
+        payment.status = "partial";
       } else if (payment.amountPaid === totalAmountDue) {
-        payment.status = "paid"; 
+        payment.status = "paid";
       } else {
-        payment.status = "overpaid"; 
+        payment.status = "overpaid";
       }
 
-      await payment.save(); 
+      await payment.save();
 
-     
       await Transaction.create({
         studentId: id,
         amount: amount,
@@ -48,8 +53,15 @@ export class PaymentController {
         type: "income",
       });
 
+      const data = {
+        student: student.name,
+        amount,
+        reason: "School fees",
+      };
+
       res.status(200).json({
         message: `You have successfully paid school fees of ${amount}`,
+        data,
       });
     } catch (error: any) {
       res.status(500).json({ message: `Error: ${error.message} occurred` });
