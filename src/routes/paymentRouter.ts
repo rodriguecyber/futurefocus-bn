@@ -7,4 +7,5 @@ paymentRouter.get('/transaction',PaymentController.getTansactions)
 paymentRouter.delete('/transaction/:id',PaymentController.deleteTransaction)
 paymentRouter.post('/pay/:id',PaymentController.SchoolFees)
 paymentRouter.put('/discount/:id',PaymentController.addDiscount)
-paymentRouter.put('/extra/:id',PaymentController.addExtra)
+paymentRouter.put("/comment/:id", PaymentController.AddComment);
+paymentRouter.put("/extra/:id", PaymentController.addExtra);

@@ -51,6 +51,7 @@ export interface paymentTypes {
   amountPaid: number;
   amountDiscounted:number
   extraAmount:number
+  comment:string
 }
 
 export interface transactionTypes {
