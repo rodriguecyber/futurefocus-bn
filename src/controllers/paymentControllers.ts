@@ -45,7 +45,7 @@ export class PaymentController {
 
       await Cashflow.create({
         amount: amount,
-        reason: "School Fees",
+        reason: `${student.name} School Fees`,
         user: user,
         payment: method,
         type: "income",
@@ -54,7 +54,7 @@ export class PaymentController {
       const data = {
         student: student.name,
         amount,
-        reason: "School fees",
+        reason: ` School fees`,
         paid: payment.amountPaid,
         remaining: payment.amountDue - payment.amountPaid,
         status: payment.status,

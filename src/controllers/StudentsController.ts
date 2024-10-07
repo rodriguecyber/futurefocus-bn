@@ -66,11 +66,11 @@ export class StudentControllers {
           reason: "Registration fees",
         });
         await Cashflow.create({
-          user:user,
+          user: user,
           amount: 10000,
-          reason: "Registration fees",
-          payment:'cash',
-          type:'income'
+          reason: `${student.name} registration Fees`,
+          payment: "cash",
+          type: "income",
         });
         await Payment.create({
           studentId: student._id,
@@ -83,25 +83,25 @@ export class StudentControllers {
       res.status(500).json({ message: `${error.message} occured` });
     }
   };
-  static pay = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { amount } = req.body;
+  // static pay = async (req: Request, res: Response) => {
+  //   const { id } = req.params;
+  //   const { amount } = req.body;
 
-    try {
-      const student = await Student.findById(id);
-      if (!student) {
-        return res.status(404).json({ message: "student not found" });
-      }
+  //   try {
+  //     const student = await Student.findById(id);
+  //     if (!student) {
+  //       return res.status(404).json({ message: "student not found" });
+  //     }
 
-      await Transaction.create({
-        studentId: student._id,
-        amount,
-        reason: "school fees fees",
-      });
-    } catch (error: any) {
-      res.status(500).json({ message: `Error ${error.message} occured` });
-    }
-  };
+  //     await Transaction.create({
+  //       studentId: student._id,
+  //       amount,
+  //       reason: "school fees fees",
+  //     });
+  //   } catch (error: any) {
+  //     res.status(500).json({ message: `Error ${error.message} occured` });
+  //   }
+  // };
   static registerNew = async (req: Request, res: Response) => {
     const student = req.body;
     try {
@@ -126,7 +126,7 @@ export class StudentControllers {
        });
        await Cashflow.create({
          amount: 10000,
-         reason: "registration fees",
+         reason: `${student.name} registration Fees`,
          user: student.user,
          payment: "momo pay",
          type: "income",
