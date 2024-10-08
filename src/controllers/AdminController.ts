@@ -1,5 +1,5 @@
 "use client";
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import Admin from "../models/Admin";
 import { decodeToken, generateToken } from "../utils/token";
 import { resetTemplates, SubscriptionEmail } from "../utils/emailTemplate";
@@ -7,6 +7,7 @@ import { sendEmail } from "../utils/sendEmail";
 import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
 import Subscriber from "../models/subscriber";
 import Intake from "../models/Intake";
+import { generateRandom4Digit } from "../utils/generateRandomNumber";
 
 export class AdminControllers {
   static forgotPassword = async (req: Request, res: Response) => {
@@ -76,7 +77,7 @@ export class AdminControllers {
   static login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-     const user = await Admin.findOne({ email })
+      const user = await Admin.findOne({ email });
       if (!user) {
         return res.status(401).json({ message: "Email not found" });
       }
@@ -86,17 +87,63 @@ export class AdminControllers {
         return res.status(401).json({ message: "Password does not match" });
       }
 
-      const token = await generateToken({id:user._id,});
-      res.cookie("token", token as string, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-      return res.status(200).json({ message: "Login successful", token });
+      const OTP = generateRandom4Digit();
+      user.OTP = OTP;
+      await user.save();
+      const mailOptions = {
+        from: process.env.OUR_EMAIL,
+        to: user.email,
+        subject: " One Time Password Code",
+        html: `
+            <h1>One-Time Password (OTP)</h1>
+            <p>Dear User,</p>
+            <p>Your OTP is <strong>${OTP}</strong>.</p>
+            <p>Thank you!</p>
+        `,
+      };
+      await sendEmail(mailOptions);
+      return res
+        .status(200)
+        .json({ message: "Check your  email for OTP", id: user._id });
     } catch (error: any) {
       return res
         .status(500)
         .json({ message: `Error occurred: ${error.message}` });
+    }
+  };
+
+  static verifyOTP = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({ message: "No ID provided" });
+      }
+
+      const { OTP } = req.body; 
+      const user = await Admin.findById(id);
+
+      if (!user) {
+        return res.status(401).json({ message: "Admin not found" });
+      }
+
+      if (user.OTP != OTP) {
+        return res.status(401).json({ message: "Incorrect OTP" });
+      }
+
+      const token = await generateToken({ id: user._id });
+      res.cookie("token", token as string, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 24 * 60 * 60 * 1000, 
+      });
+
+      return res.status(200).json({ message: "Logged in successfully", token });
+    } catch (error:any) {
+      console.error(error.message); 
+      return res
+        .status(500)
+        .json({ error: error.message || "Internal Server Error" });
     }
   };
 
@@ -120,11 +167,11 @@ export class AdminControllers {
           },
         },
       });
-      if(!user){
-        res.status(401).json({message:"user not found"})
+      if (!user) {
+        res.status(401).json({ message: "user not found" });
       }
 
-      return res.status(200).json( user );
+      return res.status(200).json(user);
     } catch (error: any) {
       return res
         .status(500)
@@ -160,9 +207,9 @@ export class AdminControllers {
         return res.status(400).json({ message: "admin already registered" });
       }
       await Admin.create({
-        email, 
+        email,
         name,
-        role:null
+        role: null,
       });
       res.status(200).json({ message: "admin added" });
     } catch (error: any) {
@@ -171,13 +218,13 @@ export class AdminControllers {
   };
   static updateAdmin = async (req: Request, res: Response) => {
     try {
-      const {id} = req.params
-      const { name, email,isSuperAdmin} = req.body;
+      const { id } = req.params;
+      const { name, email, isSuperAdmin } = req.body;
       const admin = await Admin.findById(id);
       if (!admin) {
         return res.status(400).json({ message: "admin not available" });
       }
-      await Admin.findByIdAndUpdate(id, {name,email,isSuperAdmin});
+      await Admin.findByIdAndUpdate(id, { name, email, isSuperAdmin });
       res.status(200).json({ message: "admin updated" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -186,7 +233,7 @@ export class AdminControllers {
   static view = async (req: Request, res: Response) => {
     try {
       const admins = await Admin.find().populate("role");
-      res.status(200).json( admins);
+      res.status(200).json(admins);
     } catch (error: any) {
       res.status(500).json({ message: `Error '${error.message} occured` });
     }

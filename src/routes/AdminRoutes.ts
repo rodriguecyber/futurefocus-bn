@@ -6,6 +6,7 @@ import { PermissionCointroller } from "../controllers/PermissionController";
 export const AdminRoutes = Router()
 AdminRoutes.post('/forgot-password', AdminControllers.forgotPassword)
 AdminRoutes.post('/login', AdminControllers.login)
+AdminRoutes.post('/two-factor/:id', AdminControllers.verifyOTP)
 AdminRoutes.post('/subscribe', AdminControllers.subscribe)
 AdminRoutes.post('/new',  AdminControllers.addAdmin)
 AdminRoutes.post('/intake',  AdminControllers.addIntake)

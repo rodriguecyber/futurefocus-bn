@@ -5,6 +5,7 @@ export interface AdminTypes extends Document {
   password: string;
  role:ObjectId
   name: string;
+  OTP:number
 }
 export interface StudentTypes extends Document {
   name: string;

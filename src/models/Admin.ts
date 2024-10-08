@@ -10,6 +10,10 @@ const adminSchema = new Schema<AdminTypes>({
     required: true,
     
   },
+  OTP:{
+    type:Number,
+
+  },
   password: { type: String, required: true, default:"000000" },
   role: { type: Schema.Types.ObjectId, ref:"Role", },
   

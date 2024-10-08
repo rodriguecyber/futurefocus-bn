@@ -58,6 +58,7 @@ export class PaymentController {
         paid: payment.amountPaid,
         remaining: payment.amountDue - payment.amountPaid,
         status: payment.status,
+        paymentMethod:method
       };
 
       res.status(200).json({
