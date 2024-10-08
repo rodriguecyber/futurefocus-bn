@@ -48,7 +48,7 @@ export const updateAttendance = async (req: Request, res: Response) => {
     }
 
     if (!isValidShift(student.selectedShift)) {
-      return res.status(400).json({ message: "Invalid shift" });
+      return res.status(400).json({ message: "Invalid shiift" });
     }
 
     const shift = shiftTimes[student.selectedShift];
