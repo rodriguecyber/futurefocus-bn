@@ -60,5 +60,6 @@ app.use("/role",RoleRouter)
 app.listen(PORT, () => {
   console.log(`App is listening at http://localhost:${PORT}`);
 });
+console.log(allowedOrigins)
 
 export default app;
