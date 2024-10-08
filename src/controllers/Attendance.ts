@@ -26,7 +26,7 @@ function isValidShift(shift: string): shift is Shift {
     "Morning A (8:30 AM - 10:30 AM)",
     "Morning B (11:00 AM - 1:00 PM)",
     "Afternoon (3:00 PM - 5:00 PM)",
-    "Evening (6:00 PM - 8:00PM)",
+    "Evening (6:00 PM - 8:00 PM)",
     "Weekend (Saturday: 8:30 AM - 5:30 PM)",
     "Online",
   ].includes(shift);
