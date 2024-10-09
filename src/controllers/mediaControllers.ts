@@ -93,7 +93,7 @@ export const deleteMedia = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Media deleted successfully" });
   } catch (error) {
     console.error("Error deleting media:", error);
-    res.status(500).json({ message: "Error deleting media", error });
+    res.status(500).json({ message: "Error deleting media", error }); 
   }
 };
 
@@ -109,8 +109,9 @@ export const getMedia = async (req: Request, res: Response) => {
 };
 export const getVideos = async (req: Request, res: Response) => {
   try {
-    const media = await Video.find();
-    res.status(200).json(media);
+    const video = await Video.find({type:"video"});
+    const beat = await Video.find({type:"beat"});
+    res.status(200).json({video,beat});
   } catch (error) {
     console.error("Error fetching media:", error);
     res.status(500).json({ message: "Error fetching media", error });

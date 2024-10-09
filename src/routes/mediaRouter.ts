@@ -16,7 +16,7 @@ MediRouters.put("/:id", upload.single("file"), updateMedia);
 MediRouters.delete("/:id", deleteMedia);
 MediRouters.get("/", getMedia);
 MediRouters.get("/youtube", getVideos);
-MediRouters.get("/youtube", postVideos);
+MediRouters.post("/youtube", postVideos);
 
 export default MediRouters;
  
