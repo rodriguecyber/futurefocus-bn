@@ -3,6 +3,7 @@ import cloudinary from "cloudinary";
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { Media } from "../models/media";
+import Video from "../models/youtube";
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -89,7 +90,7 @@ export const deleteMedia = async (req: Request, res: Response) => {
     if (!media) {
       return res.status(404).json({ message: "Media not found" });
     }
-    res.json({ message: "Media deleted successfully" });
+    res.status(200).json({ message: "Media deleted successfully" });
   } catch (error) {
     console.error("Error deleting media:", error);
     res.status(500).json({ message: "Error deleting media", error });
@@ -100,12 +101,31 @@ export const deleteMedia = async (req: Request, res: Response) => {
 export const getMedia = async (req: Request, res: Response) => {
   try {
     const media = await Media.find();
-    res.json(media);
+    res.status(200).json(media);
+  } catch (error) {
+    console.error("Error fetching media:", error);
+    res.status(500).json({ message: "Error fetching media", error });
+  }
+};
+export const getVideos = async (req: Request, res: Response) => {
+  try {
+    const media = await Video.find();
+    res.status(200).json(media);
+  } catch (error) {
+    console.error("Error fetching media:", error);
+    res.status(500).json({ message: "Error fetching media", error });
+  }
+};
+export const postVideos = async (req: Request, res: Response) => {
+  const url= req.body
+  try {
+ await Video.create({url});
+    res.status(200).json({message:"video posted "});
   } catch (error) {
     console.error("Error fetching media:", error);
     res.status(500).json({ message: "Error fetching media", error });
   }
 };
 
-// Export the upload middleware for use in routes
+
 export { upload };

@@ -4,6 +4,8 @@ import {
   updateMedia,
   deleteMedia,
   getMedia,
+  getVideos,
+  postVideos,
 } from "../controllers/mediaControllers";
 import { upload } from "../config/multer"; 
 
@@ -13,6 +15,8 @@ MediRouters.post("/", upload.single('file'), uploadMedia);
 MediRouters.put("/:id", upload.single("file"), updateMedia);
 MediRouters.delete("/:id", deleteMedia);
 MediRouters.get("/", getMedia);
+MediRouters.get("/youtube", getVideos);
+MediRouters.get("/youtube", postVideos);
 
 export default MediRouters;
  
