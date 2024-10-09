@@ -56,7 +56,7 @@ export class PaymentController {
         amount,
         reason: ` School fees`,
         paid: payment.amountPaid,
-        remaining: payment.amountDue - payment.amountPaid, 
+        remaining: payment.amountDue - payment.amountPaid,
         status: payment.status,
         paymentMethod:method
       };

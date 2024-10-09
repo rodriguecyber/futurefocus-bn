@@ -140,7 +140,6 @@ export class StudentControllers {
   static Update = async(req:Request,res:Response)=>{
     const {id} = req.params
     const data = req.body
-    data.status = 'started'
     try {
       const student= await Student.findByIdAndUpdate(id,data)
       if(!student){
