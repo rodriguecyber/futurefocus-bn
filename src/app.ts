@@ -18,7 +18,7 @@ import { RoleRouter } from "./routes/RoleRoute";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT || 5000;
 const app = express();
 
 const allowedOrigins = process.env.CORS_ALLOW
