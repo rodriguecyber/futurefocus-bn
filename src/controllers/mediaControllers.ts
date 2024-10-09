@@ -117,9 +117,11 @@ export const getVideos = async (req: Request, res: Response) => {
   }
 };
 export const postVideos = async (req: Request, res: Response) => {
-  const url= req.body
+  const {url,type}= req.body
   try {
- await Video.create({url});
+ await Video.create({url,
+  type
+ });
     res.status(200).json({message:"video posted "});
   } catch (error) {
     console.error("Error fetching media:", error);
