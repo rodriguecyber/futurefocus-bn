@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Team from "../models/Team";
+import Team, { TeamAttendandance } from "../models/Team";
 
 export class TeamControllers {
   static AddMember = async (req: Request, res: Response) => {
@@ -56,4 +56,85 @@ export class TeamControllers {
         res.status(500).json({message:`Error ${error.message} occured`})
     }
   };
+  static requestAttend = async (req: Request, res: Response) => {
+    const {id} =req.params
+    try {
+       const startOfDay = new Date();
+       startOfDay.setHours(0, 0, 0, 0);
+
+       const endOfDay = new Date();
+       endOfDay.setHours(23, 59, 59, 999);
+
+       const attendance = await TeamAttendandance.findOne({
+         memberId: id,
+         status:"absent",
+         createdAt: {
+           $gte: startOfDay,
+           $lt: endOfDay,
+         },
+       }).exec();
+       if(!attendance){
+        return res.status(400).json({message:"your attendance not found"})
+       }
+       attendance.status='pending'
+       await attendance.save()
+        return res.status(400).json({ message: "your attendance sent, wait for approval" });
+
+    } catch (error:any) {
+        res.status(500).json({message:`Error ${error.message} occured`})
+    }
+  };
+  static approveAttend = async (req: Request, res: Response) => {
+    const {id} =req.params
+    try {
+       const startOfDay = new Date();
+       startOfDay.setHours(0, 0, 0, 0);
+
+       const endOfDay = new Date();
+       endOfDay.setHours(23, 59, 59, 999);
+
+       const attendance = await TeamAttendandance.findOne({
+         _id: id,
+         status:"pending",
+         createdAt: {
+           $gte: startOfDay,
+           $lt: endOfDay,
+         },
+       }).exec();
+       if(!attendance){
+        return res.status(400).json({message:"your attendance not found"})
+       }
+        attendance.status='present'
+       await attendance.save()
+        return res.status(400).json({ message: " attendance approved" });
+
+    } catch (error:any) {
+        res.status(500).json({message:`Error ${error.message} occured`})
+    }
+  };
+  static attendance  =async (req: Request, res: Response)=>{
+    try {
+    const attendance = await TeamAttendandance.find().populate('memberId')
+        res.status(200).json({attendance});
+       
+    } catch (error:any) {
+        res.status(500).json({ message: `Error ${error.message} occured` });
+      
+    }
+  }
+  static myAttendance  =async (req: Request, res: Response)=>{
+    try {
+      const {id} = req.params
+    const attendance = await TeamAttendandance.findOne({memberId:id})
+    if(!attendance){
+        res.status(400).json({ message: `your have not attendance` });
+
+    }
+        res.status(200).json(attendance);
+
+    } catch (error:any) {
+        res.status(500).json({ message: `Error ${error.message} occured` });
+      
+    }
+  }
 }

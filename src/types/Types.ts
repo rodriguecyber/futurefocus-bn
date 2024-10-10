@@ -24,6 +24,7 @@ export interface TeamTypes extends Document {
   role: string;
   email: string;
   instagram: string;
+  password: string;
 }
 export interface ServiceTypes extends Document {
   title: string;

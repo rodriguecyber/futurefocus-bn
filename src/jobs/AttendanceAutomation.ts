@@ -1,6 +1,7 @@
 import cron from "node-cron"; 
 import Student from "../models/Students";
 import { Attendance } from "../models/Attendance";  
+import Team, { TeamAttendandance } from "../models/Team";
 
 export const dailyAttendance = () => {
   cron.schedule("25 6 * * 1-4", async () => { 
@@ -15,6 +16,21 @@ export const dailyAttendance = () => {
         });
       }
       console.log("Attendance created");
+    } catch (error) {
+      console.error("Error in dailyAttendance:", error);
+    }
+  });
+};
+export const teamAttendance = () => {
+  cron.schedule("17 9 * * 1-6", async () => { 
+    try {
+      const members = await Team.find();
+      for (const member of members) {
+        await TeamAttendandance.create({
+          memberId: member._id
+        });
+      }
+      console.log("Attendance fo team created");
     } catch (error) {
       console.error("Error in dailyAttendance:", error);
     }
