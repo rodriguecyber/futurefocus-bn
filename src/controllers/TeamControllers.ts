@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Team, { TeamAttendandance } from "../models/Team";
 import { decodeToken, generateToken } from "../utils/token";
-import { resetTemplates } from "../utils/emailTemplate";
+import { resetTemplates, staffResetTemplates } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
 import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
@@ -71,7 +71,7 @@ export class TeamControllers {
       endOfDay.setHours(23, 59, 59, 999);
 
       const attendance = await TeamAttendandance.findOne({
-        memberId: id,
+        _id:id,
         status: "absent",
         createdAt: {
           $gte: startOfDay,
@@ -79,12 +79,12 @@ export class TeamControllers {
         },
       }).exec();
       if (!attendance) {
-        return res.status(400).json({ message: "your attendance not found" });
+        return res.status(400).json({ message: "your absent attendance not found" });
       }
       attendance.status = "pending";
       await attendance.save();
       return res
-        .status(400)
+        .status(200)
         .json({ message: "your attendance sent, wait for approval" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -128,7 +128,7 @@ export class TeamControllers {
   static myAttendance = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const attendance = await TeamAttendandance.findOne({ memberId: id });
+      const attendance = await TeamAttendandance.find({ memberId: id });
       if (!attendance) {
         res.status(400).json({ message: `your have not attendance` });
       }
@@ -141,21 +141,21 @@ export class TeamControllers {
   static forgotPassword = async (req: Request, res: Response) => {
     try {
       const { email } = req.body;
-      const isAdmin = await Team.findOne({ email });
-      if (!isAdmin) {
+      const member= await Team.findOne({ email });
+      if (!member) { 
         return res
           .status(400)
           .json({ message: "Admin with this email not found" });
       }
       const token = await generateToken({
-        id: isAdmin._id,
-        email: isAdmin.email,
+        id: member._id,
+        email: member.email,
       });
       const mailOptions = {
         from: process.env.OUR_EMAIL as string,
-        to: isAdmin.email,
+        to: member.email,
         subject: "Reset Admin Password",
-        html: resetTemplates(isAdmin, token),
+        html: staffResetTemplates(member.name, token),
       };
       await sendEmail(mailOptions);
       return res
