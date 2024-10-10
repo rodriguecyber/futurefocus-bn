@@ -8,7 +8,6 @@ import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
 import Subscriber from "../models/subscriber";
 import Intake from "../models/Intake";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
-
 export class AdminControllers {
   static forgotPassword = async (req: Request, res: Response) => {
     try {

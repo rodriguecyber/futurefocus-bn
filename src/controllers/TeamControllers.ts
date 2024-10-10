@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
 import Team, { TeamAttendandance } from "../models/Team";
+import { decodeToken, generateToken } from "../utils/token";
+import { resetTemplates } from "../utils/emailTemplate";
+import { sendEmail } from "../utils/sendEmail";
+import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
+import { generateRandom4Digit } from "../utils/generateRandomNumber";
 
 export class TeamControllers {
   static AddMember = async (req: Request, res: Response) => {
@@ -9,7 +14,7 @@ export class TeamControllers {
       if (isExist) {
         return res.status(400).json({ message: "member already exist" });
       }
-      await Team.create({ name, title, image, email,role, instagram });
+      await Team.create({ name, title, image, email, role, instagram });
       return res.status(200).json({ messsage: "member added" });
     } catch (error: any) {
       return res
@@ -44,97 +49,209 @@ export class TeamControllers {
   static update = async (req: Request, res: Response) => {
     try {
       const memberId = req.params.id;
-      const {email, ...data} = req.body;
+      const { email, ...data } = req.body;
       const member = Team.findById(memberId);
 
       if (!member) {
         return res.status(400).json({ message: "member does not exist" });
       }
-      await Team.findByIdAndUpdate(memberId,data);
+      await Team.findByIdAndUpdate(memberId, data);
       res.status(200).json({ message: "updated successfull" });
-    } catch (error:any) {
-        res.status(500).json({message:`Error ${error.message} occured`})
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
   static requestAttend = async (req: Request, res: Response) => {
-    const {id} =req.params
+    const { id } = req.params;
     try {
-       const startOfDay = new Date();
-       startOfDay.setHours(0, 0, 0, 0);
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
 
-       const endOfDay = new Date();
-       endOfDay.setHours(23, 59, 59, 999);
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
 
-       const attendance = await TeamAttendandance.findOne({
-         memberId: id,
-         status:"absent",
-         createdAt: {
-           $gte: startOfDay,
-           $lt: endOfDay,
-         },
-       }).exec();
-       if(!attendance){
-        return res.status(400).json({message:"your attendance not found"})
-       }
-       attendance.status='pending'
-       await attendance.save()
-        return res.status(400).json({ message: "your attendance sent, wait for approval" });
-
-    } catch (error:any) {
-        res.status(500).json({message:`Error ${error.message} occured`})
+      const attendance = await TeamAttendandance.findOne({
+        memberId: id,
+        status: "absent",
+        createdAt: {
+          $gte: startOfDay,
+          $lt: endOfDay,
+        },
+      }).exec();
+      if (!attendance) {
+        return res.status(400).json({ message: "your attendance not found" });
+      }
+      attendance.status = "pending";
+      await attendance.save();
+      return res
+        .status(400)
+        .json({ message: "your attendance sent, wait for approval" });
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
   static approveAttend = async (req: Request, res: Response) => {
-    const {id} =req.params
+    const { id } = req.params;
     try {
-       const startOfDay = new Date();
-       startOfDay.setHours(0, 0, 0, 0);
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
 
-       const endOfDay = new Date();
-       endOfDay.setHours(23, 59, 59, 999);
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
 
-       const attendance = await TeamAttendandance.findOne({
-         _id: id,
-         status:"pending",
-         createdAt: {
-           $gte: startOfDay,
-           $lt: endOfDay,
-         },
-       }).exec();
-       if(!attendance){
-        return res.status(400).json({message:"your attendance not found"})
-       }
-        attendance.status='present'
-       await attendance.save()
-        return res.status(400).json({ message: " attendance approved" });
-
-    } catch (error:any) {
-        res.status(500).json({message:`Error ${error.message} occured`})
+      const attendance = await TeamAttendandance.findOne({
+        _id: id,
+        status: "pending",
+        createdAt: {
+          $gte: startOfDay,
+          $lt: endOfDay,
+        },
+      }).exec();
+      if (!attendance) {
+        return res.status(400).json({ message: "your attendance not found" });
+      }
+      attendance.status = "present";
+      await attendance.save();
+      return res.status(400).json({ message: " attendance approved" });
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
-  static attendance  =async (req: Request, res: Response)=>{
+  static attendance = async (req: Request, res: Response) => {
     try {
-    const attendance = await TeamAttendandance.find().populate('memberId')
-        res.status(200).json({attendance});
-       
-    } catch (error:any) {
-        res.status(500).json({ message: `Error ${error.message} occured` });
-      
+      const attendance = await TeamAttendandance.find().populate("memberId");
+      res.status(200).json({ attendance });
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message} occured` });
     }
-  }
-  static myAttendance  =async (req: Request, res: Response)=>{
+  };
+  static myAttendance = async (req: Request, res: Response) => {
     try {
-      const {id} = req.params
-    const attendance = await TeamAttendandance.findOne({memberId:id})
-    if(!attendance){
+      const { id } = req.params;
+      const attendance = await TeamAttendandance.findOne({ memberId: id });
+      if (!attendance) {
         res.status(400).json({ message: `your have not attendance` });
-
+      }
+      res.status(200).json(attendance);
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message} occured` });
     }
-        res.status(200).json(attendance);
+  };
 
-    } catch (error:any) {
-        res.status(500).json({ message: `Error ${error.message} occured` });
-      
+  static forgotPassword = async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      const isAdmin = await Team.findOne({ email });
+      if (!isAdmin) {
+        return res
+          .status(400)
+          .json({ message: "Admin with this email not found" });
+      }
+      const token = await generateToken({
+        id: isAdmin._id,
+        email: isAdmin.email,
+      });
+      const mailOptions = {
+        from: process.env.OUR_EMAIL as string,
+        to: isAdmin.email,
+        subject: "Reset Admin Password",
+        html: resetTemplates(isAdmin, token),
+      };
+      await sendEmail(mailOptions);
+      return res
+        .status(200)
+        .json({ message: "Check your email for instructions" });
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `Error occurred: ${error.message}` });
     }
-  }
+  };
+
+  static resetPassword = async (req: Request, res: Response) => {
+    try {
+      const { token } = req.params;
+      const { password } = req.body;
+
+      if (!token) {
+        return res.status(400).json({ message: "Token not provided" });
+      }
+      if (!password) {
+        return res.status(400).json({ message: "Password not provided" });
+      }
+
+      const user = await decodeToken(token);
+      if (!user) {
+        return res
+          .status(400)
+          .json({ message: "Failed to reset password, try again" });
+      }
+
+      const hashedPassword = await hashingPassword(password);
+      await Team.findOneAndUpdate(
+        { _id: user.id },
+        { password: hashedPassword }
+      );
+      console.log(password);
+      console.log(user.id);
+      return res.status(200).json({ message: "Password changed" });
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `Error occurred: ${error.message}` });
+    }
+  };
+
+  static login = async (req: Request, res: Response) => {
+    try {
+      const { email, password } = req.body;
+      const user = await Team.findOne({ email });
+      if (!user) {
+        return res.status(401).json({ message: "Email not found" });
+      }
+
+      const isMatch = await comparePassword(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: "Password does not match" });
+      }
+
+       const token = await generateToken({ id: user._id });
+       res.cookie("token-team", token as string, {
+         httpOnly: true,
+         secure: process.env.NODE_ENV === "production",
+         maxAge: 24 * 60 * 60 * 1000,
+       });
+
+       return res
+         .status(200)
+         .json({ message: "Logged in successfully", token });
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `Error occurred: ${error.message}` });
+    }
+  };
+  static getUser = async (req: Request, res: Response) => {
+    try {
+      const token = req.headers.authorization?.split(" ")[1];
+      if (!token) {
+        return res.status(401).json({ message: "Token not provided" });
+      }
+
+      const userinfo = await decodeToken(token);
+      if (!userinfo) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+      const user = await Team.findById(userinfo.id)
+      if (!user) {
+        res.status(401).json({ message: "user not found" });
+      }
+
+      return res.status(200).json(user);
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `Error occurred: ${error.message}` });
+    }
+  };
 }
