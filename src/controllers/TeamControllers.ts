@@ -112,7 +112,7 @@ export class TeamControllers {
       }
       attendance.status = "present";
       await attendance.save();
-      return res.status(400).json({ message: " attendance approved" });
+      return res.status(200).json({ message: " attendance approved" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
@@ -120,7 +120,7 @@ export class TeamControllers {
   static attendance = async (req: Request, res: Response) => {
     try {
       const attendance = await TeamAttendandance.find().populate("memberId");
-      res.status(200).json({ attendance });
+      res.status(200).json( attendance );
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }

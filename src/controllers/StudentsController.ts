@@ -159,7 +159,9 @@ export class StudentControllers {
       if(!student){
         return res.status(400).json({message:"no student found"})
       }
-      await student.updateOne({comment})
+      await student.updateOne({comment},{
+        timestamps:false
+      })
       await student.save()
         return res.status(200).json({ message: "student updated" });
         
