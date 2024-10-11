@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { TeamControllers } from "../controllers/TeamControllers";
-import Team from "../models/Team";
 
 export const TeamRoute = Router()
 TeamRoute.post("/new",TeamControllers.AddMember)
@@ -15,3 +14,4 @@ TeamRoute.post("/forgot-password", TeamControllers.forgotPassword);
 TeamRoute.post("/login", TeamControllers.login);
 TeamRoute.put("/reset-password/:token", TeamControllers.resetPassword);
 TeamRoute.get("/logged-user", TeamControllers.getUser);
+TeamRoute.put("/leave/:id", TeamControllers.leave);

@@ -22,7 +22,7 @@ export const dailyAttendance = () => {
   });
 };
 export const teamAttendance = () => {
-  cron.schedule("17 9 * * 1-6", async () => { 
+  cron.schedule("15 10 * * 1-6", async () => { 
     try {
       const members = await Team.find();
       for (const member of members) {

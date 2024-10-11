@@ -54,10 +54,14 @@ export class StudentControllers {
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
-      const course = await Course.findOne({ title: student.selectedCourse });
+      const course = await Course.findOne({
+        title: { $regex: new RegExp(`^${student.selectedCourse}$`, "i") },
+      });
+      console.log(course);
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
+
       await Student.findByIdAndUpdate(id, { status: status });
       if (status === "registered") {
         await Transaction.create({

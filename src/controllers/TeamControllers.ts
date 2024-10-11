@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import Team, { TeamAttendandance } from "../models/Team";
 import { decodeToken, generateToken } from "../utils/token";
-import { resetTemplates, staffResetTemplates } from "../utils/emailTemplate";
+import {  staffResetTemplates } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
 import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
-import { generateRandom4Digit } from "../utils/generateRandomNumber";
+
 
 export class TeamControllers {
   static AddMember = async (req: Request, res: Response) => {
@@ -79,13 +79,42 @@ export class TeamControllers {
         },
       }).exec();
       if (!attendance) {
-        return res.status(400).json({ message: "your absent attendance not found" });
+        return res.status(400).json({ message: "your can't request attend now " });
       }
       attendance.status = "pending";
       await attendance.save();
       return res
         .status(200)
         .json({ message: "your attendance sent, wait for approval" });
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message} occured` });
+    }
+  };
+  static leave = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const attendance = await TeamAttendandance.findOne({
+        _id:id,
+        status: "present",
+        createdAt: {
+          $gte: startOfDay,
+          $lt: endOfDay,
+        },
+      }).exec();
+      if (!attendance) {
+        return res.status(400).json({ message: "you did'nt attend to day " });
+      }
+      attendance.timeOut = new Date()
+      await attendance.save();
+      return res
+        .status(200)
+        .json({ message: "thank you for coming" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
@@ -111,7 +140,7 @@ export class TeamControllers {
         return res.status(400).json({ message: "your attendance not found" });
       }
       attendance.status = "present";
-      await attendance.save();
+      await attendance.save({timestamps:false});
       return res.status(200).json({ message: " attendance approved" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });

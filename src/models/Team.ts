@@ -14,6 +14,7 @@ const Team = model<TeamTypes>("Team",TeamSchema)
 
 const TeamAttendanceSchema = new Schema({
   memberId: { type: Schema.Types.ObjectId, ref: "Team", required: true },
+  timeOut:{type:Date},
   status: {
     type: String,
     enum: ["absent","pending", "present"],
