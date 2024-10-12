@@ -40,7 +40,7 @@ connection();
 startIntake();
 endIntake();
 dailyAttendance();
-teamAttendance()
+// teamAttendance()
 
 app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");

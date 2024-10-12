@@ -38,6 +38,7 @@ export interface CourseTypes extends Document {
   rating: number;
   image: string;
   scholarship: number;
+  active:boolean
   nonScholarship: number;
   shifts: string[];
 }
