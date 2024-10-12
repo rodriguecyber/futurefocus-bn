@@ -117,6 +117,17 @@ export const getVideos = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching media", error });
   }
 };
+export const deleteVideos = async (req: Request, res: Response) => {
+  try {
+    const {id}=req.params
+   await Video.findByIdAndDelete(id)
+   res.status(200).json({ message: "Video deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting media media:", error);
+    res.status(500).json({ message: "Error deleting media", error });
+  }
+};
+
 export const postVideos = async (req: Request, res: Response) => {
   const {url,type}= req.body
   try {
