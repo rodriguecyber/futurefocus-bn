@@ -15,7 +15,6 @@ import { cashRouter } from "./routes/cashFlow";
 import { JobRouter } from "./routes/Job";
 import { RoleRouter } from "./routes/RoleRoute";
 
-
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
@@ -40,12 +39,11 @@ connection();
 startIntake();
 endIntake();
 dailyAttendance();
-// teamAttendance()
+teamAttendance();
 
 app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
 });
-
 
 app.use("/admin", AdminRoutes);
 app.use("/students", StudentRoutes);
@@ -56,11 +54,11 @@ app.use("/media", MediaRouter);
 app.use("/payment", paymentRouter);
 app.use("/cashflow", cashRouter);
 app.use("/job", JobRouter);
-app.use("/role",RoleRouter)
+app.use("/role", RoleRouter);
 
 app.listen(PORT, () => {
   console.log(`App is listening at http://localhost:${PORT}`);
 });
-console.log(allowedOrigins)
+console.log(allowedOrigins);
 
 export default app;
