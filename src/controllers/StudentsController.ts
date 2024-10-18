@@ -55,7 +55,12 @@ export class StudentControllers {
         return res.status(404).json({ message: "Student not found" });
       }
       const course = await Course.findOne({
-        title: { $regex: new RegExp(`^${student.selectedCourse}$`, "i") },
+        title: {
+          $regex: new RegExp(
+            `^\\s*${student.selectedCourse.replace(/\s+/g, "\\s*")}\\s*$`,
+            "i"
+          ),
+        },
       });
       console.log(course);
       if (!course) {

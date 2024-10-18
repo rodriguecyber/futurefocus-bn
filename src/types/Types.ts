@@ -3,9 +3,30 @@ import { Document, ObjectId, Schema } from "mongoose";
 export interface AdminTypes extends Document {
   email: string;
   password: string;
- role:ObjectId
+  role: ObjectId;
   name: string;
-  OTP:number
+  OTP: number|null;
+}
+export interface TaskTypes extends Document {
+  user: ObjectId;
+  task: string;
+  endTime: Date;
+  startTime: Date;
+  description: string;
+  status: string;
+  manager: ObjectId;
+  comments: [ObjectId];
+}
+export interface ReplyTypes {
+  user: ObjectId;
+  text: string;
+  comment: ObjectId;
+}
+export interface CommentTypes {
+  task: ObjectId;
+  text: string;
+  user: ObjectId;
+  replies: [ObjectId];
 }
 export interface StudentTypes extends Document {
   name: string;
@@ -38,7 +59,7 @@ export interface CourseTypes extends Document {
   rating: number;
   image: string;
   scholarship: number;
-  active:boolean
+  active: boolean;
   nonScholarship: number;
   shifts: string[];
 }
@@ -52,9 +73,9 @@ export interface paymentTypes {
   status: string;
   amountDue: number;
   amountPaid: number;
-  amountDiscounted:number
-  extraAmount:number
-  comment:string
+  amountDiscounted: number;
+  extraAmount: number;
+  comment: string;
 }
 
 export interface transactionTypes {
@@ -77,4 +98,3 @@ export interface PermissionTypes {
   feature: ObjectId;
   permission: string;
 }
-

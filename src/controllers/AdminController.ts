@@ -119,27 +119,31 @@ export class AdminControllers {
         return res.status(400).json({ message: "No ID provided" });
       }
 
-      const { OTP } = req.body; 
+      const { OTP } = req.body;
       const user = await Admin.findById(id);
 
       if (!user) {
         return res.status(401).json({ message: "Admin not found" });
       }
-
-      if (user.OTP != OTP) {
+if (!user.OTP) {
+  return res.status(401).json({ message: "OTP expired login again" });
+}
+      if ( user.OTP != OTP) {
         return res.status(401).json({ message: "Incorrect OTP" });
       }
+      
 
       const token = await generateToken({ id: user._id });
       res.cookie("token", token as string, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 24 * 60 * 60 * 1000, 
+        maxAge: 24 * 60 * 60 * 1000,
       });
-
+         user.OTP=null 
+     await user.save()
       return res.status(200).json({ message: "Logged in successfully", token });
-    } catch (error:any) {
-      console.error(error.message); 
+    } catch (error: any) {
+      console.error(error.message);
       return res
         .status(500)
         .json({ error: error.message || "Internal Server Error" });

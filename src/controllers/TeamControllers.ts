@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import Team, { TeamAttendandance } from "../models/Team";
 import { decodeToken, generateToken } from "../utils/token";
-import {  staffResetTemplates } from "../utils/emailTemplate";
+import { staffResetTemplates } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
 import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
-
 
 export class TeamControllers {
   static AddMember = async (req: Request, res: Response) => {
@@ -71,7 +70,7 @@ export class TeamControllers {
       endOfDay.setHours(23, 59, 59, 999);
 
       const attendance = await TeamAttendandance.findOne({
-        _id:id,
+        _id: id,
         status: "absent",
         createdAt: {
           $gte: startOfDay,
@@ -79,7 +78,9 @@ export class TeamControllers {
         },
       }).exec();
       if (!attendance) {
-        return res.status(400).json({ message: "your can't request attend now " });
+        return res
+          .status(400)
+          .json({ message: "your can't request attend now " });
       }
       attendance.status = "pending";
       await attendance.save();
@@ -100,7 +101,7 @@ export class TeamControllers {
       endOfDay.setHours(23, 59, 59, 999);
 
       const attendance = await TeamAttendandance.findOne({
-        _id:id,
+        _id: id,
         status: "present",
         createdAt: {
           $gte: startOfDay,
@@ -110,11 +111,9 @@ export class TeamControllers {
       if (!attendance) {
         return res.status(400).json({ message: "you did'nt attend to day " });
       }
-      attendance.timeOut = new Date()
+      attendance.timeOut = new Date();
       await attendance.save();
-      return res
-        .status(200)
-        .json({ message: "thank you for coming" });
+      return res.status(200).json({ message: "thank you for coming" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
@@ -140,7 +139,7 @@ export class TeamControllers {
         return res.status(400).json({ message: "your attendance not found" });
       }
       attendance.status = "present";
-      await attendance.save({timestamps:false});
+      await attendance.save({ timestamps: false });
       return res.status(200).json({ message: " attendance approved" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -149,7 +148,7 @@ export class TeamControllers {
   static attendance = async (req: Request, res: Response) => {
     try {
       const attendance = await TeamAttendandance.find().populate("memberId");
-      res.status(200).json( attendance );
+      res.status(200).json(attendance);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
@@ -170,11 +169,11 @@ export class TeamControllers {
   static forgotPassword = async (req: Request, res: Response) => {
     try {
       const { email } = req.body;
-      const member= await Team.findOne({ email });
-      if (!member) { 
+      const member = await Team.findOne({ email });
+      if (!member) {
         return res
           .status(400)
-          .json({ message: "Admin with this email not found" });
+          .json({ message: "Team with this email not found" });
       }
       const token = await generateToken({
         id: member._id,
@@ -244,16 +243,14 @@ export class TeamControllers {
         return res.status(401).json({ message: "Password does not match" });
       }
 
-       const token = await generateToken({ id: user._id });
-       res.cookie("token-team", token as string, {
-         httpOnly: true,
-         secure: process.env.NODE_ENV === "production",
-         maxAge: 24 * 60 * 60 * 1000,
-       });
+      const token = await generateToken({ id: user._id });
+      res.cookie("token-team", token as string, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 24 * 60 * 60 * 1000,
+      });
 
-       return res
-         .status(200)
-         .json({ message: "Logged in successfully", token });
+      return res.status(200).json({ message: "Logged in successfully", token });
     } catch (error: any) {
       return res
         .status(500)
@@ -271,7 +268,7 @@ export class TeamControllers {
       if (!userinfo) {
         return res.status(401).json({ message: "User not authenticated" });
       }
-      const user = await Team.findById(userinfo.id)
+      const user = await Team.findById(userinfo.id);
       if (!user) {
         res.status(401).json({ message: "user not found" });
       }

@@ -14,6 +14,7 @@ import { dailyAttendance, teamAttendance } from "./jobs/AttendanceAutomation";
 import { cashRouter } from "./routes/cashFlow";
 import { JobRouter } from "./routes/Job";
 import { RoleRouter } from "./routes/RoleRoute";
+import { taskRouter } from "./routes/taskRoutes";
 
 dotenv.config();
 
@@ -27,7 +28,7 @@ const allowedOrigins = process.env.CORS_ALLOW
 app.use(
   cors({
     origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
@@ -55,6 +56,7 @@ app.use("/payment", paymentRouter);
 app.use("/cashflow", cashRouter);
 app.use("/job", JobRouter);
 app.use("/role", RoleRouter);
+app.use("/task", taskRouter);
 
 app.listen(PORT, () => {
   console.log(`App is listening at http://localhost:${PORT}`);

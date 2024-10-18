@@ -11,7 +11,8 @@ const adminSchema = new Schema<AdminTypes>({
     
   },
   OTP:{
-    type:Number,
+    type:Number||null,
+    default:null
 
   },
   password: { type: String, required: true, default:"000000" },

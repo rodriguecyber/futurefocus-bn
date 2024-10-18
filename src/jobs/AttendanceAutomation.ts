@@ -57,14 +57,49 @@ export const dropout = () => {
     try {
       const students = await Student.find({ status: "started" });
       for (const student of students) {
-        const absences = await Attendance.countDocuments({
-          studentId: student._id,
-          status: "absent",
-        });
-        if (absences > 14) {
+        const absences = await Attendance.aggregate([
+          {
+            $match: {
+              studentId: student._id,
+              status: { $in: ["absent", "present"] },
+            },
+          },
+          {
+            $sort: { date: 1 }, // Assuming there's a date field to sort by
+          },
+          {
+            $group: {
+              _id: {
+                $cond: {
+                  if: { $eq: ["$status", "present"] },
+                  then: null,
+                  else: {
+                    $dateToString: { format: "%Y-%m-%d", date: "$date" },
+                  }, // Group by absence date
+                },
+              },
+              count: {
+                $sum: { $cond: [{ $eq: ["$status", "absent"] }, 1, 0] },
+              },
+            },
+          },
+          {
+            $match: {
+              _id: { $ne: null },
+              count: { $gt: 0 },
+            },
+          },
+        ]);
+        
+        if (student.selectedShift==="Weekend (Saturday: 8:30 AM - 5:30 PM)" && absences.length > 2 ) {
           student.status = "droppedout";
           await student.save();
         }
+        else if(absences.length>=8){
+           student.status = "droppedout";
+           await student.save();
+        }
+        else return 
       }
       console.log("Dropout check completed");
     } catch (error) {
