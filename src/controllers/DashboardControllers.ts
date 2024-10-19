@@ -3,13 +3,12 @@ import Payment from "../models/payment";
 import Student from "../models/Students";
 import Cashflow from "../models/otherTransactions";
 
-// Get dashboard summary
 export const getDashboardSummary = async (req: Request, res: Response) => {
   try {
-    // Count total students
+    // Total number of students
     const totalStudents = await Student.countDocuments();
 
-    // Count students by status
+    // Student status counts
     const studentStatuses = await Student.aggregate([
       {
         $group: {
@@ -24,10 +23,10 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       return acc;
     }, {});
 
-    // Count total payments
+    // Total number of payments
     const totalPayments = await Payment.countDocuments();
 
-    // Count payments by status
+    // Payment status counts
     const paymentStatuses = await Payment.aggregate([
       {
         $group: {
@@ -52,6 +51,7 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       },
     ]);
 
+    // Aggregate total amount to be paid
     const totalAmountToBePaid = await Payment.aggregate([
       {
         $group: {
@@ -61,7 +61,6 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       },
     ]);
 
-    // Statistics by shift for students
     // Statistics by shift for students
     const shiftStudents = await Student.aggregate([
       {
@@ -93,7 +92,7 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       },
     ]);
 
-    // Statistics by shift for payments
+    // Statistics by shift for payments (updated to check for associated students)
     const shiftPayments = await Payment.aggregate([
       {
         $lookup: {
@@ -104,16 +103,21 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
         },
       },
       {
+        $match: {
+          student: { $ne: [] }, // Filter out payments without associated students
+        },
+      },
+      {
         $unwind: "$student",
       },
       {
         $group: {
           _id: "$student.selectedShift",
           totalPaid: {
-            $sum: "$amountPaid", 
+            $sum: "$amountPaid",
           },
           totalDue: {
-            $sum: "$amountDue", 
+            $sum: "$amountDue",
           },
         },
       },
