@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { AdminRoutes } from "../routes/AdminRoutes";
 import { cashRouter } from "../routes/cashFlow";
 import { CourseRoute } from "../routes/CourseRoute";
 import { JobRouter } from "../routes/Job";
@@ -10,10 +9,11 @@ import { StudentRoutes } from "../routes/StudentsRoutes";
 import { taskRouter } from "../routes/taskRoutes";
 import { TeamRoute } from "../routes/TeamRoutes";
 import MediaRouter from "../routes/mediaRouter";
+import { othersRoute } from "./AdminRoutes";
 
 
 export const indexRouter = Router()
-indexRouter.use("/admin", AdminRoutes);
+indexRouter.use("/other", othersRoute);
 indexRouter.use("/students", StudentRoutes);
 indexRouter.use("/member", TeamRoute);
 indexRouter.use("/service", ServiceRoute);
