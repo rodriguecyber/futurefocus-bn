@@ -3,10 +3,10 @@ import { AdminControllers } from "../controllers/AdminController";
 import { getDashboardSummary } from "../controllers/DashboardControllers";
 import { PermissionCointroller } from "../controllers/PermissionController";
 
-export const AdminRoutes = Router()
-AdminRoutes.post('/subscribe', AdminControllers.subscribe)
-AdminRoutes.post('/intake',  AdminControllers.addIntake)
-AdminRoutes.get('/intake',  AdminControllers.getIntakes)
-AdminRoutes.put('/role/:userId', PermissionCointroller.assignRole)
-AdminRoutes.delete('/intake/:id', AdminControllers.deleteIntake) 
-AdminRoutes.get('/dashboard', getDashboardSummary)
+export const othersRoute = Router()
+othersRoute.post('/subscribe', AdminControllers.subscribe)
+othersRoute.post('/intake',  AdminControllers.addIntake)
+othersRoute.get('/intake',  AdminControllers.getIntakes)
+othersRoute.put('/role/:userId', PermissionCointroller.assignRole)
+othersRoute.delete('/intake/:id', AdminControllers.deleteIntake) 
+othersRoute.get('/dashboard', getDashboardSummary)

@@ -2,7 +2,6 @@ import connection from "./config/db";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { AdminRoutes } from "./routes/AdminRoutes";
 import { StudentRoutes } from "./routes/StudentsRoutes";
 import { TeamRoute } from "./routes/TeamRoutes";
 import { ServiceRoute } from "./routes/ServiceRoutes";
@@ -15,6 +14,7 @@ import { cashRouter } from "./routes/cashFlow";
 import { JobRouter } from "./routes/Job";
 import { RoleRouter } from "./routes/RoleRoute";
 import { taskRouter } from "./routes/taskRoutes";
+import { othersRoute } from "./routes/AdminRoutes";
 
 dotenv.config();
 
@@ -46,7 +46,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
 });
 
-app.use("/admin", AdminRoutes);
+app.use("/other", othersRoute);
 app.use("/students", StudentRoutes);
 app.use("/member", TeamRoute);
 app.use("/service", ServiceRoute);
