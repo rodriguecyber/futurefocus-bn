@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import Feature from "../models/Feature";
 import Permission from "../models/Permission";
 import Role from "../models/role";
-import { permission } from "process";
-import Admin from "../models/Admin";
+import Team from "../models/Team";
+
 
 export class PermissionCointroller {
   static AddFeature = async (req: Request, res: Response) => {
@@ -82,7 +82,7 @@ export class PermissionCointroller {
     try {
       const { userId } = req.params;
       const { role } = req.body;
-      const user = await Admin.findById(userId);
+      const user = await Team.findById(userId);
       if (!user) {
         return res.status(400).json({ message: "user not found" });
       }

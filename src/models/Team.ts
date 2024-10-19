@@ -4,10 +4,14 @@ import {  TeamTypes } from "../types/Types";
 const TeamSchema = new Schema<TeamTypes>({
   name:{type:String, required:true},
   image: {type:String,required:true},
-  role:{type:String, required:true},
+  position:{type:String, required:true},
   email:{type:String, required:true},
   instagram:{type:String,require:true },
-  password:{type:String,require:true, default:'00000000' }
+  password:{type:String,require:true, default:'00000000' },
+  otp:{type:Schema.Types.Number,require:true, default:null },
+  role:{type:Schema.Types.ObjectId,ref:'Role',},
+  isAdmin:{type:Schema.Types.Boolean,default:false}
+
 })
 const Team = model<TeamTypes>("Team",TeamSchema)
 

@@ -4,6 +4,7 @@ import { decodeToken, generateToken } from "../utils/token";
 import { staffResetTemplates } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
 import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
+import { generateRandom4Digit } from "../utils/generateRandomNumber";
 
 export class TeamControllers {
   static AddMember = async (req: Request, res: Response) => {
@@ -31,6 +32,16 @@ export class TeamControllers {
         .json({ message: `Error ${error.message} occured` });
     }
   };
+  static teamAdmins = async (req: Request, res: Response) => {
+    try {
+      const admins= await Team.find({isAdmin:true});
+      return res.status(200).json(admins);
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `Error ${error.message} occured` });
+    }
+  };
   static deleteMember = async (req: Request, res: Response) => {
     try {
       const memberId = req.params.id;
@@ -49,13 +60,28 @@ export class TeamControllers {
     try {
       const memberId = req.params.id;
       const { email, ...data } = req.body;
-      const member = Team.findById(memberId);
+      const member = await Team.findById(memberId);
 
       if (!member) {
         return res.status(400).json({ message: "member does not exist" });
       }
       await Team.findByIdAndUpdate(memberId, data);
       res.status(200).json({ message: "updated successfull" });
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message} occured` });
+    }
+  };
+  static toggleAdmin = async (req: Request, res: Response) => {
+    try {
+      const memberId = req.params.id;
+      const member =await Team.findById(memberId);
+
+      if (!member) {
+        return res.status(400).json({ message: "member does not exist" });
+      }
+  
+      await Team.findByIdAndUpdate(memberId, {isAdmin:!member.isAdmin});
+      res.status(200).json({ message: "status updated successfull" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
@@ -242,19 +268,82 @@ export class TeamControllers {
       if (!isMatch) {
         return res.status(401).json({ message: "Password does not match" });
       }
+      if(!user.isAdmin){
+          const token = await generateToken({ id: user._id ,isAdmin:user.isAdmin});
+          res.cookie("token", token as string, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 24 * 60 * 60 * 1000,
+          });
+          return res
+            .status(200)
+            .json({ message: "Logged in successfully", token });
+      }
 
-      const token = await generateToken({ id: user._id });
-      res.cookie("token-team", token as string, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 24 * 60 * 60 * 1000,
-      });
+      const OTP = generateRandom4Digit();
+      user.otp = OTP;
+      await user.save();
+      const mailOptions = {
+        from: process.env.OUR_EMAIL,
+        to: user.email,
+        subject: " One Time Password Code",
+        html: `
+            <h1>One-Time Password (OTP)</h1>
+            <p>Dear User,</p>
+            <p>Your OTP is <strong>${OTP}</strong>.</p>
+            <p>Thank you!</p>
+        `,
+      };
+      await sendEmail(mailOptions);
 
-      return res.status(200).json({ message: "Logged in successfully", token });
+      return res.status(200).json({ message: "che k your emial for OTP " });
     } catch (error: any) {
       return res
         .status(500)
         .json({ message: `Error occurred: ${error.message}` });
+    }
+  };
+  static verifyOTP = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({ message: "No ID provided" });
+      }
+
+      const { OTP } = req.body;
+      const user = await Team.findById(id);
+
+      if (!user) {
+        return res.status(401).json({ message: "user not found" });
+      }
+      if (!user.isAdmin) {
+        return res.status(401).json({ message: "only admin allowed" });
+      }
+      if (!user.otp) {
+        return res.status(401).json({ message: "OTP expired login again" });
+      }
+      if (user.otp != OTP) {
+        return res.status(401).json({ message: "Incorrect OTP" });
+      }
+
+          const token = await generateToken({
+            id: user._id,
+            isAdmin: user.isAdmin,
+          });
+      res.cookie("token", token as string, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+      user.otp = null;
+      await user.save();
+      return res.status(200).json({ message: "Logged in successfully", token });
+    } catch (error: any) {
+      console.error(error.message);
+      return res
+        .status(500)
+        .json({ error: error.message || "Internal Server Error" });
     }
   };
   static getUser = async (req: Request, res: Response) => {
