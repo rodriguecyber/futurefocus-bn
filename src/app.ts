@@ -13,7 +13,7 @@ const app = express();
 
 const allowedOrigins = process.env.CORS_ALLOW
   ? process.env.CORS_ALLOW.split(",")
-  : ["https://www.futurefocus.co.rw"];
+  : ["https://www.futurefocus.co.rw","https://www.futurefocus.co.rw"];
 
 app.use(
   cors({
