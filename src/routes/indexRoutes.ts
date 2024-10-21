@@ -13,7 +13,7 @@ import { othersRoute } from "./AdminRoutes";
 
 
 export const indexRouter = Router()
-indexRouter.use("/other", othersRoute);
+indexRouter.use("/others", othersRoute);
 indexRouter.use("/students", StudentRoutes);
 indexRouter.use("/member", TeamRoute);
 indexRouter.use("/service", ServiceRoute);

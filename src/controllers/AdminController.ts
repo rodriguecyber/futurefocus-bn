@@ -1,12 +1,9 @@
 "use client";
-import { Request, response, Response } from "express";
-import { decodeToken, generateToken } from "../utils/token";
-import { resetTemplates, SubscriptionEmail } from "../utils/emailTemplate";
+import { Request, Response } from "express";
+import { SubscriptionEmail } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
-import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
 import Subscriber from "../models/subscriber";
 import Intake from "../models/Intake";
-import { generateRandom4Digit } from "../utils/generateRandomNumber";
 export class AdminControllers {
   static subscribe = async (req: Request, res: Response) => {
     const email = req.body.email;

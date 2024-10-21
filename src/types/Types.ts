@@ -59,6 +59,19 @@ export interface CourseTypes extends Document {
   nonScholarship: number;
   shifts: string[];
 }
+export  interface socialMedias{
+  web:string,
+  link:string
+
+}
+export interface Contact extends Document {
+  location: [string];
+  socialMedias: [socialMedias];
+  contact:[number];
+  emails: [string];
+
+
+}
 
 export interface attendanceTypes {
   studentId: Schema.Types.ObjectId;

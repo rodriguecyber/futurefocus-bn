@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 import Payment from "../models/payment";
 import Transaction from "../models/Transaction";
 import Cashflow from "../models/otherTransactions";
-import { decodeToken } from "../utils/token";
-import Admin from "../models/Admin";
+// import Admin from "../models/Admin";
 import Student from "../models/Students";
 
 export class PaymentController {

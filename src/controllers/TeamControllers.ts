@@ -6,6 +6,7 @@ import { sendEmail } from "../utils/sendEmail";
 import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
 
+
 export class TeamControllers {
   static AddMember = async (req: Request, res: Response) => {
     try {
@@ -296,7 +297,7 @@ export class TeamControllers {
       };
       await sendEmail(mailOptions);
 
-      return res.status(200).json({ message: "che k your emial for OTP " });
+      return res.status(200).json({ message: "check your email for OTP ",id:user._id });
     } catch (error: any) {
       return res
         .status(500)
@@ -357,7 +358,15 @@ export class TeamControllers {
       if (!userinfo) {
         return res.status(401).json({ message: "User not authenticated" });
       }
-      const user = await Team.findById(userinfo.id);
+      const user = await Team.findById(userinfo.id).populate({
+        path:'role',
+        populate:{
+          path:'permission',
+          populate:{
+           path:'feature'
+          }
+        }
+      });
       if (!user) {
         res.status(401).json({ message: "user not found" });
       }
