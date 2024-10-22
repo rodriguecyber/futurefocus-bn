@@ -35,7 +35,7 @@ export class TeamControllers {
   };
   static teamAdmins = async (req: Request, res: Response) => {
     try {
-      const admins= await Team.find({isAdmin:true});
+      const admins= await Team.find({isAdmin:true}).populate('role');
       return res.status(200).json(admins);
     } catch (error: any) {
       return res
@@ -74,14 +74,14 @@ export class TeamControllers {
   };
   static toggleAdmin = async (req: Request, res: Response) => {
     try {
-      const memberId = req.params.id;
-      const member =await Team.findById(memberId);
+      const id = req.params.id;
+      const member =await Team.findById(id);
 
       if (!member) {
         return res.status(400).json({ message: "member does not exist" });
       }
   
-      await Team.findByIdAndUpdate(memberId, {isAdmin:!member.isAdmin});
+      await Team.findByIdAndUpdate(id, {isAdmin:!member.isAdmin});
       res.status(200).json({ message: "status updated successfull" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });

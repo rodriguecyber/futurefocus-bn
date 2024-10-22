@@ -5,7 +5,7 @@ export const TeamRoute = Router()
 TeamRoute.post("/two-factor/:id", TeamControllers.verifyOTP);
 TeamRoute.post("/new",TeamControllers.AddMember)
 TeamRoute.get("/",TeamControllers.Team)
-TeamRoute.get("admins/",TeamControllers.teamAdmins)
+TeamRoute.get("/admins",TeamControllers.teamAdmins)
 TeamRoute.delete("/delete/:id",TeamControllers.deleteMember)
 TeamRoute.put("/update/:id",TeamControllers.update)
 TeamRoute.put("/request-attend/:id",TeamControllers.requestAttend)
@@ -16,5 +16,5 @@ TeamRoute.post("/forgot-password", TeamControllers.forgotPassword);
 TeamRoute.post("/login", TeamControllers.login);
 TeamRoute.put("/reset-password/:token", TeamControllers.resetPassword);
 TeamRoute.get("/logged-user", TeamControllers.getUser);
-TeamRoute.get("/toogle-admin", TeamControllers.toggleAdmin);
+TeamRoute.put("/toogle-admin/:id", TeamControllers.toggleAdmin);
 TeamRoute.put("/leave/:id", TeamControllers.leave);
