@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Student from "../models/Students";
-import { StudentTypes } from "../types/Types";
 import Transaction from "../models/Transaction";
 import Payment from "../models/payment";
 import Course from "../models/Course";

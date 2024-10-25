@@ -21,7 +21,7 @@ export const taskSchema = new Schema<TaskTypes>({
   },
   manager: {
     type: Schema.Types.ObjectId,
-    ref: "Admin",
+    ref: "Team",
   },
   startTime: {
     type: Date,

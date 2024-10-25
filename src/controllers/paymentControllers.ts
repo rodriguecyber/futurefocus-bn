@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import Payment from "../models/payment";
 import Transaction from "../models/Transaction";
 import Cashflow from "../models/otherTransactions";
-import { decodeToken } from "../utils/token";
-import Admin from "../models/Admin";
 import Student from "../models/Students";
 
 export class PaymentController {
@@ -96,11 +94,11 @@ export class PaymentController {
           .status(400)
           .json({ message: "no payment record for that user" });
       }
-      if (payment.amountDiscounted && payment.amountDiscounted > 0) {
-        return res
-          .status(400)
-          .json({ message: "you can't add extra and dicount at same time" });
-      }
+      // if (payment.amountDiscounted && payment.amountDiscounted > 0) {
+      //   return res
+      //     .status(400)
+      //     .json({ message: "you can't add extra and dicount at same time" });
+      // }
       payment.extraAmount = payment.extraAmount
         ? payment.extraAmount + amount
         : amount;
@@ -122,11 +120,11 @@ export class PaymentController {
           .status(400)
           .json({ message: "no payment record for that user" });
       }
-      if (payment.extraAmount && payment.extraAmount > 0) {
-        return res
-          .status(400)
-          .json({ message: "you can't add extra and dicount at same time" });
-      }
+      // if (payment.extraAmount && payment.extraAmount > 0) {
+      //   return res
+      //     .status(400)
+      //     .json({ message: "you can't add extra and dicount at same time" });
+      // }
       payment.amountDiscounted = payment.amountDiscounted
         ? payment.amountDiscounted + amount
         : amount;

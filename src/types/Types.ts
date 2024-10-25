@@ -1,12 +1,4 @@
 import { Document, ObjectId, Schema } from "mongoose";
-
-export interface AdminTypes extends Document {
-  email: string;
-  password: string;
-  role: ObjectId;
-  name: string;
-  OTP: number|null;
-}
 export interface TaskTypes extends Document {
   user: ObjectId;
   task: string;
@@ -32,7 +24,7 @@ export interface StudentTypes extends Document {
   name: string;
   email: string;
   phone: Number;
-  selectedCourse: string;
+  selectedCourse: string; 
   selectedShift: string;
   message: string;
   comment: string;
@@ -42,10 +34,14 @@ export interface StudentTypes extends Document {
 export interface TeamTypes extends Document {
   name: string;
   image: string;
-  role: string;
+  position: string;
   email: string;
   instagram: string;
   password: string;
+  isAdmin:boolean
+  role:ObjectId
+  otp:number|null
+  
 }
 export interface ServiceTypes extends Document {
   title: string;
@@ -62,6 +58,19 @@ export interface CourseTypes extends Document {
   active: boolean;
   nonScholarship: number;
   shifts: string[];
+}
+export  interface socialMedias{
+  web:string,
+  link:string
+
+}
+export interface Contact extends Document {
+  location: [string];
+  socialMedias: [socialMedias];
+  contact:[number];
+  emails: [string];
+
+
 }
 
 export interface attendanceTypes {
