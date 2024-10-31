@@ -25,7 +25,7 @@ export class TeamControllers {
   };
   static Team = async (req: Request, res: Response) => {
     try {
-      const team = await Team.find();
+      const team = await Team.find().populate('role');
       return res.status(200).json(team);
     } catch (error: any) {
       return res

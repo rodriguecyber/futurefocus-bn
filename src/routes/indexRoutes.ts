@@ -10,6 +10,7 @@ import { taskRouter } from "../routes/taskRoutes";
 import { TeamRoute } from "../routes/TeamRoutes";
 import MediaRouter from "../routes/mediaRouter";
 import { othersRoute } from "./AdminRoutes";
+import { inventoryRouter } from "./inventoryRoutes";
 
 
 export const indexRouter = Router()
@@ -23,4 +24,5 @@ indexRouter.use("/payment", paymentRouter);
 indexRouter.use("/cashflow", cashRouter);
 indexRouter.use("/job", JobRouter);
 indexRouter.use("/role", RoleRouter);
-indexRouter.use("/task", taskRouter);
+indexRouter.use("/task", taskRouter);  
+indexRouter.use("/inventory", inventoryRouter);  
