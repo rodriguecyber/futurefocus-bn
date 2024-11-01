@@ -46,7 +46,7 @@ export const resetTemplates = (user: any, token: any) => {
           <div class="email-body">
               <p>Hello, Admin</p>
               <p>It seems like you are trying to reset your password. Click the link below to reset your password.</p>
-              <a href="${process.env.FRONT_END_URI}/admin/reset-password/${token}">Reset Password</a>
+              <a href="${process.env.FRONT_END_URI}/reset-password/${token}">Reset Password</a>
               <p>If you are not Future focus Admin , please ignore this email.</p>
               <p>Best Regards,<br>Future focus Team</p>
           </div>
@@ -103,7 +103,7 @@ export const staffResetTemplates = (user: any, token: any) => {
           <div class="email-body">
               <p>Hello, ${user}</p>
               <p>It seems like you are trying to reset your password. Click the link below to reset your password.</p>
-              <a href="${process.env.STUDENT_PORTAL}/staff/reset-password/${token}">Reset Password</a>
+              <a href="${process.env.STUDENT_PORTAL}/reset-password/${token}">Reset Password</a>
               <p>If you are not Future focus Admin , please ignore this email.</p>
               <p>Best Regards,<br>Future focus Team</p>
           </div>
