@@ -36,6 +36,9 @@ const MaterialSchema = new Schema<IMaterial>({
   category: { type: Schema.Types.ObjectId, ref: "Inventory" },
   amount: { type: Number, required: true, default: 0 },
   rent: { type: Number, required: true, default: 0 },
+},
+{
+  timestamps:true
 });
 export const Material = model<IMaterial>("Material", MaterialSchema);
 
@@ -49,5 +52,7 @@ const MaterialRentSchema = new Schema<IMaterialRent>({
   returned: { type: Boolean, default: false },
   cost: { type: Number, required: true, default: 0 },
   amount: { type: Number, required: true, default: 0 },
+},{
+  timestamps:true
 });
 export const MaterialRent = model<IMaterialRent>("MaterialRent", MaterialRentSchema);

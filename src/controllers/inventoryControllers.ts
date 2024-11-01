@@ -35,7 +35,7 @@ export class inventoryControllers {
         render,
         cost
       });
-      await Material.findByIdAndUpdate(materialId, { rent: amount });
+      await Material.findByIdAndUpdate(materialId, { $inc: { rent: amount } });
       res.status(200).json({ message: "suucesfuly rent item" });
     } catch (error) {
       console.log(error)
@@ -43,14 +43,16 @@ export class inventoryControllers {
     }
   };
   static returnMaterial = async (req: Request, res: Response) => {
-    const receiverName = req.body;
+    const {receiver} = req.body;
     const {id} = req.params;
     try {
-      await MaterialRent.findByIdAndUpdate(id, {
-        returnDate: new Date(),
+    const material=  await MaterialRent.findByIdAndUpdate(id, {
+        returnedDate: new Date(),
         returned: true,
-        receiverName,
+        receiver,
       });
+      await Material.findByIdAndUpdate(material?.materialId,{$dec: {rent: material?.amount }});
+
       res.status(200).json({ message: "suucesfuly returned item" });
 
     } catch (error) {
@@ -69,7 +71,7 @@ export class inventoryControllers {
   };
   static getAllInventoryRent = async (req: Request, res: Response) => {
     try {
-      const rent = await MaterialRent.find().populate('materialId')
+      const rent = await MaterialRent.find().populate('materialId').populate('render').populate('receiver')
       res.status(200).json(rent);
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
