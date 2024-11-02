@@ -4,9 +4,11 @@ interface IMaterial {
   materialName: string;
   category: ObjectId;
   amount: number;
+  SN:string,
+  type:string
   rent: number;
 }
-interface IMaterialRent {
+export interface IMaterialRent {
   materialId: ObjectId;
   render: ObjectId;
   receiver: ObjectId;
@@ -35,6 +37,9 @@ const MaterialSchema = new Schema<IMaterial>({
   materialName: { type: String, required: true },
   category: { type: Schema.Types.ObjectId, ref: "Inventory" },
   amount: { type: Number, required: true, default: 0 },
+  SN: { type: String},
+  type: { type: String },
+  
   rent: { type: Number, required: true, default: 0 },
 },
 {

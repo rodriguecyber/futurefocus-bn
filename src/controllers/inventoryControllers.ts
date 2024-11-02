@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Inventory, Material, MaterialRent } from "../models/Materials";
+import { IMaterialRent, Inventory, Material, MaterialRent } from "../models/Materials";
 
 export class inventoryControllers {
   static newCategory = async (req: Request, res: Response) => {
@@ -23,37 +23,47 @@ export class inventoryControllers {
       res.status(500).json({ message: "internal server error" });
     }
   };
-  static rentItem = async (req: Request, res: Response) => {
-    const { returnDate, cost, amount, rendeeName, render } = req.body;  
-    const {materialId} = req.params;
+  static rentItems = async (req: Request, res: Response) => {
+
+    const items:IMaterialRent[] = req.body.items
+    const { returnDate, cost, render, rendeeName } = req.body;  
+
+    // const {materialId} = req.params; 
     try {
-      await MaterialRent.create({
-        materialId,
-        amount,
-        returnDate,
-        rendeeName,
-        render,
-        cost
-      });
-      await Material.findByIdAndUpdate(materialId, { $inc: { rent: amount } });
-      res.status(200).json({ message: "suucesfuly rent item" });
-    } catch (error) {
-      console.log(error)
-      res.status(500).json({ message: "internal server error" });
-    }
-  };
+  for (const item of items) {
+    await MaterialRent.create({
+      //@ts-expect-error rrr
+      materialId: item._id,
+      amount: item.amount,
+      returnDate: returnDate,
+      rendeeName,
+      render,
+      cost,
+    });
+    await Material.findByIdAndUpdate(item.materialId, { $inc: { rent: item.amount } });
+  }
+  res.status(200).json({ message: "successfully rented item" });
+} catch (error) {
+  console.log(error);
+  res.status(500).json({ message: "internal server error" });
+}
+  }
   static returnMaterial = async (req: Request, res: Response) => {
-    const {receiver} = req.body;
+    const {receiver} = req.body;  
     const {id} = req.params;
     try {
     const material=  await MaterialRent.findByIdAndUpdate(id, {
         returnedDate: new Date(),
         returned: true,
-        receiver,
+        receiver,  
       });
-      await Material.findByIdAndUpdate(material?.materialId,{$dec: {rent: material?.amount }});
+      if(!material){
+        return res.status(400).json({message:"no Rent found"})  
+      }
+  await Material.findByIdAndUpdate(material.materialId,{$inc: {rent: -material.amount }});
+   
 
-      res.status(200).json({ message: "suucesfuly returned item" });
+      res.status(200).json({ message: "suucesfuly returned item" });    
 
     } catch (error) {
       console.log(error)
