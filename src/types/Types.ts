@@ -76,6 +76,7 @@ export interface Contact extends Document {
 export interface attendanceTypes {
   studentId: Schema.Types.ObjectId;
   status: string;
+ 
 }
 export interface paymentTypes {
   studentId: Schema.Types.ObjectId;

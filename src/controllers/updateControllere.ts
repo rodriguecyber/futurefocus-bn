@@ -1,12 +1,16 @@
 // import { Request, Response } from "express";
 // import Payment from "../models/payment";
 
-// export const balance = async(req:Request,res:Response)=>{
+// export const payment = async(req:Request,res:Response)=>{
 //     try {
-//        const students =  await Payment.find({amountDue:150000})
-//        students.forEach((student)=>{
-//         student.amountDiscounted = 
-//        })
+//        const payment =  await Payment.find().populate('studentId')
+//       payment.forEach((pay)=>{
+//         if(!pay.studentId){
+//        console.log('payent',pay)
+//         }
+//       })
+//         res.status(200).json({message:"done"});
+
 //     } catch (error) {
 //         res.status(500).json(error)
 //     }

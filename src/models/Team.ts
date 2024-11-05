@@ -19,14 +19,16 @@ const Team = model<TeamTypes>("Team",TeamSchema)
 const TeamAttendanceSchema = new Schema({
   memberId: { type: Schema.Types.ObjectId, ref: "Team", required: true },
   timeOut:{type:Date},
+  comment:{type:String},
   status: {
     type: String,
     enum: ["absent","pending", "present"],
     required: true,
     default: "absent",
   },
+  
 },{
-  timestamps:true
+  timestamps:true 
 });
 export const TeamAttendandance = model("TeamAttendance",TeamAttendanceSchema)
 export default Team

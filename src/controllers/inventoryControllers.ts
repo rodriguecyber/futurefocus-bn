@@ -6,7 +6,7 @@ export class inventoryControllers {
     const data = req.body;
     try {
       await Inventory.create(data);
-      res.status(200).json({ message: "suucesfuly added category" });
+      res.status(200).json({ message: "suscesfuly added category" });
 
     } catch (error) {
       res.status(500).json({ message: "internal server error" });
@@ -16,7 +16,7 @@ export class inventoryControllers {
     const data = req.body;
     try {
       await Material.create(data);
-      res.status(200).json({ message: "suucesfuly added item" });
+      res.status(200).json({ message: "suucesfuly added item" }); 
 
     } catch (error) {
         console.log(error)

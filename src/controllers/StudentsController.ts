@@ -10,7 +10,7 @@ export class StudentControllers {
     const studentData = req.body;
     try {
       const alreadyExist =
-        (await Student.findOne({ email: studentData.email })) ||
+        // (await Student.findOne({ email: studentData.email })) ||
         (await Student.findOne({ phone: studentData.phone }));
       if (alreadyExist) {
         return res.status(400).json({ message: "You have already applied " });
@@ -36,13 +36,15 @@ export class StudentControllers {
     const id = req.params.id; 
     try {
       const student = await Student.findByIdAndDelete(id);
+
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
+      await Payment.findOneAndDelete({studentId:student._id})
       res.status(200).json({ message: "student deleted successfully" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
-    }
+    } 
   };
   static changeStatus = async (req: Request, res: Response) => {
     const id = req.params.id;

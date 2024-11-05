@@ -378,4 +378,18 @@ export class TeamControllers {
         .json({ message: `Error occurred: ${error.message}` });
     }
   };
+  static addComment= async(req:Request,res:Response)=>{
+       const {id} = req.params;
+       const { comment } = req.body;
+  try {
+    
+    await TeamAttendandance.findByIdAndUpdate(id,{comment})
+        res.status(200).json({ message: "comment added" });
+    
+  } catch (error) {
+    console.log(error)
+        res.status(500).json({ message: "internal server error" }); 
+    
+  }
+  }
 }
