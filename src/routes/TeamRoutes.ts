@@ -19,3 +19,4 @@ TeamRoute.get("/logged-user", TeamControllers.getUser);
 TeamRoute.put("/toogle-admin/:id", TeamControllers.toggleAdmin);
 TeamRoute.put("/leave/:id", TeamControllers.leave);
 TeamRoute.put("/comment/:id", TeamControllers.addComment);
+TeamRoute.put("/response/:id", TeamControllers.addresponse);

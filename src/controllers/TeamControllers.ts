@@ -392,4 +392,18 @@ export class TeamControllers {
     
   }
   }
+  static addresponse= async(req:Request,res:Response)=>{
+       const {id} = req.params;
+       const { response } = req.body;
+  try {
+    
+    await TeamAttendandance.findByIdAndUpdate(id,{response})
+        res.status(200).json({ message: "response added" });
+    
+  } catch (error) {
+    console.log(error)
+        res.status(500).json({ message: "internal server error" }); 
+    
+  }
+  }
 }

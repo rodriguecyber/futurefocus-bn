@@ -20,6 +20,7 @@ const TeamAttendanceSchema = new Schema({
   memberId: { type: Schema.Types.ObjectId, ref: "Team", required: true },
   timeOut:{type:Date},
   comment:{type:String},
+  response:{type:String}, 
   status: {
     type: String,
     enum: ["absent","pending", "present"],
