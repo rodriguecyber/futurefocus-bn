@@ -383,7 +383,7 @@ export class TeamControllers {
        const { comment } = req.body;
   try {
     
-    await TeamAttendandance.findByIdAndUpdate(id,{comment})
+    await TeamAttendandance.findByIdAndUpdate(id,{comment},{timestamps:false})
         res.status(200).json({ message: "comment added" });
     
   } catch (error) {
@@ -397,7 +397,7 @@ export class TeamControllers {
        const { response } = req.body;
   try {
     
-    await TeamAttendandance.findByIdAndUpdate(id,{response})
+    await TeamAttendandance.findByIdAndUpdate(id,{response},{timestamps:false})
         res.status(200).json({ message: "response added" });
     
   } catch (error) {
