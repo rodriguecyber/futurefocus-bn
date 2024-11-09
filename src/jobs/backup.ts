@@ -16,7 +16,7 @@ export const backup = async () => {
   };
 
   // Schedule the backup to run at 12:04 PM daily
-  cron.schedule("3 13 * * *", async () => {
+  cron.schedule("0 0 * * *", async () => {
     try {
       console.log("Running MongoDB backup...");
 
