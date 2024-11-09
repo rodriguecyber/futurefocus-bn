@@ -18,7 +18,7 @@ const shiftTimes: Record<Shift, { start: number; end: number }> = {
   "Afternoon (3:00 PM - 5:00 PM)": { start: 13 * 60, end: 15 * 60 }, 
   "Evening (6:00 PM - 8:00 PM)": { start: 16 * 60, end: 18 * 60 }, 
   "Weekend (Saturday: 8:30 AM - 5:30 PM)": { start: 6 * 60, end: 15.5 * 60 }, 
-  Online: { start: 6 * 60, end: 15.5 * 60 },
+  'Online': { start: 6 * 60, end: 15.5 * 60 },
 };
 
 function isValidShift(shift: string): shift is Shift {
@@ -76,11 +76,11 @@ export const updateAttendance = async (req: Request, res: Response) => {
      
       attendance.status = "present";
     } else {
-      // attendance = new Attendance({
-      //   studentId: studentId,
-      //   status: 'present',
-      // });
-      return res.status(400).json({message:"attendance today not available"})
+      attendance = new Attendance({
+        studentId: studentId,
+        status: 'present',
+      });
+      // return res.status(400).json({message:"attendance today not available"})
     }
 
     await attendance.save();
