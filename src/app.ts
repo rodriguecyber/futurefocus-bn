@@ -5,6 +5,7 @@ import cors from "cors";
 import { endIntake, startIntake } from "./jobs/StudentAutomation";
 import { dailyAttendance, teamAttendance } from "./jobs/AttendanceAutomation";
 import { indexRouter } from "./routes/indexRoutes";
+import { backup } from "./jobs/backup";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ startIntake();
 endIntake();
 dailyAttendance();
 teamAttendance();
+backup()
 
 app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
