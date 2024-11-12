@@ -4,6 +4,10 @@ import Transaction from "../models/Transaction";
 import Payment from "../models/payment";
 import Course from "../models/Course";
 import Cashflow from "../models/otherTransactions";
+import { comparePassword } from "../utils/PasswordUtils";
+import OnlineStudent from "../models/onlineStudent";
+import { sendEmail } from "../utils/sendEmail";
+import { generateRandom4Digit } from "../utils/generateRandomNumber";
 
 export class StudentControllers {
   static apply = async (req: Request, res: Response) => {
@@ -11,7 +15,7 @@ export class StudentControllers {
     try {
       const alreadyExist =
         // (await Student.findOne({ email: studentData.email })) ||
-        (await Student.findOne({ phone: studentData.phone }));
+        await Student.findOne({ phone: studentData.phone });
       if (alreadyExist) {
         return res.status(400).json({ message: "You have already applied " });
       }
@@ -33,18 +37,18 @@ export class StudentControllers {
     }
   };
   static delete = async (req: Request, res: Response) => {
-    const id = req.params.id; 
+    const id = req.params.id;
     try {
       const student = await Student.findByIdAndDelete(id);
 
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
-      await Payment.findOneAndDelete({studentId:student._id})
+      await Payment.findOneAndDelete({ studentId: student._id });
       res.status(200).json({ message: "student deleted successfully" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
-    } 
+    }
   };
   static changeStatus = async (req: Request, res: Response) => {
     const id = req.params.id;
@@ -127,56 +131,99 @@ export class StudentControllers {
       registerStudent.status = "registered";
       await Payment.create({
         studentId: registerStudent._id,
-        amountDue: course.nonScholarship, 
+        amountDue: course.nonScholarship,
       });
-       await Transaction.create({
-         studentId: registerStudent._id,
-         amount: 10000,
-         reason: "Registration fees",
-       });
-       await Cashflow.create({
-         amount: 10000,
-         reason: `${student.name} registration Fees`,
-         user: student.user,
-         payment:student.payment,
-         type: "income",
-       });
+      await Transaction.create({
+        studentId: registerStudent._id,
+        amount: 10000,
+        reason: "Registration fees",
+      });
+      await Cashflow.create({
+        amount: 10000,
+        reason: `${student.name} registration Fees`,
+        user: student.user,
+        payment: student.payment,
+        type: "income",
+      });
       await registerStudent.save();
       res.status(201).json({ message: "new student registered" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
-  static Update = async(req:Request,res:Response)=>{
-    const {id} = req.params
-    const data = req.body
+  static Update = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const data = req.body;
     try {
-      const student= await Student.findByIdAndUpdate(id,data)
-      if(!student){
-        return res.status(400).json({message:"no student found"})
+      const student = await Student.findByIdAndUpdate(id, data);
+      if (!student) {
+        return res.status(400).json({ message: "no student found" });
       }
-        return res.status(200).json({ message: "student updated" });
-        
-    } catch (error) { 
-        return res.status(500).json({ message: `internal server error ${error}` });
-    } 
-  }
-  static AddComment = async(req:Request,res:Response)=>{
-    const {id} = req.params
-    const {comment} = req.body
-    try {
-      const student= await Student.findById(id)
-      if(!student){
-        return res.status(400).json({message:"no student found"})
-      }
-      await student.updateOne({comment},{
-        timestamps:false
-      })
-      await student.save()
-        return res.status(200).json({ message: "student updated" });
-        
+      return res.status(200).json({ message: "student updated" });
     } catch (error) {
-        return res.status(500).json({ message: `Internal server error ${error}` });
+      return res
+        .status(500)
+        .json({ message: `internal server error ${error}` });
     }
-  }
+  };
+  static AddComment = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { comment } = req.body;
+    try {
+      const student = await Student.findById(id);
+      if (!student) {
+        return res.status(400).json({ message: "no student found" });
+      }
+      await student.updateOne(
+        { comment },
+        {
+          timestamps: false,
+        }
+      );
+      await student.save();
+      return res.status(200).json({ message: "student updated" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: `Internal server error ${error}` });
+    }
+  };
+  static login = async (req: Request, res: Response) => {
+    try {
+      const { email, password } = req.body;
+      const user = await OnlineStudent.findOne({ email });
+      if (!user) {
+        return res.status(401).json({ message: "user not found" });
+      }
+
+      const isMatch = await comparePassword(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: "Password does not match" });
+      }
+
+      const OTP = generateRandom4Digit();
+      user.otp = OTP;
+      await user.save();
+      const mailOptions = {
+        from: process.env.OUR_EMAIL,
+        to: user.email,
+        subject: " One Time Password Code",
+        html: `
+            <h1>One-Time Password (OTP)</h1>
+            <p>Dear User,</p>
+            <p>Your OTP is <strong>${OTP}</strong>.</p>
+            <p>Thank you!</p>
+        `,
+      };
+      await sendEmail(mailOptions);
+
+      return res
+        .status(200)
+        .json({ message: "check your email for OTP "});
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `Error occurred: ${error.message}` });
+    }
+  };
 }

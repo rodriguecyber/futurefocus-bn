@@ -139,7 +139,7 @@ export class TeamControllers {
         return res.status(400).json({ message: "you did'nt attend to day " });
       }
       attendance.timeOut = new Date();
-      await attendance.save();
+      await attendance.save({timestamps:false});
       return res.status(200).json({ message: "thank you for coming" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
