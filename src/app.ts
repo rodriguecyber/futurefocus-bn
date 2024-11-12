@@ -3,7 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { endIntake, startIntake } from "./jobs/StudentAutomation";
-import { dailyAttendance, teamAttendance } from "./jobs/AttendanceAutomation";
+import { dailyAttendance, dropout, teamAttendance } from "./jobs/AttendanceAutomation";
 import { indexRouter } from "./routes/indexRoutes";
 import { backup } from "./jobs/backup";
 
@@ -29,6 +29,7 @@ app.use(express.json());
 connection();
 startIntake();
 endIntake();
+dropout()
 dailyAttendance();
 teamAttendance();
 backup()

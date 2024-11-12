@@ -53,57 +53,58 @@ cron.schedule("25 6 * * 6", async () => {
 });
 
 export const dropout = () => {
-  cron.schedule("0 8 * * *", async () => {
+  cron.schedule("16 9 * * *", async () => {
+    console.log("checking for dropouts");
     try {
       const students = await Student.find({ status: "started" });
+
       for (const student of students) {
-        const absences = await Attendance.aggregate([
-          {
-            $match: {
-              studentId: student._id,
-              status: { $in: ["absent", "present"] },
-            },
-          },
-          {
-            $sort: { date: 1 }, // Assuming there's a date field to sort by
-          },
-          {
-            $group: {
-              _id: {
-                $cond: {
-                  if: { $eq: ["$status", "present"] },
-                  then: null,
-                  else: {
-                    $dateToString: { format: "%Y-%m-%d", date: "$date" },
-                  }, // Group by absence date
-                },
-              },
-              count: {
-                $sum: { $cond: [{ $eq: ["$status", "absent"] }, 1, 0] },
-              },
-            },
-          },
-          {
-            $match: {
-              _id: { $ne: null },
-              count: { $gt: 0 },
-            },
-          },
-        ]);
-        
-        if (student.selectedShift==="Weekend (Saturday: 8:30 AM - 5:30 PM)" && absences.length > 2 ) {
-          student.status = "droppedout";
-          await student.save();
+        // Get all attendance records sorted by date
+        const attendanceRecords = await Attendance.find({
+          studentId: student._id,
+          status: { $in: ["absent", "present"] },
+        }).sort({ date: 1 });
+
+        let consecutiveAbsences = 0;
+        let maxConsecutiveAbsences = 0;
+
+        // Calculate consecutive absences
+        for (const record of attendanceRecords) {
+          if (record.status === "absent") {
+            consecutiveAbsences++;
+            maxConsecutiveAbsences = Math.max(
+              maxConsecutiveAbsences,
+              consecutiveAbsences
+            );
+          } else {
+            consecutiveAbsences = 0;
+          }
         }
-        else if(absences.length>=8){
-           student.status = "droppedout";
-           await student.save();
+
+        // Check dropout conditions based on shift
+        if (student.selectedShift === "Weekend (Saturday: 8:30 AM - 5:30 PM)") {
+          if (maxConsecutiveAbsences >= 2) {
+            student.status = "droppedout";
+            await student.save();
+            console.log(
+              `Weekend student ${student._id} dropped out after ${maxConsecutiveAbsences} consecutive absences`
+            );
+          }
+        } else {
+          if (maxConsecutiveAbsences >= 8) {
+            student.status = "droppedout";
+            await student.save();
+            console.log(
+              `Regular student ${student._id} dropped out after ${maxConsecutiveAbsences} consecutive absences`
+            );
+          }
         }
-        else return 
       }
+
       console.log("Dropout check completed");
     } catch (error) {
       console.error("Error in dropout:", error);
+      throw error; // Re-throw to ensure error is properly handled by caller
     }
   });
 };
