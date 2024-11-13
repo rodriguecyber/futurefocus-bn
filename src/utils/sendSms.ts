@@ -1,0 +1,37 @@
+import axios from "axios";
+export interface smsInterface {
+  key: string;
+  message: string;
+  recipients: [string];
+}
+export const sendMessage = async (message:string,recipients:[string]) => {
+    const api_key = process.env.SMS_API_KEY as string;
+  try {
+    const response = await axios.post("https://itecsms.rw/api/sendsms", {
+        key: api_key,
+        message,
+        recipients
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const responseData = response.data;
+    const status = responseData.status;
+
+    if (status === 200) {
+      const message = responseData.message;
+      console.log(response)
+
+    } else {
+      console.log(response);
+      console.log(response)
+    }
+  } catch (error) {
+    // @ts-expect-error error
+    console.error("Error:", error.message)
+  }
+};
+
+// Call the function to make the payment

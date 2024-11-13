@@ -8,19 +8,22 @@ import { comparePassword } from "../utils/PasswordUtils";
 import OnlineStudent from "../models/onlineStudent";
 import { sendEmail } from "../utils/sendEmail";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
+import { sendMessage } from "../utils/sendSms";
+import { MessageTemplate } from "../utils/messageBod";
 
 export class StudentControllers {
   static apply = async (req: Request, res: Response) => {
     const studentData = req.body;
+  
     try {
       const alreadyExist =
-        // (await Student.findOne({ email: studentData.email })) ||
         await Student.findOne({ phone: studentData.phone });
       if (alreadyExist) {
         return res.status(400).json({ message: "You have already applied " });
       }
       await Student.create(studentData);
-      return res.status(200).json({ message: "Your apllication submitted" });
+      await sendMessage(MessageTemplate({name:studentData.name,amount:0,remain:0},).apply,[studentData.phone])
+      return res.status(200).json({ message: "Your application submitted" });
     } catch (error: any) {
       return res
         .status(500)
@@ -67,7 +70,6 @@ export class StudentControllers {
           ),
         },
       });
-      console.log(course);
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
@@ -91,7 +93,20 @@ export class StudentControllers {
           amountDue: course.scholarship,
           amountDiscounted: course.nonScholarship - course.scholarship,
         });
+      await sendMessage(
+        MessageTemplate({ name: student.name, amount: 0, remain: 0 }).register,
+        [student.phone.toString()]
+      );
+
       }
+      else if(status==='accepted'){
+      await sendMessage(
+        MessageTemplate({ name: student.name, amount: 0, remain: 0 }).admit,
+        [student.phone.toString()]
+      );
+
+      }
+
       res.status(200).json({ message: `student new status ${status}` });
     } catch (error: any) {
       res.status(500).json({ message: `${error.message} occured` });

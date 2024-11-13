@@ -3,6 +3,8 @@ import Payment from "../models/payment";
 import Transaction from "../models/Transaction";
 import Cashflow from "../models/otherTransactions";
 import Student from "../models/Students";
+import { sendMessage } from "../utils/sendSms";
+import { MessageTemplate } from "../utils/messageBod";
 
 export class PaymentController {
   static SchoolFees = async (req: Request, res: Response) => {
@@ -58,6 +60,14 @@ export class PaymentController {
         status: payment.status,
         paymentMethod:method
       };
+      await sendMessage(
+        MessageTemplate({
+          name: student.name,
+          amount,
+          remain: payment.amountDue - payment.amountPaid,
+        }).pay,
+        [student.phone.toString()]
+      );
 
       res.status(200).json({
         message: `You have successfully paid school fees of ${amount}`,
