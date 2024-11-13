@@ -6,6 +6,7 @@ import { endIntake, startIntake } from "./jobs/StudentAutomation";
 import { dailyAttendance, dropout, teamAttendance } from "./jobs/AttendanceAutomation";
 import { indexRouter } from "./routes/indexRoutes";
 import { backup } from "./jobs/backup";
+import { update1 } from "./controllers/updateControllere";
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
 });
 app.use("/api/v1", indexRouter);
+app.get("/api/v1/test", update1);
 
 
 
