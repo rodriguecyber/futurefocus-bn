@@ -174,6 +174,15 @@ export class StudentControllers {
         type: "income",
       });
       await registerStudent.save();
+      await sendMessage(
+        MessageTemplate({
+          name: student.name,
+          amount: 0,
+          remain: 0,
+          course: student.selectedCourse,
+        }).register,
+        [student.phone]
+      );
       res.status(201).json({ message: "new student registered" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
