@@ -44,7 +44,7 @@ export class PermissionCointroller {
     try {
       const { permission, feature } = req.body;
       await Permission.create({ permission, feature });
-      res.status(201).json({ message: `rpermission created` });
+      res.status(201).json({ message: `permission created` });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
     }
@@ -66,7 +66,6 @@ export class PermissionCointroller {
         return res.status(400).json({ message: "role not found" });
       }
       if (!Array.isArray(permissions)) {
-        console.log(permissions);
         return res
           .status(400)
           .json({ message: "Permissions must be an array" });

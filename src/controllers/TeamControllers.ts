@@ -5,6 +5,7 @@ import { staffResetTemplates } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
 import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
+import { sendMessage } from "../utils/sendSms";
 
 
 export class TeamControllers {
@@ -295,6 +296,7 @@ export class TeamControllers {
             <p>Thank you!</p>
         `,
       };
+     user.phone? await sendMessage(`Hello, ${user.name} your login OTP  for futurefocus portal is ${OTP} `,[user?.phone]):''
       await sendEmail(mailOptions);
 
       return res.status(200).json({ message: "check your email for OTP ",id:user._id });

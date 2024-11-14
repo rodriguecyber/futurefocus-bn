@@ -6,6 +6,7 @@ const TeamSchema = new Schema<TeamTypes>({
   image: {type:String,required:true},
   position:{type:String, required:true},
   email:{type:String, required:true},
+  phone:{type:String},
   instagram:{type:String,require:true },
   password:{type:String,require:true, default:'00000000' },
   otp:{type:Schema.Types.Number,require:true, default:null },

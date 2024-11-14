@@ -41,6 +41,7 @@ export interface TeamTypes extends Document {
   isAdmin:boolean
   role:ObjectId
   otp:number|null
+  phone:string
   
 }
 export interface ServiceTypes extends Document {
