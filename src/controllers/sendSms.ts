@@ -6,8 +6,8 @@ export const messageController = async (req: Request, res: Response) => {
   try {
     const { message, recipients } = req.body;
     await sendMessage(message, recipients);
-    res.status(200).json({ message: "done" });
+    res.status(200).json({ message: "sms sent" });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({error, message:"internal server error"});
   }
 };
