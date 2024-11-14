@@ -22,7 +22,15 @@ export class StudentControllers {
         return res.status(400).json({ message: "You have already applied " });
       }
       await Student.create(studentData);
-      await sendMessage(MessageTemplate({name:studentData.name,amount:0,remain:0},).apply,[studentData.phone])
+      await sendMessage(
+        MessageTemplate({
+          name: studentData.name,
+          amount: 0,
+          remain: 0,
+          course: studentData.selectedCourse,
+        }).apply,
+        [studentData.phone]
+      );
       return res.status(200).json({ message: "Your application submitted" });
     } catch (error: any) {
       return res
@@ -94,14 +102,19 @@ export class StudentControllers {
           amountDiscounted: course.nonScholarship - course.scholarship,
         });
       await sendMessage(
-        MessageTemplate({ name: student.name, amount: 0, remain: 0 }).register,
+        MessageTemplate({ name: student.name, amount: 0, remain: 0 ,course:student.selectedCourse}).register,
         [student.phone.toString()]
       );
 
       }
       else if(status==='accepted'){
       await sendMessage(
-        MessageTemplate({ name: student.name, amount: 0, remain: 0 }).admit,
+        MessageTemplate({
+          name: student.name,
+          amount: 0,
+          remain: 0,
+          course: student.selectedCourse,
+        }).admit,
         [student.phone.toString()]
       );
 
