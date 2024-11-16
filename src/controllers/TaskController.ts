@@ -1,11 +1,16 @@
 import { Request, Response } from "express";
 import { Comment, Reply, Task } from "../models/task";
+import { sendMessage } from "../utils/sendSms";
+import Team from "../models/Team";
 
 export class taskController {
   static newTask = async (req: Request, res: Response) => {
     try {
-      const { user, task, endTime, startTime } = req.body;
-      const manager = "66d94a38c120be3d98d481b9";
+      const { user, task, endTime, startTime,manager } = req.body;
+       const  member=await  Team.findById(user)
+       if(!member){
+        return res.status(400).json({message:"user not found"})
+       }
       const newTask = new Task({
         user,
         endTime,
@@ -14,6 +19,7 @@ export class taskController {
         task,
       });
       await newTask.save();
+      await sendMessage('new task is assigned to you check details',[member?.phone])
       res.status(200).json({ message: "task created" });
     } catch (error) {
       console.log(error);
