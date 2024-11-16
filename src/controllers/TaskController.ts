@@ -19,7 +19,7 @@ export class taskController {
         task,
       });
       await newTask.save();
-      await sendMessage('new task is assigned to you check details',[member?.phone])
+      await sendMessage('a new task is assigned to you. login to your  portal for more details ',[member?.phone])
       res.status(200).json({ message: "task created" });
     } catch (error) {
       console.log(error);
@@ -123,8 +123,13 @@ export class taskController {
       const { id } = req.params;
       const { text, user } = req.body;
       const comment = new Comment({ user, task: id, text });
-      await Task.findByIdAndUpdate(id, { $push: { comments: comment._id } });
+    const tasks=  await Task.findByIdAndUpdate(id, { $push: { comments: comment._id } });
+      const member =await  Team.findById(tasks?.user);
+     if (!member) {
+       return res.status(400).json({ message: "user not found" });
+     }
       await comment.save();
+      await sendMessage('a comment added to your task',[member.phone])
       res.status(200).json({
         message: "added comment successfully.",
       });
