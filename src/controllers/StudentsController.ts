@@ -10,6 +10,7 @@ import { sendEmail } from "../utils/sendEmail";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
 import { sendMessage } from "../utils/sendSms";
 import { MessageTemplate } from "../utils/messageBod";
+import techUp from "../models/techUp";
 
 export class StudentControllers {
   static apply = async (req: Request, res: Response) => {
@@ -30,6 +31,32 @@ export class StudentControllers {
           course: studentData.selectedCourse,
         }).apply,
         [studentData.phone]
+      );
+      return res.status(200).json({ message: "Your application submitted" });
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `failed to apply! try again ${error.message}` });
+    }
+  };
+  static techupapply = async (req: Request, res: Response) => {
+    const student = req.body;
+  
+    try {
+      const alreadyExist =
+        await Student.findOne({ phone: student.phone });
+      if (alreadyExist) {
+        return res.status(400).json({ message: "You have already applied " });
+      }
+      await techUp.create(student);
+      await sendMessage(
+        MessageTemplate({
+          name: student.name,
+          amount: 0,
+          remain: 0,
+          course: student.selectedCourse,
+        }).techup,
+        [student.phone]
       );
       return res.status(200).json({ message: "Your application submitted" });
     } catch (error: any) {
