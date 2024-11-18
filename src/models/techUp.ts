@@ -7,6 +7,7 @@ const techUpSchema = new Schema(
     name: { type: String, required: false },
     email: { type: String, required: true, default: "academic@futurefocus.rw" },
     phone: { type: String, required: true},
+    gender: { type: String, },
   },
   {
     timestamps: true,
