@@ -91,6 +91,35 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
         $sort: { _id: 1 },
       },
     ]);
+    const departmentStudents = await Student.aggregate([
+      {
+        $group: {
+          _id: "$selectedCourse",
+          total: { $sum: 1 },
+          pending: {
+            $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] },
+          },
+          accepted: {
+            $sum: { $cond: [{ $eq: ["$status", "accepted"] }, 1, 0] },
+          },
+          registered: {
+            $sum: { $cond: [{ $eq: ["$status", "registered"] }, 1, 0] },
+          },
+          started: {
+            $sum: { $cond: [{ $eq: ["$status", "started"] }, 1, 0] },
+          },
+          completed: {
+            $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] },
+          },
+          droppedout: {
+            $sum: { $cond: [{ $eq: ["$status", "droppedout"] }, 1, 0] },
+          },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
 
     // Statistics by shift for payments (updated to check for associated students)
     const shiftPayments = await Payment.aggregate([
@@ -151,7 +180,7 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       },
     ]);
 
-    const summary = {
+    const summary = { 
       totalStudents,
       studentStatusCounts,
       totalPayments,
@@ -159,6 +188,7 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       totalAmountPaid: totalAmountPaid[0]?.totalAmount || 0,
       totalAmountToBePaid: totalAmountToBePaid[0]?.totalAmount || 0,
       shiftStudents,
+      departmentStudents,
       shiftPayments,
       monthlyCashflows,
     };
