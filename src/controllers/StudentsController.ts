@@ -65,6 +65,41 @@ export class StudentControllers {
         .json({ message: `failed to apply! try again ${error.message}` });
     }
   };
+  static  techUpStudent= async(req:Request,res:Response)=>{
+    try {
+      const techUpStudent = await techUp.find();
+      res.status(200).json(techUpStudent)
+    } catch (error) {
+      res.status(500).json({message:"internal server error"});
+      
+    }
+  }
+  static notifyTechups = async(req:Request,res:Response)=>{
+    try {
+    
+      const sms = req.body.smsBody
+      const subject = req.body.subject
+      const email= req.body.emailBody
+      const phones = req.body.phones;
+      const emails = req.body.emails;
+      const mailOptions = {
+        from: process.env.OUR_EMAIL,
+        to: emails,
+        subject: subject,
+        text:email 
+        
+      };
+      
+      await sendMessage(sms, phones)
+      await sendEmail(mailOptions)
+      res.status(200).json({message:"sent"})
+    } catch (error) {
+      res.status(500).json({ message: "internal server error " });
+      
+    }
+
+
+  }
 
   static students = async (req: Request, res: Response) => {
     try {

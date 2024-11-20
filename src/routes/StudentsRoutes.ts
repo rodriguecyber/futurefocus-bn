@@ -6,6 +6,8 @@ import { getAttendance, updateAttendance } from "../controllers/Attendance";
 export const StudentRoutes =  Router()
 StudentRoutes.post('/apply',StudentControllers.apply)
 StudentRoutes.post('/techup',StudentControllers.techupapply)
+StudentRoutes.post('/techup/notify',StudentControllers.notifyTechups)
+StudentRoutes.get('/techup',StudentControllers.techUpStudent)
 StudentRoutes.get("/",StudentControllers.students)
 StudentRoutes.delete('/:id',StudentControllers.delete)
 StudentRoutes.put('/:id',StudentControllers.changeStatus)
