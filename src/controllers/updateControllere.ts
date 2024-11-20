@@ -1,5 +1,4 @@
-import { Request, Response } from "express";
-import Payment from "../models/payment";
+import { Request, Response } from "express"; 
 import { sendMessage } from "../utils/sendSms";
 
 export const testController = async(req:Request,res:Response)=>{

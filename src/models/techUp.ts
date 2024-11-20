@@ -1,6 +1,4 @@
 import { model, Schema } from "mongoose";
-import { StudentTypes } from "../types/Types";
-
 // Define the Student schema
 const techUpSchema = new Schema(
   {
