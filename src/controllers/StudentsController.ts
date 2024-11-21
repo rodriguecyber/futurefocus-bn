@@ -44,7 +44,8 @@ export class StudentControllers {
   
     try {
       const alreadyExist =
-        await Student.findOne({ phone: student.phone });
+        (await Student.findOne({ phone: student.phone })) ||
+        (await Student.findOne({ email: student.email }));
       if (alreadyExist) {
         return res.status(400).json({ message: "You have already applied " });
       }
