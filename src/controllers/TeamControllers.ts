@@ -396,10 +396,12 @@ export class TeamControllers {
   }
   static addresponse= async(req:Request,res:Response)=>{
        const {id} = req.params;
-       const { response } = req.body;
+       const { response,phone } = req.body;
   try {
     
+  //  const member = await Team.findOne({})
     await TeamAttendandance.findByIdAndUpdate(id,{response},{timestamps:false})
+    await sendMessage(` message from admin on your today attendance: ${response}`,[phone])
         res.status(200).json({ message: "response added" });
     
   } catch (error) {
