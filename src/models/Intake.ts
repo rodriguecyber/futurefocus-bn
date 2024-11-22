@@ -12,19 +12,19 @@ const IntakeSchema = new Schema<IIntake>(
   }
 );
 const Intake = model<IIntake>("intake", IntakeSchema);
+
 export default Intake;
 
-// shift model
 interface IShift {
-  shift: string;
-  start: Date;
-  end: Date;
+  days:string[]
+  start: String;
+  end: String;
 }
 const ShiftSchema = new Schema<IShift>(
   {
-    shift: { type: String, required: true },
-    start: { type: Date, required: true },
-    end: { type: Date, required: true },
+    days:[String],
+    start: { type: String, required: true },
+    end: { type: String, required: true },
   },
   {
     timestamps: true,
