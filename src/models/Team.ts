@@ -3,6 +3,7 @@ import {  TeamTypes } from "../types/Types";
 
 const TeamSchema = new Schema<TeamTypes>({
   name:{type:String, required:true},
+  active:{type:Boolean, default:true, required:true},
   image: {type:String,required:true},
   position:{type:String, required:true},
   email:{type:String, required:true},

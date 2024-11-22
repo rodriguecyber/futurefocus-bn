@@ -20,11 +20,27 @@ export const dailyAttendance = () => {
       console.error("Error in dailyAttendance:", error);
     }
   });
+  cron.schedule("25 6 * * 6", async () => {
+    try {
+      const students = await Student.find({
+        status: "started",
+        selectedShift: "Weekend (Saturday: 8:30 AM - 5:30 PM)",
+      });
+      for (const student of students) {
+        await Attendance.create({
+          studentId: student._id,
+        });
+      }
+      console.log("Attendance for weekend created");
+    } catch (error) {
+      console.error("Error in dailyAttendance:", error);
+    }
+  });
 };
 export const teamAttendance = () => {
   cron.schedule("0 4 * * 1-6", async () => {
     try {
-      const members = await Team.find();
+      const members = await Team.find({active:true});
       for (const member of members) {
         await TeamAttendandance.create({
           memberId: member._id,
@@ -35,22 +51,7 @@ export const teamAttendance = () => {
     }
   });
 };
-cron.schedule("25 6 * * 6", async () => {
-  try {
-    const students = await Student.find({
-      status: "started",
-      selectedShift: "Weekend (Saturday: 8:30 AM - 5:30 PM)",
-    });
-    for (const student of students) {
-      await Attendance.create({
-        studentId: student._id,
-      });
-    }
-    console.log("Attendance for weekend created");
-  } catch (error) {
-    console.error("Error in dailyAttendance:", error);
-  }
-});
+
 
 export const dropout = () => {
   cron.schedule("16 9 * * *", async () => {

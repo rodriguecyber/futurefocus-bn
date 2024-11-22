@@ -389,7 +389,7 @@ export class TeamControllers {
         res.status(200).json({ message: "comment added" });
     
   } catch (error) {
-    console.log(error)
+
         res.status(500).json({ message: "internal server error" }); 
     
   }
@@ -405,9 +405,26 @@ export class TeamControllers {
         res.status(200).json({ message: "response added" });
     
   } catch (error) {
-    console.log(error)
         res.status(500).json({ message: "internal server error" }); 
     
   }
+  }
+  static activateMember= async(req:Request,res:Response)=>{
+    try {
+      const {id} = req.params;
+      const member =await Team.findById(id)
+      if(!member){
+       return  res.status(400).json({ message: "member not found" }); 
+
+      }
+
+      member.active=!member.active
+      await member.save()
+       return res.status(200).json({ message: "member uodated succesfull" }); 
+    } catch (error) {
+        res.status(500).json({ message: "internal server error" }); 
+      
+    }
+
   }
 }
