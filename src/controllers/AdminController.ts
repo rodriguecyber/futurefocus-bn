@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { SubscriptionEmail } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
 import Subscriber from "../models/subscriber";
-import Intake from "../models/Intake";
+import Intake, { Shift } from "../models/Intake";
 export class AdminControllers {
   static subscribe = async (req: Request, res: Response) => {
     const email = req.body.email;
@@ -41,12 +41,31 @@ export class AdminControllers {
       res.status(500).json({ message: `Error ${error.message}` });
     }
   };
+    static addShift = async (req: Request, res: Response) => {
+    const { start,end,name,days } = req.body;
+    try {
+      await Shift.create({
+        start,end,name,days
+      });
+      res.status(200).json({ message: "shifts added" });
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message}` });
+    }
+  };
   static getIntakes = async (req: Request, res: Response) => {
     try {
       const intakes = await Intake.find();
       res.status(200).json({ intakes });
     } catch (error) {
       res.status(500).json({ message: "failed to load intakes" });
+    }
+  };
+  static getShifts = async (req: Request, res: Response) => {
+    try {
+      const shifts = await Shift.find();
+      res.status(200).json({ shifts });
+    } catch (error) {
+      res.status(500).json({ message: "failed to load shifts" });
     }
   };
   static deleteIntake = async (req: Request, res: Response) => {
@@ -57,5 +76,15 @@ export class AdminControllers {
     }
     await Intake.deleteOne({ _id: id });
     res.status(200).json({ message: "intake deleted" });
+  };
+  static deleteShift = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    console.log(id)
+    const shift = await Shift.findById(id);
+    if (!shift) {
+      return res.status(400).json({ message: "shift not found" });
+    }
+    await Shift.deleteOne({ _id: id });
+    res.status(200).json({ message: "shift deleted" });
   };
 }

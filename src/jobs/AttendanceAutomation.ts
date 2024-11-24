@@ -4,34 +4,22 @@ import { Attendance } from "../models/Attendance";
 import Team, { TeamAttendandance } from "../models/Team";
 
 export const dailyAttendance = () => {
-  cron.schedule("25 6 * * 1-4", async () => {
+  cron.schedule("25 6 * * 1-6", async () => {
     try {
+      const today = new Date();
+      let dayNumber = today.getDay();
       const students = await Student.find({
         status: "started",
-        selectedShift: { $ne: "Weekend (Saturday: 8:30 AM - 5:30 PM)" },
-      });
+      }).populate('selectedShift');
       for (const student of students) {
-        await Attendance.create({
-          studentId: student._id,
-        });
+        //@ts-ignore
+       if(student.selectedShift.days.includes(dayNumber+1)){
+         await Attendance.create({
+           studentId: student._id,
+         });
+       }
       }
       console.log("Attendance created");
-    } catch (error) {
-      console.error("Error in dailyAttendance:", error);
-    }
-  });
-  cron.schedule("25 6 * * 6", async () => {
-    try {
-      const students = await Student.find({
-        status: "started",
-        selectedShift: "Weekend (Saturday: 8:30 AM - 5:30 PM)",
-      });
-      for (const student of students) {
-        await Attendance.create({
-          studentId: student._id,
-        });
-      }
-      console.log("Attendance for weekend created");
     } catch (error) {
       console.error("Error in dailyAttendance:", error);
     }
@@ -57,7 +45,9 @@ export const dropout = () => {
   cron.schedule("16 9 * * *", async () => {
     console.log("checking for dropouts");
     try {
-      const students = await Student.find({ status: "started" });
+      const students = await Student.find(
+        { status: "started" }
+      ).populate("selectedShift");
 
       for (const student of students) {
         // Get all attendance records sorted by date
@@ -83,7 +73,8 @@ export const dropout = () => {
         }
 
         // Check dropout conditions based on shift
-        if (student.selectedShift === "Weekend (Saturday: 8:30 AM - 5:30 PM)") {
+        //@ts-expect-error
+        if (student.selectedShift.days.includes(6)) {
           if (maxConsecutiveAbsences >= 2) {
             student.status = "droppedout";
             await student.save();

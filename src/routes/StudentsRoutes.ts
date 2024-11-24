@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { StudentControllers } from "../controllers/StudentsController";
-import { getAttendance, updateAttendance } from "../controllers/Attendance";
+import { getAttendance,
+     updateAttendance 
+    } from "../controllers/Attendance";
 
 
 export const StudentRoutes =  Router()

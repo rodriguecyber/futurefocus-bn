@@ -24,8 +24,8 @@ export interface StudentTypes extends Document {
   name: string;
   email: string;
   phone: Number;
-  selectedCourse: string; 
-  selectedShift: string;
+  selectedCourse: ObjectId; 
+  selectedShift: ObjectId;
   message: string;
   comment: string;
   status: string;
@@ -59,7 +59,7 @@ export interface CourseTypes extends Document {
   scholarship: number;
   active: boolean;
   nonScholarship: number;
-  shifts: string[];
+  shifts: ObjectId[];
 }
 export  interface socialMedias{
   web:string,

@@ -14,7 +14,7 @@ export class CourseController {
   };
   static getAll = async (req: Request, res: Response) => {
     try {
-      const courses = await Course.find();
+      const courses = await Course.find().populate('shifts');
       res.status(200).json(courses);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });

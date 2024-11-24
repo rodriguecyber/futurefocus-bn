@@ -104,7 +104,9 @@ export class StudentControllers {
 
   static students = async (req: Request, res: Response) => {
     try {
-      const students = await Student.find().sort({ createdAt: -1 });
+      const students = await Student.find()
+        .sort({ createdAt: -1 })
+        .populate("selectedCourse selectedShift");
       return res.status(200).json(students);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occurred` });
@@ -133,19 +135,14 @@ export class StudentControllers {
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
-      const course = await Course.findOne({
-        title: {
-          $regex: new RegExp(
-            `^\\s*${student.selectedCourse.replace(/\s+/g, "\\s*")}\\s*$`,
-            "i"
-          ),
-        },
-      });
+      const course = await Course.findById(student.selectedCourse);
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
 
-      await Student.findByIdAndUpdate(id, { status: status });
+      await Student.findByIdAndUpdate(id, { status: status }).populate(
+        "selectedCourse"
+      );
       if (status === "registered") {
         await Transaction.create({
           studentId: student._id,
@@ -165,7 +162,8 @@ export class StudentControllers {
           amountDiscounted: course.nonScholarship - course.scholarship,
         });
       await sendMessage(
-        MessageTemplate({ name: student.name, amount: 0, remain: 0 ,course:student.selectedCourse}).register,
+        //@ts-ignore
+        MessageTemplate({ name: student.name, amount: 0, remain: 0 ,course:student.selectedCourse.name}).register,
         [student.phone.toString()]
       );
 
@@ -176,7 +174,8 @@ export class StudentControllers {
           name: student.name,
           amount: 0,
           remain: 0,
-          course: student.selectedCourse,
+          //@ts-ignore
+          course: student.selectedCourse.name,
         }).admit,
         [student.phone.toString()]
       );
