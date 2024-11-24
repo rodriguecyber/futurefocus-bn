@@ -16,13 +16,15 @@ const Intake = model<IIntake>("intake", IntakeSchema);
 export default Intake;
 
 interface IShift {
-  days:string[]
+  days:string
+  name:string
   start: String;
   end: String;
 }
 const ShiftSchema = new Schema<IShift>(
-  {
-    days:[String],
+  {  
+    name:{type:String,required:true},
+    days:{type:String,required:true},
     start: { type: String, required: true },
     end: { type: String, required: true },
   },

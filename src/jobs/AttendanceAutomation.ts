@@ -4,7 +4,7 @@ import { Attendance } from "../models/Attendance";
 import Team, { TeamAttendandance } from "../models/Team";
 
 export const dailyAttendance = () => {
-  cron.schedule("25 6 * * 1-4", async () => {
+  cron.schedule("25 6 * * 1-6", async () => {
     try {
       const today = new Date();
       let dayNumber = today.getDay();

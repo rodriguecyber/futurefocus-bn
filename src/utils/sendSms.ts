@@ -22,7 +22,6 @@ export const sendMessage = async (message:string,recipients:[string]) => {
 
     if (status === 200) {
       const message = responseData.message;
-      console.log(response)
 
     } else {
       console.log(response);

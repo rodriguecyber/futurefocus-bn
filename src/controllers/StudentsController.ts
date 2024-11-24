@@ -106,7 +106,7 @@ export class StudentControllers {
     try {
       const students = await Student.find()
         .sort({ createdAt: -1 })
-        .populate("selectedCourse");
+        .populate("selectedCourse selectedShift");
       return res.status(200).json(students);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occurred` });

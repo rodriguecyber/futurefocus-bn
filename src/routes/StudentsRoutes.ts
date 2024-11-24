@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { StudentControllers } from "../controllers/StudentsController";
 import { getAttendance,
-    //  updateAttendance 
+     updateAttendance 
     } from "../controllers/Attendance";
 
 
@@ -14,7 +14,7 @@ StudentRoutes.get("/",StudentControllers.students)
 StudentRoutes.delete('/:id',StudentControllers.delete)
 StudentRoutes.put('/:id',StudentControllers.changeStatus)
 StudentRoutes.post('/register',StudentControllers.registerNew)
-// StudentRoutes.put("/attend/:studentId", updateAttendance);
+StudentRoutes.put("/attend/:studentId", updateAttendance);
 StudentRoutes.get("/attendance", getAttendance);
 StudentRoutes.put("/comment/:id", StudentControllers.AddComment);
 StudentRoutes.put("/update/:id", StudentControllers.Update);

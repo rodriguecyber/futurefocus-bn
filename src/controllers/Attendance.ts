@@ -51,8 +51,10 @@ export const updateAttendance = async (req: Request, res: Response) => {
     res
       .status(200)
       .json({ message: "Attending successfully", attendance });
+      //@ts-ignore
+      console.log(student.selectedShift.start)
+      console.log(currentTime)
   } catch (error) {
-    console.error("Error attending:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

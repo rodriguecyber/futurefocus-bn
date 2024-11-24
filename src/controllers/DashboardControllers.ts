@@ -5,10 +5,8 @@ import Cashflow from "../models/otherTransactions";
 
 export const getDashboardSummary = async (req: Request, res: Response) => {
   try {
-    // Total number of students
     const totalStudents = await Student.countDocuments();
 
-    // Student status counts
     const studentStatuses = await Student.aggregate([
       {
         $group: {
@@ -23,10 +21,8 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       return acc;
     }, {});
 
-    // Total number of payments
     const totalPayments = await Payment.countDocuments();
 
-    // Payment status counts
     const paymentStatuses = await Payment.aggregate([
       {
         $group: {
@@ -41,7 +37,6 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       return acc;
     }, {});
 
-    // Aggregate total amount paid
     const totalAmountPaid = await Payment.aggregate([
       {
         $group: {
@@ -51,7 +46,6 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       },
     ]);
 
-    // Aggregate total amount to be paid
     const totalAmountToBePaid = await Payment.aggregate([
       {
         $group: {
@@ -61,11 +55,25 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       },
     ]);
 
-    // Statistics by shift for students
+    // Statistics by shift for students with proper population
     const shiftStudents = await Student.aggregate([
       {
+        $lookup: {
+          from: "shifts",
+          localField: "selectedShift",
+          foreignField: "_id",
+          as: "shiftInfo",
+        },
+      },
+      {
+        $unwind: "$shiftInfo",
+      },
+      {
         $group: {
-          _id: "$selectedShift",
+          _id: {
+            shiftId: "$selectedShift",
+            shiftName: "$shiftInfo.name", // Assuming shift has a name field
+          },
           total: { $sum: 1 },
           pending: {
             $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] },
@@ -88,40 +96,56 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
         },
       },
       {
-        $sort: { _id: 1 },
-      },
-    ]);
-    const departmentStudents = await Student.aggregate([
-      {
-        $group: {
-          _id: "$selectedCourse",
-          total: { $sum: 1 },
-          pending: {
-            $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] },
-          },
-          accepted: {
-            $sum: { $cond: [{ $eq: ["$status", "accepted"] }, 1, 0] },
-          },
-          registered: {
-            $sum: { $cond: [{ $eq: ["$status", "registered"] }, 1, 0] },
-          },
-          started: {
-            $sum: { $cond: [{ $eq: ["$status", "started"] }, 1, 0] },
-          },
-          completed: {
-            $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] },
-          },
-          droppedout: {
-            $sum: { $cond: [{ $eq: ["$status", "droppedout"] }, 1, 0] },
-          },
-        },
-      },
-      {
-        $sort: { _id: 1 },
+        $sort: { "_id.shiftName": 1 },
       },
     ]);
 
-    // Statistics by shift for payments (updated to check for associated students)
+    // Statistics by department/course for students with proper population
+    const departmentStudents = await Student.aggregate([
+      {
+        $lookup: {
+          from: "courses",
+          localField: "selectedCourse",
+          foreignField: "_id",
+          as: "courseInfo",
+        },
+      },
+      {
+        $unwind: "$courseInfo",
+      },
+      {
+        $group: {
+          _id: {
+            courseId: "$selectedCourse",
+            courseName: "$courseInfo.title", // Assuming course has a name field
+          },
+          total: { $sum: 1 },
+          pending: {
+            $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] },
+          },
+          accepted: {
+            $sum: { $cond: [{ $eq: ["$status", "accepted"] }, 1, 0] },
+          },
+          registered: {
+            $sum: { $cond: [{ $eq: ["$status", "registered"] }, 1, 0] },
+          },
+          started: {
+            $sum: { $cond: [{ $eq: ["$status", "started"] }, 1, 0] },
+          },
+          completed: {
+            $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] },
+          },
+          droppedout: {
+            $sum: { $cond: [{ $eq: ["$status", "droppedout"] }, 1, 0] },
+          },
+        },
+      },
+      {
+        $sort: { "_id.courseName": 1 },
+      },
+    ]);
+
+    // Statistics by shift for payments with proper population
     const shiftPayments = await Payment.aggregate([
       {
         $lookup: {
@@ -132,16 +156,25 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
         },
       },
       {
-        $match: {
-          student: { $ne: [] }, // Filter out payments without associated students
-        },
-      },
-      {
         $unwind: "$student",
       },
       {
+        $lookup: {
+          from: "shifts",
+          localField: "student.selectedShift",
+          foreignField: "_id",
+          as: "shiftInfo",
+        },
+      },
+      {
+        $unwind: "$shiftInfo",
+      },
+      {
         $group: {
-          _id: "$student.selectedShift",
+          _id: {
+            shiftId: "$student.selectedShift",
+            shiftName: "$shiftInfo.title",
+          },
           totalPaid: {
             $sum: "$amountPaid",
           },
@@ -153,12 +186,12 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       {
         $addFields: {
           totalUnpaid: {
-            $subtract: ["$totalDue", "$totalPaid"], // Calculate unpaid as due minus paid
+            $subtract: ["$totalDue", "$totalPaid"],
           },
         },
       },
       {
-        $sort: { _id: 1 },
+        $sort: { "_id.shiftName": 1 },
       },
     ]);
 
@@ -180,7 +213,7 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       },
     ]);
 
-    const summary = { 
+    const summary = {
       totalStudents,
       studentStatusCounts,
       totalPayments,

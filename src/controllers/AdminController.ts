@@ -42,10 +42,10 @@ export class AdminControllers {
     }
   };
     static addShift = async (req: Request, res: Response) => {
-    const { start,end } = req.body;
+    const { start,end,name,days } = req.body;
     try {
       await Shift.create({
-        start,end
+        start,end,name,days
       });
       res.status(200).json({ message: "shifts added" });
     } catch (error: any) {
@@ -79,6 +79,7 @@ export class AdminControllers {
   };
   static deleteShift = async (req: Request, res: Response) => {
     const { id } = req.params;
+    console.log(id)
     const shift = await Shift.findById(id);
     if (!shift) {
       return res.status(400).json({ message: "shift not found" });
