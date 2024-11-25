@@ -209,7 +209,7 @@ export class StudentControllers {
   static registerNew = async (req: Request, res: Response) => {
     const student = req.body;
     try {
-      const course = await Course.findOne({ title: student.selectedCourse });
+      const course = await Course.findById(student.selectedCourse );
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
