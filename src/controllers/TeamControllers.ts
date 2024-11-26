@@ -11,12 +11,12 @@ import { sendMessage } from "../utils/sendSms";
 export class TeamControllers {
   static AddMember = async (req: Request, res: Response) => {
     try {
-      const { name, title, image, email, role, instagram } = req.body;
+      const { name, title, image, email,position, instagram } = req.body;
       const isExist = await Team.findOne({ email: email });
       if (isExist) {
         return res.status(400).json({ message: "member already exist" });
       }
-      await Team.create({ name, title, image, email, role, instagram });
+      await Team.create({ name, title, image, email, position, instagram });
       return res.status(200).json({ messsage: "member added" });
     } catch (error: any) {
       return res
