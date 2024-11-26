@@ -11,7 +11,7 @@ import { sendMessage } from "../utils/sendSms";
 export class TeamControllers {
   static AddMember = async (req: Request, res: Response) => {
     try {
-      const { name, title, image, email, role, instagram } = req.body;
+      const { name, title, image, email,position, instagram } = req.body;
       const isExist = await Team.findOne({ email: email });
       if (isExist) {
         return res.status(400).json({ message: "member already exist" });
