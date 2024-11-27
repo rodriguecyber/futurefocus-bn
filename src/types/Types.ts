@@ -34,6 +34,7 @@ export interface StudentTypes extends Document {
 export interface TeamTypes extends Document {
   name: string;
   active:boolean
+  attend:boolean
   image: string;
   position: string;
   email: string;

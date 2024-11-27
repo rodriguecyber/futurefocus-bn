@@ -17,11 +17,11 @@ export class TeamControllers {
         return res.status(400).json({ message: "member already exist" });
       }
       await Team.create({ name, title, image, email, position, instagram });
-      return res.status(200).json({ messsage: "member added" });
-    } catch (error: any) {
+      return res.status(200).json({ messsage: "member added" }); 
+    } catch (error: any) { 
       return res
         .status(500)
-        .json({ message: `error ${error.message} Occured` });
+        .json({ message: `error ${error.message} Occured` });  
     }
   };
   static Team = async (req: Request, res: Response) => {
@@ -80,6 +80,9 @@ export class TeamControllers {
 
       if (!member) {
         return res.status(400).json({ message: "member does not exist" });
+      }
+      if (!member.active) {
+        return res.status(400).json({ message: "member is not active" });
       }
   
       await Team.findByIdAndUpdate(id, {isAdmin:!member.isAdmin});
@@ -197,11 +200,11 @@ export class TeamControllers {
   static forgotPassword = async (req: Request, res: Response) => {
     try {
       const { email } = req.body;
-      const member = await Team.findOne({ email });
+      const member = await Team.findOne({ email,active:true });
       if (!member) {
         return res
           .status(400)
-          .json({ message: "Team with this email not found" });
+          .json({ message: "Team with this email not found or is not active" });
       }
       const token = await generateToken({
         id: member._id,
@@ -261,9 +264,9 @@ export class TeamControllers {
   static login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-      const user = await Team.findOne({ email });
+      const user = await Team.findOne({ email,active:true });
       if (!user) {
-        return res.status(401).json({ message: "Email not found" });
+        return res.status(401).json({ message: "Email not found or not active" });
       }
 
       const isMatch = await comparePassword(password, user.password);
@@ -419,6 +422,24 @@ export class TeamControllers {
       }
 
       member.active=!member.active
+      await member.save()
+       return res.status(200).json({ message: "member uodated succesfull" }); 
+    } catch (error) {
+        res.status(500).json({ message: "internal server error" }); 
+      
+    }
+
+  }
+  static switchAttend= async(req:Request,res:Response)=>{
+    try {
+      const {id} = req.params;
+      const member =await Team.findById(id)
+      if(!member){
+       return  res.status(400).json({ message: "member not found" }); 
+
+      }
+
+      member.attend=!member.attend
       await member.save()
        return res.status(200).json({ message: "member uodated succesfull" }); 
     } catch (error) {
