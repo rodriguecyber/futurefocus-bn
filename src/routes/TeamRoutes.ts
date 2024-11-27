@@ -20,4 +20,5 @@ TeamRoute.put("/toogle-admin/:id", TeamControllers.toggleAdmin);
 TeamRoute.put("/leave/:id", TeamControllers.leave);
 TeamRoute.put("/comment/:id", TeamControllers.addComment);
 TeamRoute.put("/comment/:id", TeamControllers.addComment);
-TeamRoute.put("/toogle-attendance/:id", TeamControllers.activateMember);
+TeamRoute.put("/toogle-attendance/:id", TeamControllers.switchAttend);
+TeamRoute.put("/toogle-active/:id", TeamControllers.activateMember);

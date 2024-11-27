@@ -28,7 +28,7 @@ export const dailyAttendance = () => {
 export const teamAttendance = () => {
   cron.schedule("0 4 * * 1-6", async () => {
     try {
-      const members = await Team.find({active:true});
+      const members = await Team.find({active:true,attend:true});
       for (const member of members) {
         await TeamAttendandance.create({
           memberId: member._id,
