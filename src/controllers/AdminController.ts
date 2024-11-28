@@ -47,7 +47,17 @@ export class AdminControllers {
       await Shift.create({
         start,end,name,days
       });
-      res.status(200).json({ message: "shifts added" });
+      res.status(201).json({ message: "shifts added" });
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message}` });
+    }
+  };
+    static updateShift = async (req: Request, res: Response) => {
+    const data = req.body;
+    const {id} = req.params
+    try {
+      await Shift.findByIdAndUpdate(id,data);
+      res.status(200).json({ message: "shifts updated" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message}` });
     }
