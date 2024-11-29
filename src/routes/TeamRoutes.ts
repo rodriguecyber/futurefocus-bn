@@ -18,7 +18,7 @@ TeamRoute.delete("/delete/:id",TeamControllers.deleteMember)
 TeamRoute.put("/update/:id",TeamControllers.update)
 TeamRoute.put(
   "/request-attend/:id",
-  checkLocation(allowedLocation, 100),
+  checkLocation(allowedLocation, 20),
   TeamControllers.requestAttend
 );
 TeamRoute.put(
