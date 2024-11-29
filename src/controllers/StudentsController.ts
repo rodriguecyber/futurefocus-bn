@@ -39,6 +39,23 @@ export class StudentControllers {
         .json({ message: `failed to apply! try again ${error.message}` });
     }
   };
+  static pastRecord = async (req: Request, res: Response) => {
+    const studentData = req.body;
+  
+    try {
+      const alreadyExist =
+        await Student.findOne({ phone: studentData.phone });
+      if (alreadyExist) {
+        return res.status(400).json({ message: "already recorded " });
+      }
+      await Student.create(studentData);
+      return res.status(200).json({ message: "record inserted " });
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `failed to insert! try again ${error.message}` });
+    }
+  };
   static techupapply = async (req: Request, res: Response) => {
     const student = req.body;
   

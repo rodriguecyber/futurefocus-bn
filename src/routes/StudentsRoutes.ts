@@ -7,6 +7,7 @@ import { getAttendance,
 
 export const StudentRoutes =  Router()
 StudentRoutes.post('/apply',StudentControllers.apply)
+StudentRoutes.post('/past',StudentControllers.pastRecord)
 StudentRoutes.post('/techup',StudentControllers.techupapply)
 StudentRoutes.post('/techup/notify',StudentControllers.notifyTechups)
 StudentRoutes.get('/techup',StudentControllers.techUpStudent)
