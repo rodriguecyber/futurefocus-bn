@@ -1,5 +1,6 @@
 import connection from "./config/db";
 import express from "express";
+const os = require("os");
 import dotenv from "dotenv";
 import cors from "cors";
 import { endIntake, startIntake } from "./jobs/StudentAutomation";
@@ -46,6 +47,7 @@ app.post("/api/v1/test/", testController);
 
 app.listen(PORT, () => {
   console.log(`App is listening at http://localhost:${PORT}`);
+ 
 });
 
 
