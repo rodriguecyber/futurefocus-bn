@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { Institution } from "../models/institution"
 import { Access } from "../models/Access"
 import { AccessPayment } from "../models/accessPayment"
+import Team from "../models/Team"
 
 export class InstitutionControllers{
     static register = async(req:Request,res:Response)=>{
@@ -12,10 +13,12 @@ export class InstitutionControllers{
         return res.status(400).json({message:"Institution already exists"})
                 
             }
-        await Institution.create({name,email,phone,logo})
+       const newInst =  await Institution.create({name,email,phone,logo})
+        await Team.create({institution:newInst._id,name,email,phone,isAdmin:true,image:'hhh',position:"Admin"})
         res.status(201).json({message:"Institution created successfully"})
         } catch (error) {
             res.status(500).json({message:"internal server error"})
+            console.log(error)
         }
 
         }

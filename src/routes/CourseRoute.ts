@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { ServiceController } from "../controllers/ServivicesController";
 import { CourseController } from "../controllers/CourseController";
 import { isloggedIn } from "../middleware/isLoggedIn";
 

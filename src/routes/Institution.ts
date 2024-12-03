@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { InstitutionControllers } from "../controllers/InstitutionControllers";
 
-const InstitutionRouter = Router()
+export const InstitutionRouter = Router()
 InstitutionRouter.get('/',InstitutionControllers.all)
 InstitutionRouter.post('/',InstitutionControllers.register)
 InstitutionRouter.put('/',InstitutionControllers.activate)

@@ -14,11 +14,12 @@ const TeamSchema = new Schema<TeamTypes>({
   position: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String },
-  instagram: { type: String, require: true },
+  instagram: { type: String, },
   password: { type: String, require: true, default: "00000000" },
   otp: { type: Schema.Types.Number, require: true, default: null },
   role: { type: Schema.Types.ObjectId, ref: "Role" },
   isAdmin: { type: Schema.Types.Boolean, default: false },
+
 });
 const Team = model<TeamTypes>("Team",TeamSchema)
 
