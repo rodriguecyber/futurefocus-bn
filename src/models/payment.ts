@@ -3,6 +3,11 @@ import { paymentTypes } from "../types/Types";
 
 const paymentSchema = new Schema<paymentTypes>(
   {
+    institution: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Institution",
+      required: true,
+    },
     studentId: {
       type: mongoose.Types.ObjectId,
       required: true,
@@ -18,8 +23,7 @@ const paymentSchema = new Schema<paymentTypes>(
     amountPaid: { type: Number, default: 0, required: true },
     amountDiscounted: { type: Number, default: 0, required: true },
     extraAmount: { type: Number, default: 0, required: true },
-    comment: { type: String,  required: false },
-    
+    comment: { type: String, required: false },
   },
   {
     timestamps: true,

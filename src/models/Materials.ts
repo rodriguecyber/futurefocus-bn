@@ -1,14 +1,16 @@
-import { model, ObjectId, Schema } from "mongoose";
+import mongoose, { model, ObjectId, Schema } from "mongoose";
 
 interface IMaterial {
+  institution: ObjectId;
   materialName: string;
   category: ObjectId;
   amount: number;
-  SN:string,
-  type:string
+  SN: string;
+  type: string;
   rent: number;
 }
 export interface IMaterialRent {
+  institution:ObjectId
   materialId: ObjectId;
   render: ObjectId;
   receiver: ObjectId;
@@ -33,18 +35,25 @@ const InventorySchema = new Schema<IInventory>({
 export const Inventory = model<IInventory>("Inventory", InventorySchema);
 
 
-const MaterialSchema = new Schema<IMaterial>({
-  materialName: { type: String, required: true },
-  category: { type: Schema.Types.ObjectId, ref: "Inventory" },
-  amount: { type: Number, required: true, default: 0 },
-  SN: { type: String},
-  type: { type: String },
-  
-  rent: { type: Number, required: true, default: 0 },
-},
-{
-  timestamps:true
-});
+const MaterialSchema = new Schema<IMaterial>(
+  {
+    institution: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Institution",
+      required: true,
+    },
+    materialName: { type: String, required: true },
+    category: { type: Schema.Types.ObjectId, ref: "Inventory" },
+    amount: { type: Number, required: true, default: 0 },
+    SN: { type: String },
+    type: { type: String },
+
+    rent: { type: Number, required: true, default: 0 },
+  },
+  {
+    timestamps: true,
+  }
+);
 export const Material = model<IMaterial>("Material", MaterialSchema);
 
 const MaterialRentSchema = new Schema<IMaterialRent>({

@@ -1,14 +1,27 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 import { StudentTypes } from "../types/Types";
 
 // Define the Student schema
 const StudentSchema = new Schema<StudentTypes>(
   {
-    name: { type: String, required:false },
-    email: { type: String, required:true, default:"academic@futurefocus.rw" },
+    institution: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Institution",
+      required: true,
+    },
+    name: { type: String, required: false },
+    email: { type: String, required: true, default: "academic@futurefocus.rw" },
     phone: { type: String, required: true },
-    selectedCourse: { type: Schema.Types.ObjectId,ref:"Course", required: true },
-    selectedShift: { type: Schema.Types.ObjectId, ref:"shift", required: true },
+    selectedCourse: {
+      type: Schema.Types.ObjectId,
+      ref: "Course",
+      required: true,
+    },
+    selectedShift: {
+      type: Schema.Types.ObjectId,
+      ref: "shift",
+      required: true,
+    },
     intake: { type: String, required: true },
     message: { type: String, required: false },
     comment: { type: String, required: false },

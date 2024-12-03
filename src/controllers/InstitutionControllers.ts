@@ -19,6 +19,16 @@ export class InstitutionControllers{
         }
 
         }
+    static all = async(req:Request,res:Response)=>{
+        try {
+            const inst  = await Institution.find()
+    
+        res.status(201).json({inst})
+        } catch (error) {
+            res.status(500).json({message:"internal server error"})
+        }
+
+        }
 static verify = async(req:Request,res:Response)=>{
     try {
         const {id} = req.params
@@ -47,15 +57,30 @@ static activate = async(req:Request,res:Response)=>{
             return res.status(404).json({message:"Institution not found"})
         }
       await AccessPayment.create({institution:inst._id,amount})
+      await Access.findOneAndUpdate({institution:id},{$inc:{duration}})
       const accesInst =  await  Access.findOne({institution:inst._id})
             if(!accesInst){
                 return res.status(400).json({message:"record not found"})
             }
-            //  accesInst?.duration=+duration
         
     } catch (error) {
+            res.status(500).json({ message: "internal server error" });
+        
+    }
+
+}
+
+static addfeature = async(req:Request,res:Response)=>{
+    try {
+        const {features,institution} =req.body
+         await Access.findOneAndUpdate({institution},{$push:{features}})
+       res.status(200).json({message:"feature added succesfuly"})
+    } catch (error) {
+            res.status(500).json({ message: "internal server error" });
         
     }
 }
+
+
 
     }

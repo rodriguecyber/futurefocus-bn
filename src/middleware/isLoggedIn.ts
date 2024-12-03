@@ -6,25 +6,20 @@ export const isloggedIn = async (req: Request, res: Response,next:NextFunction) 
     try {
       const token = req.headers.authorization?.split(" ")[1];
       if (!token) {
-        return res.status(401).json({ message: "error! if persist login again" });
+        return res.status(401).json({ message: "token not found" });
       }
 
-      const id = await decodeToken(token)._id;
+      const id = await decodeToken(token).id;
       if (!id) {
-                return res
-                  .status(401)
-                  .json({ message: "user not authenticated" });
-
+        return res.status(401).json({ message: "user not authenticated" });
       }
-    const user = await Team.findById(id)
-    if(!user){
+      const user = await Team.findById(id);
+      if (!user) {
         return res.status(401).json({ message: "user not found" });
-    }
-
-      if (!user.isAdmin) {
-        return res.status(403).json({ message: "only admin allowed" })
       }
-      next()
+      //@ts-expect-error error
+      req.loggedUser = user;
+      next();
     } catch (error: any) {
       return res
         .status(500)

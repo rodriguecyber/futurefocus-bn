@@ -1,5 +1,6 @@
 import { Document, ObjectId, Schema } from "mongoose";
 export interface TaskTypes extends Document {
+  institution: ObjectId;
   user: ObjectId;
   task: string;
   endTime: Date;
@@ -10,21 +11,24 @@ export interface TaskTypes extends Document {
   comments: [ObjectId];
 }
 export interface ReplyTypes {
+  institution: ObjectId;
   user: ObjectId;
   text: string;
   comment: ObjectId;
 }
 export interface CommentTypes {
+  institution: ObjectId;
   task: ObjectId;
   text: string;
   user: ObjectId;
   replies: [ObjectId];
 }
 export interface StudentTypes extends Document {
+  institution: ObjectId;
   name: string;
   email: string;
   phone: Number;
-  selectedCourse: ObjectId; 
+  selectedCourse: ObjectId;
   selectedShift: ObjectId;
   message: string;
   comment: string;
@@ -32,27 +36,29 @@ export interface StudentTypes extends Document {
   intake: string;
 }
 export interface TeamTypes extends Document {
+  institution: ObjectId;
   name: string;
-  active:boolean
-  attend:boolean
+  active: boolean;
+  attend: boolean;
   image: string;
   position: string;
   email: string;
   instagram: string;
   password: string;
-  isAdmin:boolean
-  role:ObjectId
-  otp:number|null
-  phone:string
-  
+  isAdmin: boolean;
+  role: ObjectId;
+  otp: number | null;
+  phone: string;
 }
 export interface ServiceTypes extends Document {
+  institution: ObjectId;
   title: string;
   subservices: string[];
   icon: string;
 }
 
 export interface CourseTypes extends Document {
+  institution:ObjectId,
   title: string;
   description: string;
   rating: number;
@@ -77,11 +83,12 @@ export interface Contact extends Document {
 }
 
 export interface attendanceTypes {
+  institution: ObjectId;
   studentId: Schema.Types.ObjectId;
   status: string;
- 
 }
 export interface paymentTypes {
+  institution: ObjectId;
   studentId: Schema.Types.ObjectId;
   status: string;
   amountDue: number;
@@ -92,11 +99,13 @@ export interface paymentTypes {
 }
 
 export interface transactionTypes {
+  institution: ObjectId;
   studentId: Schema.Types.ObjectId;
   amount: number;
   reason: string;
 }
 export interface cashflowTypes {
+  institution: ObjectId;
   type: string;
   user: string;
   amount: number;
@@ -104,19 +113,22 @@ export interface cashflowTypes {
   payment: string;
 }
 export interface RoleTypes {
+  institution: ObjectId;
   role: string;
   permission: ObjectId[];
 }
 export interface PermissionTypes {
+  institution: ObjectId;
   feature: ObjectId;
   permission: string;
 }
-export interface InstitutionTypes{
-  name:string,
-  logo:string,
-  email:string
-  phone:number
-  verified:boolean
+export interface InstitutionTypes {
+  institution: ObjectId;
+  name: string;
+  logo: string;
+  email: string;
+  phone: number;
+  verified: boolean;
 }
 export interface AccessPaymentTypes{
   institution:ObjectId
