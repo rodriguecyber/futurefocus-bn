@@ -4,9 +4,15 @@ import Course from "../models/Course";
 
 export class CourseController {
   static NewCourse = async (req: Request, res: Response) => {
-    const { title, image,rating } = req.body;
+    const { title, image, rating, nonScholarship, scholarship } = req.body;
     try {
-      await Course.create({ title, rating, image });
+      await Course.create({
+        title,
+        rating,
+        image,
+        nonScholarship,
+        scholarship,
+      });
       res.status(200).json({ message: "course Added" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
