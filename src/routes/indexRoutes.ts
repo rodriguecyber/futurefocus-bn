@@ -12,20 +12,21 @@ import MediaRouter from "../routes/mediaRouter";
 import { othersRoute } from "./AdminRoutes";
 import { inventoryRouter } from "./inventoryRoutes";
 import { InstitutionRouter } from "./Institution";
+import { isloggedIn } from "../middleware/isLoggedIn";
 
 
 export const indexRouter = Router()
-indexRouter.use("/others", othersRoute);
-indexRouter.use("/students", StudentRoutes);
-indexRouter.use("/member", TeamRoute);
-indexRouter.use("/service", ServiceRoute);
-indexRouter.use("/course", CourseRoute);
-indexRouter.use("/media", MediaRouter);
-indexRouter.use("/payment", paymentRouter);
-indexRouter.use("/cashflow", cashRouter);
-indexRouter.use("/job", JobRouter);
-indexRouter.use("/role", RoleRouter);
-indexRouter.use("/task", taskRouter);  
-indexRouter.use("/inventory", inventoryRouter);
-indexRouter.use("/institution", InstitutionRouter);  
+indexRouter.use("/others",isloggedIn, othersRoute);
+indexRouter.use("/students",isloggedIn, StudentRoutes);
+indexRouter.use("/member",isloggedIn, TeamRoute);
+indexRouter.use("/service",isloggedIn, ServiceRoute);
+indexRouter.use("/course",isloggedIn, CourseRoute);
+indexRouter.use("/media",isloggedIn, MediaRouter);
+indexRouter.use("/payment",isloggedIn, paymentRouter);
+indexRouter.use("/cashflow",isloggedIn, cashRouter);
+indexRouter.use("/job", isloggedIn,JobRouter);
+indexRouter.use("/role", isloggedIn,RoleRouter);
+indexRouter.use("/task",isloggedIn, taskRouter);  
+indexRouter.use("/inventory",isloggedIn, inventoryRouter);
+indexRouter.use("/institution",isloggedIn, InstitutionRouter);  
 // indexRouter.get("/test", payment);  

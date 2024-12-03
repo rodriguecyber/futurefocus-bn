@@ -28,13 +28,15 @@ export class AdminControllers {
   };
     static addIntake = async (req: Request, res: Response) => {
     const { intake } = req.body;
+    //@ts-ignore
+    const loggedUser = req.loggedUser
     try {
       const isAvailable = await Intake.findOne({ intake: intake });
       if (isAvailable) {
         return res.status(400).json({ message: "intake already available" });
       }
       await Intake.create({
-        intake: intake,
+        intake: intake,institution:loggedUser.institution
       });
       res.status(200).json({ message: "intake added" });
     } catch (error: any) {
