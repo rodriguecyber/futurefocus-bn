@@ -111,3 +111,20 @@ export interface PermissionTypes {
   feature: ObjectId;
   permission: string;
 }
+export interface InstitutionTypes{
+  name:string,
+  logo:string,
+  email:string
+  phone:number
+  verified:boolean
+}
+export interface AccessPaymentTypes{
+  institution:ObjectId
+  amount:number
+}
+export interface accesstypes{
+  institution:ObjectId,
+  active:boolean
+  duration:number
+  features:ObjectId[]
+}
