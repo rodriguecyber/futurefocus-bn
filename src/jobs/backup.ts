@@ -9,14 +9,11 @@ const execAsync = promisify(exec);
 export const backup = async () => {
   const backupDir = path.join(__dirname, "mongodb-backup");
 
-  // Create a backup with timestamp
   const getTimestamp = () => {
     const now = new Date();
     return now.toISOString().split("T")[0];
   };
-
-  // Schedule the backup to run at 12:04 PM daily
-  cron.schedule("54 10 * * *", async () => {
+  cron.schedule("41 16 * * *", async () => {
     try {
       console.log("Running MongoDB backup...");
 

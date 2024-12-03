@@ -39,6 +39,23 @@ export class StudentControllers {
         .json({ message: `failed to apply! try again ${error.message}` });
     }
   };
+  static pastRecord = async (req: Request, res: Response) => {
+    const studentData = req.body;
+  
+    try {
+      const alreadyExist =
+        await Student.findOne({ phone: studentData.phone });
+      if (alreadyExist) {
+        return res.status(400).json({ message: "already recorded " });
+      }
+      await Student.create(studentData);
+      return res.status(200).json({ message: "record inserted " });
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `failed to insert! try again ${error.message}` });
+    }
+  };
   static techupapply = async (req: Request, res: Response) => {
     const student = req.body;
   
@@ -104,7 +121,9 @@ export class StudentControllers {
 
   static students = async (req: Request, res: Response) => {
     try {
-      const students = await Student.find().sort({ createdAt: -1 });
+      const students = await Student.find()
+        .sort({ createdAt: -1 })
+        .populate("selectedCourse selectedShift");
       return res.status(200).json(students);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occurred` });
@@ -133,19 +152,14 @@ export class StudentControllers {
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
-      const course = await Course.findOne({
-        title: {
-          $regex: new RegExp(
-            `^\\s*${student.selectedCourse.replace(/\s+/g, "\\s*")}\\s*$`,
-            "i"
-          ),
-        },
-      });
+      const course = await Course.findById(student.selectedCourse);
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
 
-      await Student.findByIdAndUpdate(id, { status: status });
+      await Student.findByIdAndUpdate(id, { status: status }).populate(
+        "selectedCourse"
+      );
       if (status === "registered") {
         await Transaction.create({
           studentId: student._id,
@@ -165,7 +179,8 @@ export class StudentControllers {
           amountDiscounted: course.nonScholarship - course.scholarship,
         });
       await sendMessage(
-        MessageTemplate({ name: student.name, amount: 0, remain: 0 ,course:student.selectedCourse}).register,
+        //@ts-ignore
+        MessageTemplate({ name: student.name, amount: 0, remain: 0 ,course:student.selectedCourse.name}).register,
         [student.phone.toString()]
       );
 
@@ -176,7 +191,8 @@ export class StudentControllers {
           name: student.name,
           amount: 0,
           remain: 0,
-          course: student.selectedCourse,
+          //@ts-ignore
+          course: student.selectedCourse.name,
         }).admit,
         [student.phone.toString()]
       );
@@ -210,7 +226,7 @@ export class StudentControllers {
   static registerNew = async (req: Request, res: Response) => {
     const student = req.body;
     try {
-      const course = await Course.findOne({ title: student.selectedCourse });
+      const course = await Course.findById(student.selectedCourse );
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }

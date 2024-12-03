@@ -1,10 +1,13 @@
 import { Router } from "express";
 import { StudentControllers } from "../controllers/StudentsController";
-import { getAttendance, updateAttendance } from "../controllers/Attendance";
+import { getAttendance,
+     updateAttendance 
+    } from "../controllers/Attendance";
 
 
 export const StudentRoutes =  Router()
 StudentRoutes.post('/apply',StudentControllers.apply)
+StudentRoutes.post('/past',StudentControllers.pastRecord)
 StudentRoutes.post('/techup',StudentControllers.techupapply)
 StudentRoutes.post('/techup/notify',StudentControllers.notifyTechups)
 StudentRoutes.get('/techup',StudentControllers.techUpStudent)
