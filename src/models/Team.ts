@@ -9,6 +9,9 @@ const TeamSchema = new Schema<TeamTypes>({
   position:{type:String, required:true},
   email:{type:String, required:true},
   phone:{type:String},
+  entry:{type:String},
+  exit:{type:String},
+  days:{type:String},
   instagram:{type:String,require:true },
   password:{type:String,require:true, default:'00000000' },
   otp:{type:Schema.Types.Number,require:true, default:null },
@@ -22,6 +25,7 @@ const Team = model<TeamTypes>("Team",TeamSchema)
 const TeamAttendanceSchema = new Schema({
   memberId: { type: Schema.Types.ObjectId, ref: "Team", required: true },
   timeOut:{type:Date},
+  charge:{type:{type:{type:String,enum:['reward','penality,none'], default:"none"},amount:{type:String,default:0},status:{type:String,enum:['pending','comfirmed'],default:'pending'}}},
   comment:{type:String},
   response:{type:String}, 
   status: {

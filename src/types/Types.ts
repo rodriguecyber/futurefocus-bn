@@ -44,6 +44,9 @@ export interface TeamTypes extends Document {
   role:ObjectId
   otp:number|null
   phone:string
+  entry:string
+  exit:string
+  days:string
   
 }
 export interface ServiceTypes extends Document {

@@ -40,6 +40,19 @@ export class CourseController {
       res.status(500).json({ message: `Error ${error.message}` });
     }
   };
+  static activate = async (req: Request, res: Response) => {
+    try {
+      const courseId = req.params.id;
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.status(400).json({ message: "course not found" });
+      }
+      await Course.findByIdAndUpdate(courseId, {active:!course.active});
+      res.status(200).json({ message: "course updated" });
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message}` });
+    }
+  };
   static delete = async (req: Request, res: Response) => {
     try {
       const courseId = req.params.id;
