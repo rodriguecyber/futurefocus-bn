@@ -26,9 +26,9 @@ export class AdminControllers {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
-    static addIntake = async (req: Request, res: Response) => {
+    static addIntake = async (req: any, res: Response) => {
     const { intake } = req.body;
-    //@ts-ignore
+
     const loggedUser = req.loggedUser
     try {
       const isAvailable = await Intake.findOne({ intake: intake });

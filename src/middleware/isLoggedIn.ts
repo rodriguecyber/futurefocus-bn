@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { decodeToken } from "../utils/token";
 import Team from "../models/Team";
 
-export const isloggedIn = async (req: Request, res: Response,next:NextFunction) => {
+export const isloggedIn = async (req: any, res: Response,next:NextFunction) => {
     try {
       const token = req.headers.authorization?.split(" ")[1];
       if (!token) {
@@ -17,7 +17,6 @@ export const isloggedIn = async (req: Request, res: Response,next:NextFunction) 
       if (!user) {
         return res.status(401).json({ message: "user not found" });
       }
-      //@ts-expect-error error
       req.loggedUser = user;
       next();
     } catch (error: any) {
