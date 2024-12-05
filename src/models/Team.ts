@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, ObjectId, Schema } from "mongoose";
 import {  TeamTypes } from "../types/Types";
 
 const TeamSchema = new Schema<TeamTypes>({
@@ -21,22 +21,40 @@ const TeamSchema = new Schema<TeamTypes>({
 })
 const Team = model<TeamTypes>("Team",TeamSchema)
 
+interface ICharge{
+  amount:number
+  status:string
+}
+interface ITeamAttendance{
+   memberId:ObjectId
+    timeOut:  Date ,
+    charge:ICharge,
+    comment: String,
+    response:  String ,
+    status:  String,
+     
+}
 
-const TeamAttendanceSchema = new Schema({
-  memberId: { type: Schema.Types.ObjectId, ref: "Team", required: true },
-  timeOut:{type:Date},
-  charge:{type:{type:{type:String,enum:['reward','penality,none'], default:"none"},amount:{type:String,default:0},status:{type:String,enum:['pending','comfirmed'],default:'pending'}}},
-  comment:{type:String},
-  response:{type:String}, 
-  status: {
-    type: String,
-    enum: ["absent","pending", "present"],
-    required: true,
-    default: "absent",
+const TeamAttendanceSchema = new Schema<ITeamAttendance>(
+  {
+    memberId: { type: Schema.Types.ObjectId, ref: "Team", required: true },
+    timeOut: { type: Date },
+    charge: {
+      type:Object,
+      default: {amount:0,status:'pending'}, 
+    },
+    comment: { type: String },
+    response: { type: String },
+    status: {
+      type: String,
+      enum: ["absent", "pending", "present"],
+      required: true,
+      default: "absent",
+    },
   },
-  
-},{
-  timestamps:true 
-});
+  {
+    timestamps: true,
+  }
+);
 export const TeamAttendandance = model("TeamAttendance",TeamAttendanceSchema)
 export default Team

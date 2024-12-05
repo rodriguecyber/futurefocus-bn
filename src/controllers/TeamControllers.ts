@@ -6,6 +6,8 @@ import { sendEmail } from "../utils/sendEmail";
 import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
 import { sendMessage } from "../utils/sendSms";
+import moment from "moment";
+import { Attendance } from "../models/Attendance";
 
 
 export class TeamControllers {
@@ -93,16 +95,12 @@ export class TeamControllers {
   };
   static requestAttend = async (req: Request, res: Response) => {
     const { id } = req.params;
-    try {
+    try { 
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
-
-      
-
       const endOfDay = new Date();
       endOfDay.setHours(23, 59, 59, 999);
-       
-const currentTime = "";
+
       const attendance = await TeamAttendandance.findOne({
         _id: id,
         status: "absent",
@@ -116,8 +114,29 @@ const currentTime = "";
           .status(400)
           .json({ message: "your can't request attend now " });
       }
+       const member = await Team.findById(attendance.memberId);
+       if (!member) {
+         return res.status(400).json({ message: "member does not exist" });
+       }
       attendance.status = "pending";
+      const scheduledEntryTime = moment(member.entry, "HH:mm");
+      const actualArrivalTime = moment(); 
+
+      const twoHoursBefore = scheduledEntryTime.clone().subtract(1, "hours");
+      const timeAfter = scheduledEntryTime.clone().add(30, "minutes");
+
+      if (actualArrivalTime.isBefore(twoHoursBefore)) {
+         attendance.charge ={amount:1000,status:"pending"}
       await attendance.save();
+        await sendMessage('congs, you have a plus of 1k for coming early.',[member.phone])
+      } else if(actualArrivalTime.isAfter(timeAfter)) {
+         attendance.charge = {amount: -1000, status: "pending" };
+      await attendance.save();
+        await sendMessage("morning!, you have a reduction of 1k for coming late.", [
+          member.phone,
+        ]);
+       
+      }
       return res
         .status(200)
         .json({ message: "your attendance sent, wait for approval" });
@@ -145,7 +164,37 @@ const currentTime = "";
       if (!attendance) {
         return res.status(400).json({ message: "you did'nt attend to day " });
       }
+ const member = await Team.findById(attendance.memberId);
+ if (!member) {
+   return res.status(400).json({ message: "member does not exist" });
+ }
+
       attendance.timeOut = new Date();
+
+      const scheduledExitTime = moment(member.exit, "HH:mm");
+      const actualExitTime = moment();
+
+      const oneHoursBefore = scheduledExitTime.clone().subtract(1, "hours");
+      const timeAfter = scheduledExitTime.clone().add(2, "hours");
+
+      if (actualExitTime.isBefore(oneHoursBefore)) {
+        attendance.charge = { amount:attendance.charge.amount- 1000, status: "pending" };
+        await attendance.save();
+        await sendMessage(
+          "hoolay!, you have a reduction of 1k for leaving  late.",
+          [member.phone]
+        );
+      } else if (actualExitTime.isAfter(timeAfter)) {
+        attendance.charge = {
+          amount: attendance.charge.amount +1000,
+          status: "pending",
+        };
+        await attendance.save();
+        await sendMessage(
+          " congs, you have a plus of 1k for extra time",
+          [member.phone]
+        );
+      }
       await attendance.save({timestamps:false});
       return res.status(200).json({ message: "thank you for coming" });
     } catch (error: any) {
