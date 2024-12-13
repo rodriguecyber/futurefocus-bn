@@ -8,7 +8,7 @@ inventoryRouter.get('/category',inventoryControllers.getCategory)
 inventoryRouter.get('/:id',inventoryControllers.getInventoryById)
 inventoryRouter.post('/',inventoryControllers.newMaterial)
 inventoryRouter.post('/category',inventoryControllers.newCategory)
-inventoryRouter.patch('/:id',inventoryControllers.updateInventory)
+inventoryRouter.put('/:id',inventoryControllers.updateInventory)
 inventoryRouter.post("/rent", inventoryControllers.rentItems);
 inventoryRouter.put('/:id',inventoryControllers.returnMaterial)
 inventoryRouter.delete('/:id',inventoryControllers.deleteInventory)
