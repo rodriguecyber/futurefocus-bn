@@ -19,7 +19,7 @@ const allowedOrigins = process.env.CORS_ALLOW
   ? process.env.CORS_ALLOW.split(",")
   : ["https://www.futurefocus.co.rw","https://www.futurefocus.co.rw"];
 
-app.use(
+app.use( 
   cors({
     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
 });
 app.use("/api/v1", indexRouter);
-app.post("/api/v1/test/", testController);
+app.get("/api/v1/test/", testController);
 
 
 
