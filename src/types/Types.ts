@@ -1,4 +1,4 @@
-import { Document, ObjectId, Schema } from "mongoose";
+import { Document, ObjectId, Schema, Types } from "mongoose";
 export interface TaskTypes extends Document {
   user: ObjectId;
   task: string;
@@ -24,8 +24,8 @@ export interface StudentTypes extends Document {
   name: string;
   email: string;
   phone: Number;
-  selectedCourse: ObjectId; 
-  selectedShift: ObjectId;
+  selectedCourse: Types.ObjectId; 
+  selectedShift: Types.ObjectId;
   message: string;
   comment: string;
   status: string;

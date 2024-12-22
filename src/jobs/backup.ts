@@ -13,7 +13,7 @@ export const backup = async () => {
     const now = new Date();
     return now.toISOString().split("T")[0];
   };
-  cron.schedule("41 16 * * *", async () => {
+  // cron.schedule("29 3 * * *", async () => {
     try {
       console.log("Running MongoDB backup...");
 
@@ -48,7 +48,7 @@ export const backup = async () => {
         const sortedBackups = backupsList.sort().reverse();
         const backupsToDelete = sortedBackups.slice(keepDays);
 
-        for (const oldBackup of backupsToDelete) {
+        for (const oldBackup of backupsToDelete) { 
           const deleteCommand = `rclone purge mega:/mongodb-backups/${oldBackup}`;
           await execAsync(deleteCommand);
           console.log(`Deleted old backup: ${oldBackup}`);
@@ -66,7 +66,7 @@ export const backup = async () => {
         fs.rmSync(backupDir, { recursive: true, force: true });
       }
     }
-  });
+    // });
 
   console.log(
     "Cron job scheduled. The MongoDB backup will run at 12:04 PM daily."

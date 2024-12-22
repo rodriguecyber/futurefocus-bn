@@ -9,7 +9,7 @@ import { dailyAttendance,
    teamAttendance } from "./jobs/AttendanceAutomation";
 import { indexRouter } from "./routes/indexRoutes";
 import { backup } from "./jobs/backup";
-import { testController } from "./controllers/updateControllere";
+import { migrateAllCollections } from "./controllers/Migration";
 
 dotenv.config();
 
@@ -35,17 +35,17 @@ endIntake();
 dropout()
 dailyAttendance();
 teamAttendance();
-backup()
 
 app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
 });
 app.use("/api/v1", indexRouter);
-app.get("/api/v1/test/", testController);
+// app.get("/api/v1/test/", testController);
 
 
 
 app.listen(PORT, () => {
+
   console.log(`App is listening at http://localhost:${PORT}`);
  
 });
