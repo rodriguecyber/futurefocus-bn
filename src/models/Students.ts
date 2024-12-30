@@ -1,17 +1,17 @@
 import { model, Schema } from "mongoose";
 import { StudentTypes } from "../types/Types";
 
-// Define the Student schema
 const StudentSchema = new Schema<StudentTypes>(
   {
-    name: { type: String, required: false }, // Optional field
-    email: { type: String, required: true, default: "academic@futurefocus.rw" }, // Default email value
+    name: { type: String, required: false }, 
+    email: { type: String, required: true, default: "academic@futurefocus.rw" }, 
     phone: { type: String, required: true },
     selectedCourse: { type: Schema.Types.ObjectId, ref: "Course", required: true },
-    selectedShift: { type: Schema.Types.ObjectId, ref: "Shift", required: true }, // Adjusted collection name to match
+    selectedShift: { type: Schema.Types.ObjectId, ref: "Shift", required: true }, 
     intake: { type: String, required: true },
-    message: { type: String, required: false }, // Optional field
-    comment: { type: String, required: false }, // Optional field
+    message: { type: String, required: false }, 
+    comment: { type: String, required: false }, 
+    referer:{type:String, enum:['default','cyd'],default:"default"},
     status: {
       type: String,
       required: true,
@@ -20,13 +20,11 @@ const StudentSchema = new Schema<StudentTypes>(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
-    strict: true, // Ensures only the defined fields are allowed
+    timestamps: true, 
+    strict: true, 
   }
 );
 
-// Disable global strict query validation if absolutely necessary
-// StudentSchema.set('strictQuery', false); // Uncomment only if absolutely necessary
 
 const Student = model<StudentTypes>("Student", StudentSchema);
 export default Student;

@@ -32,4 +32,4 @@ const ShiftSchema = new Schema<IShift>(
     timestamps: true,
   }
 );
-export const Shift = model<IShift>("shift", ShiftSchema);
+export const Shift = model<IShift>("Shift", ShiftSchema);

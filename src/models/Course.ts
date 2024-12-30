@@ -7,7 +7,7 @@ const CourseSchema = new Schema<CourseTypes>({
   image:{type:String, required:true},
   rating:{type:Number, default:0},
   active:{type:Boolean, default:true},
-  shifts:{type:[Schema.Types.ObjectId], ref:"shift",},
+  shifts:{type:[Schema.Types.ObjectId], ref:"Shift",},
   scholarship:{type:Number,required:true},
   nonScholarship:{type:Number,required:true}
 })

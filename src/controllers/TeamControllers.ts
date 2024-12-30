@@ -13,17 +13,17 @@ import { Attendance } from "../models/Attendance";
 export class TeamControllers {
   static AddMember = async (req: Request, res: Response) => {
     try {
-      const { name, title, image, email,position, instagram } = req.body;
+      const { name, title, image, email, position, instagram } = req.body;
       const isExist = await Team.findOne({ email: email });
       if (isExist) {
         return res.status(400).json({ message: "member already exist" });
       }
       await Team.create({ name, title, image, email, position, instagram });
-      return res.status(200).json({ messsage: "member added" }); 
-    } catch (error: any) { 
+      return res.status(200).json({ messsage: "member added" });
+    } catch (error: any) {
       return res
         .status(500)
-        .json({ message: `error ${error.message} Occured` });  
+        .json({ message: `error ${error.message} Occured` });
     }
   };
   static Team = async (req: Request, res: Response) => {
@@ -38,7 +38,7 @@ export class TeamControllers {
   };
   static teamAdmins = async (req: Request, res: Response) => {
     try {
-      const admins= await Team.find({isAdmin:true}).populate('role');
+      const admins = await Team.find({ isAdmin: true }).populate('role');
       return res.status(200).json(admins);
     } catch (error: any) {
       return res
@@ -78,7 +78,7 @@ export class TeamControllers {
   static toggleAdmin = async (req: Request, res: Response) => {
     try {
       const id = req.params.id;
-      const member =await Team.findById(id);
+      const member = await Team.findById(id);
 
       if (!member) {
         return res.status(400).json({ message: "member does not exist" });
@@ -86,8 +86,8 @@ export class TeamControllers {
       if (!member.active) {
         return res.status(400).json({ message: "member is not active" });
       }
-  
-      await Team.findByIdAndUpdate(id, {isAdmin:!member.isAdmin});
+
+      await Team.findByIdAndUpdate(id, { isAdmin: !member.isAdmin });
       res.status(200).json({ message: "status updated successfull" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -95,7 +95,7 @@ export class TeamControllers {
   };
   static requestAttend = async (req: Request, res: Response) => {
     const { id } = req.params;
-    try { 
+    try {
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
       const endOfDay = new Date();
@@ -114,28 +114,28 @@ export class TeamControllers {
           .status(400)
           .json({ message: "your can't request attend now " });
       }
-       const member = await Team.findById(attendance.memberId);
-       if (!member) {
-         return res.status(400).json({ message: "member does not exist" });
-       }
+      const member = await Team.findById(attendance.memberId);
+      if (!member) {
+        return res.status(400).json({ message: "member does not exist" });
+      }
       attendance.status = "pending";
       const scheduledEntryTime = moment(member.entry, "HH:mm");
-      const actualArrivalTime = moment(); 
+      const actualArrivalTime = moment();
 
       const twoHoursBefore = scheduledEntryTime.clone().subtract(1, "hours");
       const timeAfter = scheduledEntryTime.clone().add(30, "minutes");
 
       if (actualArrivalTime.isBefore(twoHoursBefore)) {
-         attendance.charge ={amount:1000,status:"pending"}
-      await attendance.save();
-        await sendMessage('congs, you have a plus of 1k for coming early.',[member.phone])
-      } else if(actualArrivalTime.isAfter(timeAfter)) {
-         attendance.charge = {amount: -1000, status: "pending" };
-      await attendance.save();
+        attendance.charge = { amount: 1000, status: "pending" }
+        await attendance.save();
+        await sendMessage('congs, you have a plus of 1k for coming early.', [member.phone])
+      } else if (actualArrivalTime.isAfter(timeAfter)) {
+        attendance.charge = { amount: -1000, status: "pending" };
+        await attendance.save();
         await sendMessage("morning!, you have a reduction of 1k for coming late.", [
           member.phone,
         ]);
-       
+
       }
       return res
         .status(200)
@@ -164,10 +164,10 @@ export class TeamControllers {
       if (!attendance) {
         return res.status(400).json({ message: "you did'nt attend to day " });
       }
- const member = await Team.findById(attendance.memberId);
- if (!member) {
-   return res.status(400).json({ message: "member does not exist" });
- }
+      const member = await Team.findById(attendance.memberId);
+      if (!member) {
+        return res.status(400).json({ message: "member does not exist" });
+      }
 
       attendance.timeOut = new Date();
 
@@ -178,7 +178,7 @@ export class TeamControllers {
       const timeAfter = scheduledExitTime.clone().add(2, "hours");
 
       if (actualExitTime.isBefore(oneHoursBefore)) {
-        attendance.charge = { amount:attendance.charge.amount- 1000, status: "pending" };
+        attendance.charge = { amount: attendance.charge.amount - 1000, status: "pending" };
         await attendance.save();
         await sendMessage(
           "hoolay!, you have a reduction of 1k for leaving  late.",
@@ -186,7 +186,7 @@ export class TeamControllers {
         );
       } else if (actualExitTime.isAfter(timeAfter)) {
         attendance.charge = {
-          amount: attendance.charge.amount +1000,
+          amount: attendance.charge.amount + 1000,
           status: "pending",
         };
         await attendance.save();
@@ -195,7 +195,7 @@ export class TeamControllers {
           [member.phone]
         );
       }
-      await attendance.save({timestamps:false});
+      await attendance.save({ timestamps: false });
       return res.status(200).json({ message: "thank you for coming" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -252,7 +252,7 @@ export class TeamControllers {
   static forgotPassword = async (req: Request, res: Response) => {
     try {
       const { email } = req.body;
-      const member = await Team.findOne({ email,active:true });
+      const member = await Team.findOne({ email, active: true });
       if (!member) {
         return res
           .status(400)
@@ -303,8 +303,7 @@ export class TeamControllers {
         { _id: user.id },
         { password: hashedPassword }
       );
-      console.log(password);
-      console.log(user.id);
+     
       return res.status(200).json({ message: "Password changed" });
     } catch (error: any) {
       return res
@@ -316,7 +315,7 @@ export class TeamControllers {
   static login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-      const user = await Team.findOne({ email,active:true });
+      const user = await Team.findOne({ email, active: true });
       if (!user) {
         return res.status(401).json({ message: "Email not found or not active" });
       }
@@ -325,16 +324,16 @@ export class TeamControllers {
       if (!isMatch) {
         return res.status(401).json({ message: "Password does not match" });
       }
-      if(!user.isAdmin){
-          const token = await generateToken({ id: user._id ,isAdmin:user.isAdmin});
-          res.cookie("token", token as string, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 24 * 60 * 60 * 1000,
-          });
-          return res
-            .status(200)
-            .json({ message: "Logged in successfully", token });
+      if (!user.isAdmin) {
+        const token = await generateToken({ id: user._id, isAdmin: user.isAdmin });
+        res.cookie("token", token as string, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+        return res
+          .status(200)
+          .json({ message: "Logged in successfully", token });
       }
 
       const OTP = generateRandom4Digit();
@@ -351,10 +350,10 @@ export class TeamControllers {
             <p>Thank you!</p>
         `,
       };
-     user.phone? await sendMessage(`Hello, ${user.name} your login OTP  for futurefocus portal is ${OTP} `,[user?.phone]):''
+      user.phone ? await sendMessage(`Hello, ${user.name} your login OTP  for futurefocus portal is ${OTP} `, [user?.phone]) : ''
       await sendEmail(mailOptions);
 
-      return res.status(200).json({ message: "check your email for OTP ",id:user._id });
+      return res.status(200).json({ message: "check your email for OTP ", id: user._id });
     } catch (error: any) {
       return res
         .status(500)
@@ -385,10 +384,10 @@ export class TeamControllers {
         return res.status(401).json({ message: "Incorrect OTP" });
       }
 
-          const token = await generateToken({
-            id: user._id,
-            isAdmin: user.isAdmin,
-          });
+      const token = await generateToken({
+        id: user._id,
+        isAdmin: user.isAdmin,
+      });
       res.cookie("token", token as string, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -398,7 +397,6 @@ export class TeamControllers {
       await user.save();
       return res.status(200).json({ message: "Logged in successfully", token });
     } catch (error: any) {
-      console.error(error.message);
       return res
         .status(500)
         .json({ error: error.message || "Internal Server Error" });
@@ -416,11 +414,11 @@ export class TeamControllers {
         return res.status(401).json({ message: "User not authenticated" });
       }
       const user = await Team.findById(userinfo.id).populate({
-        path:'role',
-        populate:{
-          path:'permission',
-          populate:{
-           path:'feature'
+        path: 'role',
+        populate: {
+          path: 'permission',
+          populate: {
+            path: 'feature'
           }
         }
       });
@@ -435,68 +433,68 @@ export class TeamControllers {
         .json({ message: `Error occurred: ${error.message}` });
     }
   };
-  static addComment= async(req:Request,res:Response)=>{
-       const {id} = req.params;
-       const { comment } = req.body;
-  try {
-    
-    await TeamAttendandance.findByIdAndUpdate(id,{comment},{timestamps:false})
-        res.status(200).json({ message: "comment added" });
-    
-  } catch (error) {
-
-        res.status(500).json({ message: "internal server error" }); 
-    
-  }
-  }
-  static addresponse= async(req:Request,res:Response)=>{
-       const {id} = req.params;
-       const { response,phone } = req.body;
-  try {
-    
-  //  const member = await Team.findOne({})
-    await TeamAttendandance.findByIdAndUpdate(id,{response},{timestamps:false})
-    await sendMessage(` message from admin on your today attendance: ${response}`,[phone])
-        res.status(200).json({ message: "response added" });
-    
-  } catch (error) {
-        res.status(500).json({ message: "internal server error" }); 
-    
-  }
-  }
-  static activateMember= async(req:Request,res:Response)=>{
+  static addComment = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { comment } = req.body;
     try {
-      const {id} = req.params;
-      const member =await Team.findById(id)
-      if(!member){
-       return  res.status(400).json({ message: "member not found" }); 
+
+      await TeamAttendandance.findByIdAndUpdate(id, { comment }, { timestamps: false })
+      res.status(200).json({ message: "comment added" });
+
+    } catch (error) {
+
+      res.status(500).json({ message: "internal server error" });
+
+    }
+  }
+  static addresponse = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { response, phone } = req.body;
+    try {
+
+      //  const member = await Team.findOne({})
+      await TeamAttendandance.findByIdAndUpdate(id, { response }, { timestamps: false })
+      await sendMessage(` message from admin on your today attendance: ${response}`, [phone])
+      res.status(200).json({ message: "response added" });
+
+    } catch (error) {
+      res.status(500).json({ message: "internal server error" });
+
+    }
+  }
+  static activateMember = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const member = await Team.findById(id)
+      if (!member) {
+        return res.status(400).json({ message: "member not found" });
 
       }
 
-      member.active=!member.active
+      member.active = !member.active
       await member.save()
-       return res.status(200).json({ message: "member uodated succesfull" }); 
+      return res.status(200).json({ message: "member uodated succesfull" });
     } catch (error) {
-        res.status(500).json({ message: "internal server error" }); 
-      
+      res.status(500).json({ message: "internal server error" });
+
     }
 
   }
-  static switchAttend= async(req:Request,res:Response)=>{
+  static switchAttend = async (req: Request, res: Response) => {
     try {
-      const {id} = req.params;
-      const member =await Team.findById(id)
-      if(!member){
-       return  res.status(400).json({ message: "member not found" }); 
+      const { id } = req.params;
+      const member = await Team.findById(id)
+      if (!member) {
+        return res.status(400).json({ message: "member not found" });
 
       }
 
-      member.attend=!member.attend
+      member.attend = !member.attend
       await member.save()
-       return res.status(200).json({ message: "member uodated succesfull" }); 
+      return res.status(200).json({ message: "member uodated succesfull" });
     } catch (error) {
-        res.status(500).json({ message: "internal server error" }); 
-      
+      res.status(500).json({ message: "internal server error" });
+
     }
 
   }

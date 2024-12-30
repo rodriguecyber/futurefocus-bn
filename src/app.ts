@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 const allowedOrigins = process.env.CORS_ALLOW
   ? process.env.CORS_ALLOW.split(",")
-  : ["https://www.futurefocus.co.rw","https://www.futurefocus.co.rw"];
+  : ["https://www.futurefocus.co.rw","https://www.futurefocus.co.rw","http://localhost:2000"];
 
 app.use( 
   cors({
@@ -29,7 +29,7 @@ app.use(
 );
 
 app.use(express.json());
-connection();
+connection();  
 startIntake();
 endIntake();
 dropout()

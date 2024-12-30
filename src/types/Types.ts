@@ -23,6 +23,7 @@ export interface CommentTypes {
 export interface StudentTypes extends Document {
   name: string;
   email: string;
+  referer:'default'|'cyd'
   phone: Number;
   selectedCourse: Types.ObjectId; 
   selectedShift: Types.ObjectId;
