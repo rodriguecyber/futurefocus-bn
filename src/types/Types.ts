@@ -1,4 +1,4 @@
-import { Document, ObjectId, Schema } from "mongoose";
+import mongoose, { Document, ObjectId, Schema, Types } from "mongoose";
 export interface TaskTypes extends Document {
   institution: ObjectId;
   user: ObjectId;
@@ -119,11 +119,12 @@ export interface RoleTypes {
 }
 export interface PermissionTypes {
   institution: ObjectId;
-  feature: ObjectId;
+  feature: Types.ObjectId;
   permission: string;
 }
 export interface InstitutionTypes {
   institution: ObjectId;
+  isSuperInst:boolean
   name: string;
   logo: string;
   email: string;
@@ -134,9 +135,16 @@ export interface AccessPaymentTypes{
   institution:ObjectId
   amount:number
 }
+export interface Ifeature{
+feature:Types.ObjectId
+
+active:boolean
+lastUpdated?:Date
+dueDate:Date
+}
 export interface accesstypes{
   institution:ObjectId,
   active:boolean
   duration:number
-  features:ObjectId[]
+  features:Ifeature[]
 }

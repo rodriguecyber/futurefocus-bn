@@ -12,9 +12,7 @@ export class CourseController {
       res.status(500).json({ message: `Error ${error.message} Occured` });
     }
   };
-  static getAll = async (req: Request, res: Response) => {
-    //@ts-expect-error error
-    console.log(req.loggedUser)
+  static getAll = async (req: any, res: Response) => {
     try {
       const courses = await Course.find().populate('shifts');
       res.status(200).json(courses);
