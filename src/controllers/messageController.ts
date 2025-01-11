@@ -4,10 +4,9 @@ import Message from "../models/message";
 
 export class messageController { 
     static Report=async(req:Request,res:Response)=>{
-        const {input} =req.body;
+        const {email,message,nme,phone,subject} =req.body;
         try {
-          console.log(input)
-          await Message.create(input);
+          await Message.create({email,message,name,phone,subject});
           res.status(200).json({ message: 'message sent' });
          
         } catch (error) {
