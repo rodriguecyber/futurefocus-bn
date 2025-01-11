@@ -15,7 +15,7 @@ export const updateAttendance = async (req: Request, res: Response) => {
     if (student.status!=='started') {
       return res.status(404).json({ message: "Student not started yet" });
     }
-            //@ts-ignore
+            //@ts-expect-error populated object
     if (currentTime < student.selectedShift.start || currentTime > student.selectedShift.end) {
       return res.status(400).json({
         message: "You can only attend on your shift",
@@ -58,9 +58,10 @@ export const updateAttendance = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-export const getAttendance = async (req:Request,res:Response)=>{
+export const getAttendance = async (req:any,res:Response)=>{
   try {
-    const attendance = await Attendance.find().populate("studentId");
+    const loggedUser = req.loggedUser
+    const attendance = await Attendance.find({institution:loggedUser.institution}).populate("studentId");
     res.status(200).json(attendance)
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });

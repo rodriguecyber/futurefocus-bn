@@ -3,9 +3,11 @@ import Payment from "../models/payment";
 import Student from "../models/Students";
 import Cashflow from "../models/otherTransactions";
 
-export const getDashboardSummary = async (req: Request, res: Response) => {
+export const getDashboardSummary = async (req: any, res: Response) => {
   try {
-    const totalStudents = await Student.countDocuments();
+    const loggedUser = req.loggedUser
+
+    const totalStudents = await Student.countDocuments({institution:loggedUser.institution});
 
     const studentStatuses = await Student.aggregate([
       {
@@ -21,7 +23,7 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       return acc;
     }, {});
 
-    const totalPayments = await Payment.countDocuments();
+    const totalPayments = await Payment.countDocuments({institution:loggedUser.institution});
 
     const paymentStatuses = await Payment.aggregate([
       {

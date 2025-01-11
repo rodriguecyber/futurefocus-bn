@@ -1,9 +1,8 @@
-"use client";
 import { Request, Response } from "express";
 import { SubscriptionEmail } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
 import Subscriber from "../models/subscriber";
-import Intake, { Shift } from "../models/Intake";
+import Intake, { IIntake, Shift } from "../models/Intake";
 export class AdminControllers {
   static subscribe = async (req: Request, res: Response) => {
     const email = req.body.email;
@@ -27,27 +26,30 @@ export class AdminControllers {
     }
   };
     static addIntake = async (req: any, res: Response) => {
-    const { intake } = req.body;
+    const intake:IIntake  = req.body;
 
     const loggedUser = req.loggedUser
+    intake.institution=loggedUser.institution
     try {
       const isAvailable = await Intake.findOne({ intake: intake });
       if (isAvailable) {
         return res.status(400).json({ message: "intake already available" });
       }
       await Intake.create({
-        intake: intake,institution:loggedUser.institution
+        intake: intake
       });
       res.status(200).json({ message: "intake added" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message}` });
     }
   };
-    static addShift = async (req: Request, res: Response) => {
+    static addShift = async (req:any, res: Response) => {
     const { start,end,name,days } = req.body;
+    const loggedUser = req.loggedUser
+   loggedUser.institution
     try {
       await Shift.create({
-        start,end,name,days
+        start,end,name,days,institution:loggedUser.institution
       });
       res.status(201).json({ message: "shifts added" });
     } catch (error: any) {
@@ -64,17 +66,20 @@ export class AdminControllers {
       res.status(500).json({ message: `Error ${error.message}` });
     }
   };
-  static getIntakes = async (req: Request, res: Response) => {
+  static getIntakes = async (req: any, res: Response) => {
     try {
-      const intakes = await Intake.find();
+    const loggedUser = req.loggedUser
+      const intakes = await Intake.find({institution:loggedUser.institution});
       res.status(200).json({ intakes });
     } catch (error) {
       res.status(500).json({ message: "failed to load intakes" });
     }
   };
-  static getShifts = async (req: Request, res: Response) => {
+  static getShifts = async (req: any, res: Response) => {
     try {
-      const shifts = await Shift.find();
+
+    const loggedUser = req.loggedUser
+      const shifts = await Shift.find({institution:loggedUser.institution});
       res.status(200).json({ shifts });
     } catch (error) {
       res.status(500).json({ message: "failed to load shifts" });

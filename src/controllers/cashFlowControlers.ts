@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import Cashflow from "../models/otherTransactions";
 
 export class cashflowControler {
-  static newData = async (req: Request, res: Response) => {
+  static newData = async (req: any, res: Response) => {
+    const loggedUser = req.loggedUser
     const { user, amount, reason, payment,type } = req.body;
     try {
       await Cashflow.create({
@@ -11,15 +12,17 @@ export class cashflowControler {
         payment,
         reason,
         type,
+        institution:loggedUser.institution
       });
       res.status(201).json({ message: `${type} created successfully` });
     } catch (error:any) {
         res.status(500).json({message:`Error ${error.message} ocuured`})
     }
   };
-   static getAll = async(req:Request,res:Response)=>{
+   static getAll = async(req:any,res:Response)=>{
     try {
-        const  cashflow = await Cashflow.find();
+    const loggedUser = req.loggedUser
+    const  cashflow = await Cashflow.find({institution:loggedUser.institution});
   res.status(200).json(cashflow)
     } catch (error:any) {
         res.status(500).json({ message: `Error ${error.message} ocuured` });

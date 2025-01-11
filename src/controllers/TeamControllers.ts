@@ -9,14 +9,16 @@ import { sendMessage } from "../utils/sendSms";
 
 
 export class TeamControllers {
-  static AddMember = async (req: Request, res: Response) => {
+  static AddMember = async (req: any, res: Response) => {
     try {
+const loggedUser = req.loggedUser
+
       const { name, title, image, email,position, instagram } = req.body;
       const isExist = await Team.findOne({ email: email });
       if (isExist) {
         return res.status(400).json({ message: "member already exist" });
       }
-      await Team.create({ name, title, image, email, position, instagram });
+      await Team.create({ name, title, image, email, position, instagram,institution:loggedUser.institution });
       return res.status(200).json({ messsage: "member added" }); 
     } catch (error: any) { 
       return res
@@ -24,9 +26,11 @@ export class TeamControllers {
         .json({ message: `error ${error.message} Occured` });  
     }
   };
-  static Team = async (req: Request, res: Response) => {
+  static Team = async (req: any, res: Response) => {
     try {
-      const team = await Team.find().populate('role');
+const loggedUser = req.loggedUser
+
+      const team = await Team.find({institution:loggedUser.institution}).populate('role');
       return res.status(200).json(team);
     } catch (error: any) {
       return res
@@ -34,9 +38,10 @@ export class TeamControllers {
         .json({ message: `Error ${error.message} occured` });
     }
   };
-  static teamAdmins = async (req: Request, res: Response) => {
+  static teamAdmins = async (req: any, res: Response) => {
     try {
-      const admins= await Team.find({isAdmin:true}).populate('role');
+const loggedUser = req.loggedUser
+      const admins= await Team.find({institution:loggedUser.institution, isAdmin:true}).populate('role');
       return res.status(200).json(admins);
     } catch (error: any) {
       return res
@@ -352,18 +357,11 @@ export class TeamControllers {
         .json({ error: error.message || "Internal Server Error" });
     }
   };
-  static getUser = async (req: Request, res: Response) => {
+  static getUser = async (req: any, res: Response) => {
     try {
-      const token = req.headers.authorization?.split(" ")[1];
-      if (!token) {
-        return res.status(401).json({ message: "Token not provided" });
-      }
-
-      const userinfo = await decodeToken(token);
-      if (!userinfo) {
-        return res.status(401).json({ message: "User not authenticated" });
-      }
-      const user = await Team.findById(userinfo.id).populate({
+      const loggedUser = req.loggedUser
+     
+      const user = await Team.findById(loggedUser._id).populate({
         path:'role',
         populate:{
           path:'permission',

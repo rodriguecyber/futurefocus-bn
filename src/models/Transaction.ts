@@ -1,8 +1,9 @@
-import mongoose, { model, Schema } from "mongoose";
+import mongoose, { model, Schema, Types } from "mongoose";
 import { transactionTypes } from "../types/Types";
 
 const transactionSchema = new Schema<transactionTypes>(
   {
+  institution:{type:Types.ObjectId, ref:'Institution'},
     studentId: {
       type: mongoose.Types.ObjectId,
       required: true,

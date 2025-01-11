@@ -119,9 +119,11 @@ export class StudentControllers {
 
   }
 
-  static students = async (req: Request, res: Response) => {
+  static students = async (req:any, res: Response) => {
     try {
-      const students = await Student.find()
+    const loggedUser = req.loggedUser
+
+      const students = await Student.find({institution:loggedUser.institution})
         .sort({ createdAt: -1 })
         .populate("selectedCourse selectedShift");
       return res.status(200).json(students);
@@ -191,7 +193,7 @@ export class StudentControllers {
           name: student.name,
           amount: 0,
           remain: 0,
-          //@ts-ignore
+          //@ts-expect-error populated course
           course: student.selectedCourse.name,
         }).admit,
         [student.phone.toString()]

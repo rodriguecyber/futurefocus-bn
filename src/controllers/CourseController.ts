@@ -3,10 +3,12 @@ import Course from "../models/Course";
 
 
 export class CourseController {
-  static NewCourse = async (req: Request, res: Response) => {
+  static NewCourse = async (req: any, res: Response) => {
     const { title, image,rating } = req.body;
+    const loggedUser = req.loggedUser
+
     try {
-      await Course.create({ title, rating, image });
+      await Course.create({ title, rating, image,institution:loggedUser.institution });
       res.status(200).json({ message: "course Added" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
@@ -14,7 +16,9 @@ export class CourseController {
   };
   static getAll = async (req: any, res: Response) => {
     try {
-      const courses = await Course.find().populate('shifts');
+    const loggedUser = req.loggedUser
+
+      const courses = await Course.find({institution:loggedUser.institution}).populate('shifts');
       res.status(200).json(courses);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });

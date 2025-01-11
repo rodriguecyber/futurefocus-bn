@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import { IMaterialRent, Inventory, Material, MaterialRent } from "../models/Materials";
 
 export class inventoryControllers {
-  static newCategory = async (req: Request, res: Response) => {
+  static newCategory = async (req: any, res: Response) => {
     const data = req.body;
+    const loggedUser  = req.loggedUser
+    data.institution = loggedUser.institution
     try {
       await Inventory.create(data);
       res.status(200).json({ message: "suscesfuly added category" });
@@ -12,8 +14,11 @@ export class inventoryControllers {
       res.status(500).json({ message: "internal server error" });
     }
   };
-  static newMaterial = async (req: Request, res: Response) => {
+  static newMaterial = async (req:any, res: Response) => {
     const data = req.body;
+    const loggedUser  = req.loggedUser
+    data.institution = loggedUser.institution
+
     try {
       await Material.create(data);
       res.status(200).json({ message: "suucesfuly added item" }); 
@@ -23,21 +28,22 @@ export class inventoryControllers {
       res.status(500).json({ message: "internal server error" });
     }
   };
-  static rentItems = async (req: Request, res: Response) => {
+  static rentItems = async (req: any, res: Response) => {
 
     const items:IMaterialRent[] = req.body.items
     const { returnDate, cost, render, rendeeName } = req.body;  
-
+const loggedUser = req.loggedUser
     // const {materialId} = req.params; 
     try {
   for (const item of items) {
     await MaterialRent.create({
-      //@ts-expect-error rrr
+      //@ts-expect-error populated item
       materialId: item._id,
       amount: item.amount,
       returnDate: returnDate,
       rendeeName,
       render,
+      institution:loggedUser.institution,
       cost,
     });
     await Material.findByIdAndUpdate(item.materialId, { $inc: { rent: item.amount } });
@@ -70,27 +76,32 @@ export class inventoryControllers {
       res.status(500).json({ message: "internal server error" });
     }
   };
-  static getAllInventory = async (req: Request, res: Response) => {
+  static getAllInventory = async (req: any, res: Response) => {
     try {
-      const inventories = await Material.find().populate('category')
+const loggedUser = req.loggedUser
+  
+      const inventories = await Material.find({institution:loggedUser.institution}).populate('category')
       res.status(200).json(inventories);
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
       console.log(error)
     }
   };
-  static getAllInventoryRent = async (req: Request, res: Response) => {
+  static getAllInventoryRent = async (req: any, res: Response) => {
     try {
-      const rent = await MaterialRent.find().populate('materialId').populate('render').populate('receiver')
+const loggedUser = req.loggedUser
+
+      const rent = await MaterialRent.find({institution:loggedUser.institution}).populate('materialId').populate('render').populate('receiver')
       res.status(200).json(rent);
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
       console.log(error)
     }
   };
-  static getCategory = async (req: Request, res: Response) => {
+  static getCategory = async (req: any, res: Response) => {
     try {
-      const inventories = await Inventory.find()
+const loggedUser = req.loggedUser
+      const inventories = await Inventory.find({institution:loggedUser.institution})
       res.status(200).json(inventories);
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });

@@ -4,8 +4,9 @@ import { sendMessage } from "../utils/sendSms";
 import Team from "../models/Team";
 
 export class taskController {
-  static newTask = async (req: Request, res: Response) => {
+  static newTask = async (req: any, res: Response) => {
     try {
+const loggedUser = req.loggedUser
       const { user, task, endTime, startTime,manager } = req.body;
        const  member=await  Team.findById(user)
        if(!member){
@@ -17,6 +18,7 @@ export class taskController {
         startTime,
         manager,
         task,
+        institution:loggedUser.institution
       });
       await newTask.save();
       await sendMessage('a new task is assigned to you. login to your  portal for more details ',[member?.phone])
@@ -26,9 +28,10 @@ export class taskController {
       return res.status(500).json({ message: "Internal server error" });
     }
   };
-  static getTasks = async (req: Request, res: Response) => {
+  static getTasks = async (req: any, res: Response) => {
     try {
-      const tasks = await Task.find()
+const loggedUser = req.loggedUser
+      const tasks = await Task.find({institution:loggedUser.institution})
         .populate("user")
         .populate({
           path: "comments",

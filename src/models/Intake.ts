@@ -1,6 +1,6 @@
 import mongoose, { model, ObjectId, Schema } from "mongoose";
 
-interface IIntake {
+export interface IIntake {
   institution:ObjectId
   intake: string;
 }

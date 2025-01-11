@@ -7,9 +7,10 @@ import { sendMessage } from "../utils/sendSms";
 import { MessageTemplate } from "../utils/messageBod";
 
 export class PaymentController {
-  static SchoolFees = async (req: Request, res: Response) => {
+  static SchoolFees = async (req: any, res: Response) => {
     const { id } = req.params;
     const { amount, method, user } = req.body;
+    const loggedUser = req.loggedUser
 
     try {
       const student = await Student.findById(id);
@@ -44,6 +45,7 @@ export class PaymentController {
       });
 
       await Cashflow.create({
+        institution:loggedUser.institution,
         amount: amount,
         reason: `${student.name} School Fees`,
         user: user,
@@ -79,17 +81,21 @@ export class PaymentController {
     }
   };
 
-  static payment = async (req: Request, res: Response) => {
+  static payment = async (req: any, res: Response) => {
     try {
-      const payment = await Payment.find();
+    const loggedUser = req.loggedUser
+
+    const payment = await Payment.find({institution:loggedUser.institution});
       res.status(200).json(payment);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
-  static getTansactions = async (req: Request, res: Response) => {
+  static getTansactions = async (req: any, res: Response) => {
     try {
-      const transactions = await Transaction.find().populate("studentId");
+    const loggedUser = req.loggedUser
+
+      const transactions = await Transaction.find({institution:loggedUser.institution}).populate("studentId");
       res.status(200).json(transactions);
     } catch (error: any) {
       res.status(500).json({ message: `Eror ${error.message} occured` });
