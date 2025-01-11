@@ -30,9 +30,9 @@ app.use(
 
 app.use(express.json());
 connection();  
-startIntake();
-endIntake();
-dropout()
+// startIntake();
+// endIntake();
+// dropout()
 dailyAttendance();
 teamAttendance();
 
