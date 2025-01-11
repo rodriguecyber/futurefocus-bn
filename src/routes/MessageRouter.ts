@@ -2,7 +2,7 @@
 import { Router } from "express";
 import { messageController } from "../controllers/messageController";
 
-export const incidenceRouter = Router()
-incidenceRouter.post("/", messageController.Report)
-incidenceRouter.get("/", messageController.getMessage)
-incidenceRouter.put("/:id", messageController.MarkRead)
+export const messageRouter = Router()
+messageRouter.post("/", messageController.Report)
+messageRouter.get("/", messageController.getMessage)
+messageRouter.put("/:id", messageController.MarkRead)
