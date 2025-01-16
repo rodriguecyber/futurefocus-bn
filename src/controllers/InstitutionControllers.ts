@@ -4,23 +4,39 @@ import { Access } from "../models/Access"
 import { AccessPayment } from "../models/accessPayment"
 import Team from "../models/Team"
 import mongoose, { Types } from "mongoose"
+import { notifyInstuEmail } from "../utils/emailTemplate"
+import { sendEmail } from "../utils/sendEmail"
 
 export class InstitutionControllers {
     static register = async (req: Request, res: Response) => {
         try {
-            const { name, email, phone, logo } = req.body
-            const inst = await Institution.findOne({ name, email, phone })
-            if (inst) {
+            const { name, email, phone } = req.body
+            const inst = await Institution.findOne({$or:[{email},{phone}]})
+            const adm =await Team.findOne({email})
+            if (inst||adm) {
                 return res.status(400).json({ message: "Institution already exists" })
 
             }
-            const newInst = await Institution.create({ name, email, phone, logo })
-            await Team.create({ institution: newInst._id, name, email, phone, isAdmin: true, image: 'hhh', position: "Admin" })
 
+            if(!req.file){
+                res.status(400).json({ message: "please upload your logo" });
+                return
+                
+            }
+            const logo = req.file.path
+            const newInst = await Institution.create({ name, email, phone, logo })
+            
+            await Team.create({ institution: newInst._id, name, email, phone, isAdmin: true, image: 'hhh', position: "Admin" })
+        const mailOptions = {
+              from: process.env.OUR_EMAIL as string,
+              to: email,
+              subject: "Registered",
+              html: notifyInstuEmail(name),
+            };
             res.status(201).json({ message: "Institution created successfully" })
+            await sendEmail(mailOptions)
         } catch (error) {
             res.status(500).json({ message: "internal server error" })
-            console.log(error)
         }
 
     }

@@ -6,6 +6,7 @@ import { sendEmail } from "../utils/sendEmail";
 import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
 import { sendMessage } from "../utils/sendSms";
+import { Institution } from "../models/institution";
 
 
 export class TeamControllers {
@@ -273,6 +274,10 @@ const loggedUser = req.loggedUser
       if (!user) {
         return res.status(401).json({ message: "Email not found or not active" });
       }
+      const inst  = await Institution.findById(user.institution)
+      if(!inst ||!inst.verified){
+      return  res.status(401).json({message:"instituion not found"})
+      }
 
       const isMatch = await comparePassword(password, user.password);
       if (!isMatch) {
@@ -283,7 +288,7 @@ const loggedUser = req.loggedUser
           res.cookie("token", token as string, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 24 * 60 * 60 * 1000,
+            maxAge: 24 * 60 * 60 * 1000, 
           });
           return res
             .status(200)

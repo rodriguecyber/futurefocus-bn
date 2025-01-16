@@ -170,3 +170,93 @@ export const SubscriptionEmail = () => {
   </body>
   </html>`;
 };
+export const notifyInstuEmail = (name:string)=>{
+    return`
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Success Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .header h1 {
+            color: #28a745;
+        }
+        .message {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+        }
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Registration Successful</h1>
+        </div>
+
+        <div class="message">
+            <p>Dear  ${name}</p>
+
+            <p>We are pleased to inform you that your institution has been successfully registered in our system!</p>
+
+            <p>Thank you for choosing our platform. Your registration is now complete. our board will reveiw your application you'ill notified once verified.</p>
+
+            <p>If you need any assistance, feel free to reach out to us via our support page.</p>
+
+            <p>Best regards,<br> The Xcool Team</p>
+
+            <a href="https://futurefocus.co.rw" class="btn">Visit Support Page</a>
+        </div>
+
+        <div class="footer">
+            <p>If you have any questions, please don't hesitate to contact us.</p>
+            <p><a href="https://futurefocus.co.rw">Visit our website</a> | <a href="rodrirwigara@gmail.com">Contact support</a></p>
+        </div>
+    </div>
+
+</body>
+</html>
+
+    `
+}

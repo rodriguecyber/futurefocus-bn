@@ -1,19 +1,16 @@
 import { NextFunction, Request, Response } from "express";
-import { decodeToken } from "../utils/token";
 import Team from "../models/Team";
 import { Institution } from "../models/institution";
 
 export const isVerified = async (
-  req: Request,
+  req: any,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const {email,phone} = req.body
-    if (!(email||phone)) {
-      return res.status(401).json({ message: "enter email or phone number not found" });
-    }
-    const user = await Team.findOne({$or:[{email},{phone}]});
+   
+    const loggedUser = req.loggedUser
+    const user = await Team.findById(loggedUser._id);
     if (!user) {
       return res.status(401).json({ message: "user not found" });
     }

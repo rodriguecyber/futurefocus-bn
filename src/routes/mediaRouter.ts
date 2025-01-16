@@ -8,7 +8,8 @@ import {
   postVideos,
   deleteVideos,
 } from "../controllers/mediaControllers";
-import { upload } from "../config/multer"; 
+import upload from "../middleware/upload.middleware";
+ 
 
 const MediRouters = express.Router();
 

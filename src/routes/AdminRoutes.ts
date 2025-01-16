@@ -3,6 +3,8 @@ import { AdminControllers } from "../controllers/AdminController";
 import { getDashboardSummary } from "../controllers/DashboardControllers";
 import { PermissionCointroller } from "../controllers/PermissionController";
 import { messageController } from "../controllers/sendSms";
+import { isloggedIn } from "../middleware/isLoggedIn";
+import { isVerified } from "../middleware/isVerified";
 
 export const othersRoute = Router()
 othersRoute.post('/subscribe', AdminControllers.subscribe)
@@ -14,5 +16,5 @@ othersRoute.get('/shift',  AdminControllers.getShifts)
 othersRoute.put('/role/:userId', PermissionCointroller.assignRole)
 othersRoute.delete('/intake/:id', AdminControllers.deleteIntake) 
 othersRoute.delete('/shift/:id', AdminControllers.deleteShift) 
-othersRoute.get('/dashboard', getDashboardSummary)
+othersRoute.get('/dashboard',isloggedIn,isVerified, getDashboardSummary)
 othersRoute.post('/sendmessage', messageController) 

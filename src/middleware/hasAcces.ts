@@ -4,7 +4,7 @@ import Feature from "../models/Feature";
 
 export const hasAcces = async (req: any, res: Response,next:NextFunction,feature:string) => {
     try {
-      const institution = req.loggedUser
+      const institution = req.loggedUser.institution
       if (!institution) {
         return res.status(401).json({ message: "Unauthorazied! Login to proceceed" });
       }

@@ -5,60 +5,43 @@ import Cashflow from "../models/otherTransactions";
 
 export const getDashboardSummary = async (req: any, res: Response) => {
   try {
-    const loggedUser = req.loggedUser
+    const loggedUser = req.loggedUser;
+    const institution = loggedUser.institution;
 
-    const totalStudents = await Student.countDocuments({institution:loggedUser.institution});
+    const totalStudents = await Student.countDocuments({ institution });
 
     const studentStatuses = await Student.aggregate([
-      {
-        $group: {
-          _id: "$status",
-          count: { $sum: 1 },
-        },
-      },
+      { $match: { institution } }, 
+      { $group: { _id: "$status", count: { $sum: 1 } } },
     ]);
-
     const studentStatusCounts = studentStatuses.reduce((acc, curr) => {
       acc[curr._id] = curr.count;
       return acc;
     }, {});
 
-    const totalPayments = await Payment.countDocuments({institution:loggedUser.institution});
+    const totalPayments = await Payment.countDocuments({ institution });
 
     const paymentStatuses = await Payment.aggregate([
-      {
-        $group: {
-          _id: "$status",
-          count: { $sum: 1 },
-        },
-      },
+      { $match: { institution } }, 
+      { $group: { _id: "$status", count: { $sum: 1 } } },
     ]);
-
     const paymentStatusCounts = paymentStatuses.reduce((acc, curr) => {
       acc[curr._id] = curr.count;
       return acc;
     }, {});
 
     const totalAmountPaid = await Payment.aggregate([
-      {
-        $group: {
-          _id: null,
-          totalAmount: { $sum: "$amountPaid" },
-        },
-      },
+      { $match: { institution } }, 
+      { $group: { _id: null, totalAmount: { $sum: "$amountPaid" } } },
     ]);
 
     const totalAmountToBePaid = await Payment.aggregate([
-      {
-        $group: {
-          _id: null,
-          totalAmount: { $sum: "$amountDue" },
-        },
-      },
+      { $match: { institution } }, 
+      { $group: { _id: null, totalAmount: { $sum: "$amountDue" } } },
     ]);
 
-    // Statistics by shift for students with proper population
     const shiftStudents = await Student.aggregate([
+      { $match: { institution } }, 
       {
         $lookup: {
           from: "shifts",
@@ -67,14 +50,12 @@ export const getDashboardSummary = async (req: any, res: Response) => {
           as: "shiftInfo",
         },
       },
-      {
-        $unwind: "$shiftInfo",
-      },
+      { $unwind: "$shiftInfo" },
       {
         $group: {
           _id: {
             shiftId: "$selectedShift",
-            shiftName: "$shiftInfo.name", // Assuming shift has a name field
+            shiftName: "$shiftInfo.name", 
           },
           total: { $sum: 1 },
           pending: {
@@ -97,13 +78,11 @@ export const getDashboardSummary = async (req: any, res: Response) => {
           },
         },
       },
-      {
-        $sort: { "_id.shiftName": 1 },
-      },
+      { $sort: { "_id.shiftName": 1 } },
     ]);
 
-    // Statistics by department/course for students with proper population
     const departmentStudents = await Student.aggregate([
+      { $match: { institution } }, 
       {
         $lookup: {
           from: "courses",
@@ -112,14 +91,12 @@ export const getDashboardSummary = async (req: any, res: Response) => {
           as: "courseInfo",
         },
       },
-      {
-        $unwind: "$courseInfo",
-      },
+      { $unwind: "$courseInfo" },
       {
         $group: {
           _id: {
             courseId: "$selectedCourse",
-            courseName: "$courseInfo.title", // Assuming course has a name field
+            courseName: "$courseInfo.title", 
           },
           total: { $sum: 1 },
           pending: {
@@ -142,13 +119,11 @@ export const getDashboardSummary = async (req: any, res: Response) => {
           },
         },
       },
-      {
-        $sort: { "_id.courseName": 1 },
-      },
+      { $sort: { "_id.courseName": 1 } },
     ]);
 
-    // Statistics by shift for payments with proper population
     const shiftPayments = await Payment.aggregate([
+      { $match: { institution } }, 
       {
         $lookup: {
           from: "students",
@@ -157,9 +132,7 @@ export const getDashboardSummary = async (req: any, res: Response) => {
           as: "student",
         },
       },
-      {
-        $unwind: "$student",
-      },
+      { $unwind: "$student" },
       {
         $lookup: {
           from: "shifts",
@@ -168,37 +141,27 @@ export const getDashboardSummary = async (req: any, res: Response) => {
           as: "shiftInfo",
         },
       },
-      {
-        $unwind: "$shiftInfo",
-      },
+      { $unwind: "$shiftInfo" },
       {
         $group: {
           _id: {
             shiftId: "$student.selectedShift",
             shiftName: "$shiftInfo.title",
           },
-          totalPaid: {
-            $sum: "$amountPaid",
-          },
-          totalDue: {
-            $sum: "$amountDue",
-          },
+          totalPaid: { $sum: "$amountPaid" },
+          totalDue: { $sum: "$amountDue" },
         },
       },
       {
         $addFields: {
-          totalUnpaid: {
-            $subtract: ["$totalDue", "$totalPaid"],
-          },
+          totalUnpaid: { $subtract: ["$totalDue", "$totalPaid"] },
         },
       },
-      {
-        $sort: { "_id.shiftName": 1 },
-      },
+      { $sort: { "_id.shiftName": 1 } },
     ]);
 
-    // Monthly statistics for cash flows
     const monthlyCashflows = await Cashflow.aggregate([
+      { $match: { institution } }, 
       {
         $group: {
           _id: { $month: "$createdAt" },
@@ -210,9 +173,7 @@ export const getDashboardSummary = async (req: any, res: Response) => {
           },
         },
       },
-      {
-        $sort: { _id: 1 },
-      },
+      { $sort: { _id: 1 } },
     ]);
 
     const summary = {

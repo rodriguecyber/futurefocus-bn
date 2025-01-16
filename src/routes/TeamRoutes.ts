@@ -2,6 +2,7 @@ import { Router } from "express";
 import { TeamControllers } from "../controllers/TeamControllers";
 import { checkLocation } from "../middleware/checkLocation";
 import { isVerified } from "../middleware/isVerified";
+import { isloggedIn } from "../middleware/isLoggedIn";
 export interface Location {
   latitude: number;
   longitude: number;
@@ -30,9 +31,9 @@ TeamRoute.put(
 TeamRoute.get("/attendance",TeamControllers.attendance)
 TeamRoute.get("/my-attendance/:id",TeamControllers.myAttendance)
 TeamRoute.post("/forgot-password",isVerified, TeamControllers.forgotPassword);
-TeamRoute.post("/login",isVerified, TeamControllers.login);
+TeamRoute.post("/login", TeamControllers.login);
 TeamRoute.put("/reset-password/:token", TeamControllers.resetPassword);
-TeamRoute.get("/logged-user", TeamControllers.getUser);
+TeamRoute.get("/logged-user",isloggedIn, TeamControllers.getUser);
 TeamRoute.put("/toogle-admin/:id", TeamControllers.toggleAdmin);
 TeamRoute.put("/leave/:id",checkLocation(allowedLocation, 100),  TeamControllers.leave);
 TeamRoute.put("/comment/:id", TeamControllers.addComment);

@@ -15,9 +15,9 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const app = express();
-const allowedOrigins = process.env.CORS_ALLOW
+const allowedOrigins = process.env.CORS_ALLOW   
   ? process.env.CORS_ALLOW.split(",")
-  : ["https://www.futurefocus.co.rw","https://www.futurefocus.co.rw"];
+  : ["https://www.futurefocus.co.rw","https://www.futurefocus.co.rw"]; 
 
 app.use(
   cors({
