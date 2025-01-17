@@ -3,6 +3,9 @@ import { StudentControllers } from "../controllers/StudentsController";
 import { getAttendance,
      updateAttendance 
     } from "../controllers/Attendance";
+import { isloggedIn } from "../middleware/isLoggedIn";
+import { isVerified } from "../middleware/isVerified";
+import { hasAcces } from "../middleware/hasAcces";
 
 
 export const StudentRoutes =  Router()
@@ -11,7 +14,9 @@ StudentRoutes.post('/past',StudentControllers.pastRecord)
 StudentRoutes.post('/techup',StudentControllers.techupapply)
 StudentRoutes.post('/techup/notify',StudentControllers.notifyTechups)
 StudentRoutes.get('/techup',StudentControllers.techUpStudent)
-StudentRoutes.get("/",StudentControllers.students)
+StudentRoutes.get("/",isloggedIn, isVerified,
+    // (req,res,next)=>hasAcces(req,res,next,'student'),
+    StudentControllers.students)
 StudentRoutes.delete('/:id',StudentControllers.delete)
 StudentRoutes.put('/:id',StudentControllers.changeStatus)
 StudentRoutes.post('/register',StudentControllers.registerNew)

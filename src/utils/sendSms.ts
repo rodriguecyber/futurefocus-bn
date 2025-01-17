@@ -24,13 +24,10 @@ export const sendMessage = async (message:string,recipients:[string]) => {
       const message = responseData.message;
 
     } else {
-      console.log(response);
-      console.log(response)
+     
     }
   } catch (error) {
-    // @ts-expect-error error
-    console.error("Error:", error.message)
+    
   }
 };
 
-// Call the function to make the payment

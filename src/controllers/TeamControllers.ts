@@ -344,13 +344,13 @@ const loggedUser = req.loggedUser
       }
 
           const token = await generateToken({
-            id: user._id,
+            _id: user._id,
             isAdmin: user.isAdmin,
           });
-      res.cookie("token", token as string, {
+      res.cookie("token", token as string, { 
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 24 * 60 * 60 * 1000, 
       });
       user.otp = null;
       await user.save();
