@@ -19,6 +19,8 @@ const TeamSchema = new Schema<TeamTypes>({
   otp: { type: Schema.Types.Number, require: true, default: null },
   role: { type: Schema.Types.ObjectId, ref: "Role" },
   isAdmin: { type: Schema.Types.Boolean, default: false },
+  isSuperAdmin: { type: Schema.Types.Boolean, default: false },
+  
 
 });
 const Team = model<TeamTypes>("Team",TeamSchema)

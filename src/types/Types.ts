@@ -46,6 +46,7 @@ export interface TeamTypes extends Document {
   instagram: string;
   password: string;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
   role: ObjectId;
   otp: number | null;
   phone: string;

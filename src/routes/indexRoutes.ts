@@ -25,7 +25,7 @@ indexRouter.use("/media",isloggedIn, MediaRouter);
 indexRouter.use("/payment",isloggedIn, paymentRouter);
 indexRouter.use("/cashflow",isloggedIn, cashRouter);
 indexRouter.use("/job", isloggedIn,JobRouter);
-indexRouter.use("/role", isloggedIn,RoleRouter);
+indexRouter.use("/role",RoleRouter);
 indexRouter.use("/task",isloggedIn, taskRouter);  
 indexRouter.use("/inventory",isloggedIn, inventoryRouter);
 indexRouter.use("/institution", InstitutionRouter);  

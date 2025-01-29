@@ -11,10 +11,12 @@ import { generateRandom4Digit } from "../utils/generateRandomNumber";
 import { sendMessage } from "../utils/sendSms";
 import { MessageTemplate } from "../utils/messageBod";
 import techUp from "../models/techUp";
+import { ObjectId } from "mongoose";
 
 export class StudentControllers {
   static apply = async (req: Request, res: Response) => {
-    const studentData = req.body;
+    const studentData
+     = req.body;
   
     try {
       const alreadyExist =
@@ -22,6 +24,8 @@ export class StudentControllers {
       if (alreadyExist) {
         return res.status(400).json({ message: "You have already applied " });
       }
+      studentData.selectedCourse= studentData.selectedCourse as ObjectId
+      studentData.selectedShift = studentData.selectedShift as ObjectId
       await Student.create(studentData);
       await sendMessage(
         MessageTemplate({
@@ -48,6 +52,8 @@ export class StudentControllers {
       if (alreadyExist) {
         return res.status(400).json({ message: "already recorded " });
       }
+      studentData.selectedCourse= studentData.selectedCourse as ObjectId
+      studentData.selectedShift = studentData.selectedShift as ObjectId
       await Student.create(studentData);
       return res.status(200).json({ message: "record inserted " });
     } catch (error: any) {
@@ -237,6 +243,8 @@ export class StudentControllers {
       if (alreadyExist) {
         return res.status(400).json({ message: "You have already registered" });
       }
+      student.selectedCourse= student.selectedCourse as ObjectId
+      student.selectedShift = student.selectedShift as ObjectId
       const registerStudent = new Student(student);
       registerStudent.status = "registered";
       await Payment.create({

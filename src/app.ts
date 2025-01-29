@@ -10,10 +10,12 @@ import { dailyAttendance,
 import { indexRouter } from "./routes/indexRoutes";
 import { backup } from "./jobs/backup";
 import { testController } from "./controllers/updateControllere";
+import { delete1547thDocument } from "./deleyteController";
+
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000; 
 const app = express();
 const allowedOrigins = process.env.CORS_ALLOW   
   ? process.env.CORS_ALLOW.split(",")
@@ -47,6 +49,8 @@ app.post("/api/v1/test/", testController);
 
 app.listen(PORT, () => {
   console.log(`App is listening at http://localhost:${PORT}`);
+  // delete1547thDocument() 
+  
  
 });
 
