@@ -23,18 +23,21 @@ export class PermissionCointroller {
       res.status(500).json({ message: `Error ${error.message} Occured` });
     }
   };
-  static AddRole = async (req: Request, res: Response) => {
+  static AddRole = async (req: any, res: Response) => {
     try {
+      const {institution} = req.loggedUser
+
       const { role } = req.body;
-      await Role.create({ role });
+      await Role.create({ role,institution });
       res.status(201).json({ message: `role created` });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
     }
   };
-  static viewRole = async (req: Request, res: Response) => {
+  static viewRole = async (req: any, res: Response) => {
     try {
-      const roles = await Role.find().populate("permission");
+      const {institution} = req.loggedUser
+      const roles = await Role.find({institution}).populate("permission");
       res.status(200).json(roles);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
@@ -49,9 +52,10 @@ export class PermissionCointroller {
       res.status(500).json({ message: `Error ${error.message} Occured` });
     }
   };
-  static ViewPermission = async (req: Request, res: Response) => {
+  static ViewPermission = async (req: any, res: Response) => {
     try {
-      const permissions = await Permission.find().populate("feature");
+      const {institution} = req.loggedUser
+      const permissions = await Permission.find({institution}).populate("feature");
       res.status(200).json(permissions);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });

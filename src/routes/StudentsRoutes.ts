@@ -5,7 +5,6 @@ import { getAttendance,
     } from "../controllers/Attendance";
 import { isloggedIn } from "../middleware/isLoggedIn";
 import { isVerified } from "../middleware/isVerified";
-import { hasAcces } from "../middleware/hasAcces";
 
 
 export const StudentRoutes =  Router()

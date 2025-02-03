@@ -6,6 +6,7 @@
     import { notifyInstuEmail } from "../utils/emailTemplate"
     import { sendEmail } from "../utils/sendEmail"
     import { Types } from "mongoose"
+import Role from "../models/role"
 
     export class InstitutionControllers { 
         static register = async (req: Request, res: Response) => {
@@ -25,8 +26,12 @@
                 }
                 const logo = req.file.path
                 const newInst = await Institution.create({ name, email, phone, logo })
-                
-                await Team.create({ institution: newInst._id, name, email, phone, isAdmin: true, image: 'hhh', position: "Admin" })
+                const role = await Role.findOne({role:"Admin"})
+                if(!role){
+                    return res.status(400).json({message:"Admin role not available"})
+                }
+
+                await Team.create({ institution: newInst._id, name ,role:role._id, email, phone, isAdmin: true, image: 'hhh', position: "Admin" })
             const mailOptions = {
                 from: process.env.OUR_EMAIL as string,
                 to: email,

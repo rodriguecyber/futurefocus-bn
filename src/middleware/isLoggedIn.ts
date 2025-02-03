@@ -10,6 +10,7 @@ export const isloggedIn = async (req: any, res: Response,next:NextFunction) => {
       }
 
       const id = await decodeToken(token)._id;
+      
       if (!id) {
         return res.status(401).json({ message: "user not authenticated" });
       }
@@ -18,10 +19,11 @@ export const isloggedIn = async (req: any, res: Response,next:NextFunction) => {
         return res.status(401).json({ message: "user not found" });
       }
       req.loggedUser = user;
+      
       next();
     } catch (error: any) {
       return res
         .status(500)
-        .json({ message: `Error occurred: ${error.message}` });
+        .json({ message: `Erro occurred: ${error.message}` });
     }
   };

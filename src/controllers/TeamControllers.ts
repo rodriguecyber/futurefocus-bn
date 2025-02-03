@@ -41,7 +41,8 @@ const loggedUser = req.loggedUser
   };
   static teamAdmins = async (req: any, res: Response) => {
     try {
-const loggedUser = req.loggedUser
+   const loggedUser = req.loggedUser
+  
       const admins= await Team.find({institution:loggedUser.institution, isAdmin:true}).populate('role');
       return res.status(200).json(admins);
     } catch (error: any) {
@@ -216,7 +217,7 @@ const loggedUser = req.loggedUser
         id: member._id,
         email: member.email,
       });
-      const mailOptions = {
+      const mailOptions = { 
         from: process.env.OUR_EMAIL as string,
         to: member.email,
         subject: "Reset Admin Password",
@@ -357,7 +358,7 @@ const loggedUser = req.loggedUser
       return res.status(200).json({ message: "Logged in successfully", token });
     } catch (error: any) {
       console.error(error.message);
-      return res
+      return res 
         .status(500)
         .json({ error: error.message || "Internal Server Error" });
     }

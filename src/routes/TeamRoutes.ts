@@ -13,11 +13,11 @@ const allowedLocation: Location = {
 };
 export const TeamRoute = Router()
 TeamRoute.post("/two-factor/:id", TeamControllers.verifyOTP);
-TeamRoute.post("/new",TeamControllers.AddMember)
+TeamRoute.post("/new",isloggedIn,TeamControllers.AddMember)
 TeamRoute.get("/",TeamControllers.Team)
-TeamRoute.get("/admins",TeamControllers.teamAdmins)
-TeamRoute.delete("/delete/:id",TeamControllers.deleteMember)
-TeamRoute.put("/update/:id",TeamControllers.update)
+TeamRoute.get("/admins",isloggedIn,TeamControllers.teamAdmins)
+TeamRoute.delete("/delete/:id",isloggedIn,TeamControllers.deleteMember)
+TeamRoute.put("/update/:id",isloggedIn,TeamControllers.update)
 TeamRoute.put(
   "/request-attend/:id",
   checkLocation(allowedLocation, 20),
@@ -30,7 +30,7 @@ TeamRoute.put(
 );
 TeamRoute.get("/attendance",TeamControllers.attendance)
 TeamRoute.get("/my-attendance/:id",TeamControllers.myAttendance)
-TeamRoute.post("/forgot-password",isVerified, TeamControllers.forgotPassword);
+TeamRoute.post("/forgot-password", TeamControllers.forgotPassword);
 TeamRoute.post("/login", TeamControllers.login);
 TeamRoute.put("/reset-password/:token", TeamControllers.resetPassword);
 TeamRoute.get("/logged-user",isloggedIn, TeamControllers.getUser);

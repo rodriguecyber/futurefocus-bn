@@ -4,7 +4,7 @@ export async function delete1547thDocument() {
   try {
     // Find the 1547th document by sorting and skipping the first 1546
     const document = await Student.find()
-      .skip(1981)  // Skip the first 1546 documents
+      .skip(1958)  // Skip the first 1546 documents
       .limit(1).select('_id')    // Get the 1547th document
          // Execute the query
 

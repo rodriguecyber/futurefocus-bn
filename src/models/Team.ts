@@ -17,7 +17,7 @@ const TeamSchema = new Schema<TeamTypes>({
   instagram: { type: String, },
   password: { type: String, require: true, default: "00000000" },
   otp: { type: Schema.Types.Number, require: true, default: null },
-  role: { type: Schema.Types.ObjectId, ref: "Role" },
+  role: { type: Schema.Types.ObjectId, ref: "Role", },
   isAdmin: { type: Schema.Types.Boolean, default: false },
   isSuperAdmin: { type: Schema.Types.Boolean, default: false },
   

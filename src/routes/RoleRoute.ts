@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { PermissionCointroller } from "../controllers/PermissionController";
+import { isloggedIn } from "../middleware/isLoggedIn";
 
 export const RoleRouter= Router()
-RoleRouter.post('/',PermissionCointroller.AddRole)
-RoleRouter.put('/:roleId',PermissionCointroller.assignPermisson)
-RoleRouter.get('/',PermissionCointroller.viewRole)
-RoleRouter.post('/permission',PermissionCointroller.AddPermission)
-RoleRouter.get('/permission',PermissionCointroller.ViewPermission)
-RoleRouter.post('/feature',PermissionCointroller.AddFeature)
-RoleRouter.get('/feature',PermissionCointroller.ViewFeature)
+RoleRouter.post('/',isloggedIn, PermissionCointroller.AddRole)
+RoleRouter.put('/:roleId',isloggedIn, PermissionCointroller.assignPermisson)
+RoleRouter.get('/',isloggedIn,PermissionCointroller.viewRole)
+RoleRouter.post('/permission',isloggedIn,PermissionCointroller.AddPermission)
+RoleRouter.get('/permission',isloggedIn,PermissionCointroller.ViewPermission)
+RoleRouter.post('/feature',isloggedIn,PermissionCointroller.AddFeature)
+RoleRouter.get('/feature',isloggedIn,PermissionCointroller.ViewFeature)
