@@ -7,6 +7,7 @@
     import { sendEmail } from "../utils/sendEmail"
     import { Types } from "mongoose"
 import Role from "../models/role"
+import Permission from "../models/Permission"
 
     export class InstitutionControllers { 
         static register = async (req: Request, res: Response) => {
@@ -26,7 +27,8 @@ import Role from "../models/role"
                 }
                 const logo = req.file.path
                 const newInst = await Institution.create({ name, email, phone, logo })
-                const role = await Role.findOne({role:"Admin"})
+                const permissions = await  Permission.find()
+                const role = await Role.create({institution:newInst._id,role:"Admin",permission:permissions})
                 if(!role){
                     return res.status(400).json({message:"Admin role not available"})
                 }
