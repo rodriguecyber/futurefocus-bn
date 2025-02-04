@@ -2,11 +2,11 @@
   "name": "futurefocusweb-bn",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app.ts",
+  "main": "dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon  src/app.ts",
-    "start": "nodemon  --max-old-space-size=4096 dist/app.jd",
+    "start": "nodemon  --max-old-space-size=4096 dist/app.js",
     "build": "tsc"
   },
   "keywords": [],
