@@ -69,7 +69,13 @@ import Role from "../models/role"
                 inst.verified = true
                 await Access.create({ institution: inst._id })
                 await inst.save()
-
+                const mailOptions = {
+                    from: process.env.OUR_EMAIL as string,
+                    to: inst.email,
+                    subject: "Registered",
+                    html: notifyInstuEmail(inst.name),
+                    };
+                    await sendEmail(mailOptions)
             } catch (error) {
                 res.status(500).json({ message: "internal server error" });
 
