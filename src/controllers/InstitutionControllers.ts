@@ -97,7 +97,7 @@ import Permission from "../models/Permission"
                     return res.status(400).json({ message: "no acces found! contact support team" })
                 }
                 const updatedFeatures = accesInst.features.map((feature) => {
-                    return ({ ...feature, active: true, lastUpdated: new Date(Date.now()), dueDate: new Date(feature.dueDate.setMonth(feature.dueDate.getMonth() + months)) })
+                    return ({ ...feature, active: true, lastUpdated: new Date(Date.now()), dueDate: feature.dueDate + (months*2628000000) })
                 })
                 accesInst.features = updatedFeatures
                 await accesInst.save()
@@ -121,7 +121,7 @@ import Permission from "../models/Permission"
                     return res.status(400).json({ message: "no acces found! Contact Support Team" })
                 }
                 const updatedFeatures = accesInst.features.filter((feature)=>features.includes(feature.feature) ).map((feature) => {
-                    return ({ ...feature, active: true, lastUpdated: new Date(Date.now()), dueDate: new Date(feature.dueDate.setMonth(feature.dueDate.getMonth() + months)) })
+                    return ({ ...feature, active: true, lastUpdated: new Date(Date.now()), dueDate: feature.dueDate + (months*2628000000) })
                 })
                 accesInst.features = updatedFeatures
                 await accesInst.save()
@@ -136,7 +136,7 @@ import Permission from "../models/Permission"
 
         static addfeature = async (req: Request, res: Response) => {
             try {
-                const { features, institution } = req.body
+                const { features, institution,month } = req.body
                 const access = await Access.findOneAndUpdate({ institution })
                 if (!access) {
                     return res.status(400).json({ message: "no acces found! contact support team" })
@@ -144,7 +144,7 @@ import Permission from "../models/Permission"
                 features.forEach((feature: Types.ObjectId) => access.features.push({
                     feature: feature ,
                     active: false,
-                    dueDate: new Date(Date.now())
+                    dueDate: Date.now()+(month*2628000000)
                 }))
                 res.status(200).json({ message: "feature added succesfuly" })
             } catch (error) {

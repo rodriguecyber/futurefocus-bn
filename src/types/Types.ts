@@ -141,11 +141,11 @@ feature:Types.ObjectId
 
 active:boolean
 lastUpdated?:Date
-dueDate:Date
+dueDate:number
 }
 export interface accesstypes{
   institution:ObjectId,
   active:boolean
-  duration:number
+  duration:Number
   features:Ifeature[]
 }
