@@ -5,7 +5,8 @@
   "main": "src/app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --max-old-space-size=4096  src/app.ts",
+    "dev": "nodemon  src/app.ts",
+    "start": "nodemon  --max-old-space-size=4096 dist/app.jd",
     "build": "tsc"
   },
   "keywords": [],
