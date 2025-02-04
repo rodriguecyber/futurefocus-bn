@@ -258,8 +258,7 @@ const loggedUser = req.loggedUser
         { _id: user.id },
         { password: hashedPassword }
       );
-      console.log(password);
-      console.log(user.id);
+      
       return res.status(200).json({ message: "Password changed" });
     } catch (error: any) {
       return res
@@ -359,7 +358,6 @@ const loggedUser = req.loggedUser
       await user.save();
       return res.status(200).json({ message: "Logged in successfully", token });
     } catch (error: any) {
-      console.error(error.message);
       return res 
         .status(500)
         .json({ error: error.message || "Internal Server Error" });

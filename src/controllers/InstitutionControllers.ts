@@ -78,6 +78,9 @@ import Permission from "../models/Permission"
                     html: notifyInstuEmail(inst.name),
                     };
                     await sendEmail(mailOptions)
+                    return res.status(200).json({ message: "Institution verified" })
+
+
             } catch (error) {
                 res.status(500).json({ message: "internal server error" });
 
