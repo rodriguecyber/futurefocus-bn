@@ -275,16 +275,18 @@ const loggedUser = req.loggedUser
       if (!user) {
         return res.status(401).json({ message: "Email not found or not active" });
       }
-      const inst  = await Institution.findById(user.institution)
+      if(!user.isSuperAdmin){
+        const inst  = await Institution.findById(user.institution)
       if(!inst ||!inst.verified){
       return  res.status(401).json({message:"instituion not found"})
+      }
       }
 
       const isMatch = await comparePassword(password, user.password);
       if (!isMatch) {
         return res.status(401).json({ message: "Password does not match" });
       }
-      if(!user.isAdmin){
+      if(!user.isAdmin &&!user.isSuperAdmin){
           const token = await generateToken({ id: user._id ,isAdmin:user.isAdmin});
           res.cookie("token", token as string, {
             httpOnly: true,
