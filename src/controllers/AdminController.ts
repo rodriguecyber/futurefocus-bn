@@ -31,13 +31,13 @@ export class AdminControllers {
     const loggedUser = req.loggedUser
     intake.institution=loggedUser.institution
     try {
-      const isAvailable = await Intake.findOne({ intake: intake });
+      const isAvailable = await Intake.findOne({ intake: intake.intake });
       if (isAvailable) {
         return res.status(400).json({ message: "intake already available" });
       }
-      await Intake.create({
-        intake: intake
-      });
+      await Intake.create(
+        intake
+      );
       res.status(200).json({ message: "intake added" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message}` });
