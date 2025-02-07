@@ -43,17 +43,20 @@ export class StudentControllers {
         .json({ message: `failed to apply! try again ${error.message}` });
     }
   };
-  static pastRecord = async (req: Request, res: Response) => {
+  static pastRecord = async (req: any, res: Response) => {
     const studentData = req.body;
+    const loggedUser = req.loggedUser
   
     try {
       const alreadyExist =
-        await Student.findOne({ phone: studentData.phone });
+        await Student.findOne({ phone: studentData.phone,institution:loggedUser.institution });
       if (alreadyExist) {
         return res.status(400).json({ message: "already recorded " });
       }
       studentData.selectedCourse= studentData.selectedCourse as ObjectId
       studentData.selectedShift = studentData.selectedShift as ObjectId
+
+      studentData.institution = loggedUser.institution
       await Student.create(studentData);
       return res.status(200).json({ message: "record inserted " });
     } catch (error: any) {
@@ -140,6 +143,8 @@ export class StudentControllers {
   };
   static delete = async (req: Request, res: Response) => {
     const id = req.params.id;
+    const loggedUser = (req as any).loggedUser
+
     try {
       const student = await Student.findByIdAndDelete(id);
 
@@ -232,31 +237,37 @@ export class StudentControllers {
   //     res.status(500).json({ message: `Error ${error.message} occured` });
   //   }
   // };
-  static registerNew = async (req: Request, res: Response) => {
+  static registerNew = async (req: any, res: Response) => {
     const student = req.body;
+    const loggedUser = req.loggedUser
+
     try {
       const course = await Course.findById(student.selectedCourse );
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
-      const alreadyExist = await Student.findOne({ phone: student.phone });
+      const alreadyExist = await Student.findOne({ phone: student.phone,institution:loggedUser.institution });
       if (alreadyExist) {
         return res.status(400).json({ message: "You have already registered" });
       }
       student.selectedCourse= student.selectedCourse as ObjectId
       student.selectedShift = student.selectedShift as ObjectId
+      student.institution= loggedUser.institution
       const registerStudent = new Student(student);
       registerStudent.status = "registered";
       await Payment.create({
+        institution:loggedUser.institution,
         studentId: registerStudent._id,
         amountDue: course.nonScholarship,
       });
       await Transaction.create({
+        institution:loggedUser.institution,
         studentId: registerStudent._id,
         amount: 10000,
         reason: "Registration fees",
       });
       await Cashflow.create({
+        institution:loggedUser.institution,
         amount: 10000,
         reason: `${student.name} registration Fees`,
         user: student.user,
