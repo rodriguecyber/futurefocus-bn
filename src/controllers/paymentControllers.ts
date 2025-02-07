@@ -39,6 +39,7 @@ export class PaymentController {
       await payment.save();
 
       await Transaction.create({
+        institution:loggedUser.institution,
         studentId: id,
         amount: amount,
         reason: "school fees",
