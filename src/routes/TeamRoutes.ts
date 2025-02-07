@@ -19,17 +19,17 @@ TeamRoute.get("/admins",isloggedIn,TeamControllers.teamAdmins)
 TeamRoute.delete("/delete/:id",isloggedIn,TeamControllers.deleteMember)
 TeamRoute.put("/update/:id",isloggedIn,TeamControllers.update)
 TeamRoute.put(
-  "/request-attend/:id",
+  "/request-attend/:id",isloggedIn,
   checkLocation(allowedLocation, 20),
   TeamControllers.requestAttend
 );
 TeamRoute.put(
   "/approve-attend/:id",
-  checkLocation(allowedLocation, 100),
+  checkLocation(allowedLocation, 100),isloggedIn,
   TeamControllers.approveAttend
 );
-TeamRoute.get("/attendance",TeamControllers.attendance)
-TeamRoute.get("/my-attendance/:id",TeamControllers.myAttendance)
+TeamRoute.get("/attendance",isloggedIn,TeamControllers.attendance)
+TeamRoute.get("/my-attendance/:id",isloggedIn,TeamControllers.myAttendance)
 TeamRoute.post("/forgot-password", TeamControllers.forgotPassword);
 TeamRoute.post("/login", TeamControllers.login);
 TeamRoute.put("/reset-password/:token", TeamControllers.resetPassword);

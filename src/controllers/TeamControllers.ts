@@ -286,7 +286,7 @@ const loggedUser = req.loggedUser
         return res.status(401).json({ message: "Password does not match" });
       }
       if(!user.isAdmin &&!user.isSuperAdmin){
-          const token = await generateToken({ id: user._id ,isAdmin:user.isAdmin});
+          const token = await generateToken({ _id: user._id ,isAdmin:user.isAdmin});
           res.cookie("token", token as string, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
