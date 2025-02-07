@@ -13,8 +13,8 @@ const CourseSchema = new Schema<CourseTypes>({
   rating: { type: Number, default: 0 },
   active: { type: Boolean, default: true },
   shifts: { type: [Schema.Types.ObjectId], ref: "shift" },
-  scholarship: { type: Number, required: true },
-  nonScholarship: { type: Number, required: true },
+  scholarship: { type: Number },
+  nonScholarship: { type: Number, },
 });
 const Course = model<CourseTypes>("Course", CourseSchema)
 export default Course
