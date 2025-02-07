@@ -375,7 +375,7 @@ const loggedUser = req.loggedUser
            path:'feature'
           }
         }
-      });
+      }).populate('institution');
       if (!user) {
         res.status(401).json({ message: "user not found" });
       }
