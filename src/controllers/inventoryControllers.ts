@@ -44,7 +44,8 @@ const loggedUser = req.loggedUser
       institution:loggedUser.institution,
       cost,
     });
-    await Material.findByIdAndUpdate(item.materialId, { $inc: { rent: item.amount } });
+      //@ts-expect-error populated item
+    await Material.findByIdAndUpdate(item._id, { $inc: { rent: item.amount } });
   }
   res.status(200).json({ message: "successfully rented item" });
 } catch (error) {
@@ -87,7 +88,7 @@ const loggedUser = req.loggedUser
   };
   static getAllInventoryRent = async (req: any, res: Response) => {
     try {
-const loggedUser = req.loggedUser
+       const loggedUser = req.loggedUser
 
       const rent = await MaterialRent.find({institution:loggedUser.institution}).populate('materialId').populate('render').populate('receiver')
       res.status(200).json(rent);
