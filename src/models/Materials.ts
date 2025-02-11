@@ -24,11 +24,19 @@ export interface IMaterialRent {
 }
 interface IInventory {
   name: String;
+  institution: 
+     mongoose.Schema.Types.ObjectId,
+   
 }
 
 
 const InventorySchema = new Schema<IInventory>({
   name: { type: String, required: true },
+  institution: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Institution",
+    required: true,
+  },
 });
 
 
@@ -57,6 +65,11 @@ const MaterialSchema = new Schema<IMaterial>(
 export const Material = model<IMaterial>("Material", MaterialSchema);
 
 const MaterialRentSchema = new Schema<IMaterialRent>({
+  institution: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Institution",
+    required: true,
+  },
   materialId: { type: Schema.Types.ObjectId, required: true, ref: "Material" },
   render: { type: Schema.Types.ObjectId, ref: "Team",required:true },
   receiver: { type: Schema.Types.ObjectId, ref: "Team" },
