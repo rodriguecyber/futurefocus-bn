@@ -43,10 +43,10 @@ export class StudentControllers {
         .json({ message: `failed to apply! try again ${error.message}` });
     }
   };
+
   static pastRecord = async (req: any, res: Response) => {
     const studentData = req.body;
     const loggedUser = req.loggedUser
-  
     try {
       const alreadyExist =
         await Student.findOne({ phone: studentData.phone,institution:loggedUser.institution });

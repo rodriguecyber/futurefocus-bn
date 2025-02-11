@@ -20,12 +20,12 @@ TeamRoute.delete("/delete/:id",isloggedIn,TeamControllers.deleteMember)
 TeamRoute.put("/update/:id",isloggedIn,TeamControllers.update)
 TeamRoute.put(
   "/request-attend/:id",isloggedIn,
-  checkLocation(allowedLocation, 20),
+  checkLocation(allowedLocation, 1000),
   TeamControllers.requestAttend
 );
 TeamRoute.put(
   "/approve-attend/:id",
-  checkLocation(allowedLocation, 100),isloggedIn,
+  checkLocation(allowedLocation, 1000),isloggedIn,
   TeamControllers.approveAttend
 );
 TeamRoute.get("/attendance",isloggedIn,TeamControllers.attendance)
@@ -35,7 +35,7 @@ TeamRoute.post("/login", TeamControllers.login);
 TeamRoute.put("/reset-password/:token", TeamControllers.resetPassword);
 TeamRoute.get("/logged-user",isloggedIn, TeamControllers.getUser);
 TeamRoute.put("/toogle-admin/:id", TeamControllers.toggleAdmin);
-TeamRoute.put("/leave/:id",checkLocation(allowedLocation, 100),  TeamControllers.leave);
+TeamRoute.put("/leave/:id",checkLocation(allowedLocation, 1000),  TeamControllers.leave);
 TeamRoute.put("/comment/:id", TeamControllers.addComment);
 TeamRoute.put("/comment/:id", TeamControllers.addComment);
 TeamRoute.put("/toogle-attendance/:id", TeamControllers.switchAttend);

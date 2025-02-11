@@ -1,16 +1,12 @@
 import connection from "./config/db";
 import express from "express";
-const os = require("os");
 import dotenv from "dotenv";
 import cors from "cors";
-import { endIntake, startIntake } from "./jobs/StudentAutomation";
 import { dailyAttendance,
-   dropout, 
    teamAttendance } from "./jobs/AttendanceAutomation";
 import { indexRouter } from "./routes/indexRoutes";
 import { backup } from "./jobs/backup";
-import { testController } from "./controllers/updateControllere";
-import { delete1547thDocument } from "./deleyteController";
+// import { delete1547thDocument } from "./deleyteController";
 
 
 dotenv.config();
@@ -32,9 +28,9 @@ app.use(
 
 app.use(express.json());
 connection();
-startIntake();
-endIntake();
-dropout()
+// startIntake();
+// endIntake();
+// dropout()
 dailyAttendance();
 teamAttendance();
 backup()
@@ -43,7 +39,6 @@ app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
 });
 app.use("/api/v1", indexRouter);
-app.post("/api/v1/test/", testController);
 
 
 

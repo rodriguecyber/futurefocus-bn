@@ -27,6 +27,11 @@ const Team = model<TeamTypes>("Team",TeamSchema)
 
 
 const TeamAttendanceSchema = new Schema({
+  institution: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Institution",
+    required: true,
+  },
   memberId: { type: Schema.Types.ObjectId, ref: "Team", required: true },
   timeOut:{type:Date},
   comment:{type:String},

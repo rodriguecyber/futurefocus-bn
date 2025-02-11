@@ -12,7 +12,7 @@ import { Institution } from "../models/institution";
 export class TeamControllers {
   static AddMember = async (req: any, res: Response) => {
     try {
-const loggedUser = req.loggedUser
+      const loggedUser = req.loggedUser
 
       const { name, title, image, email,position, instagram } = req.body;
       const isExist = await Team.findOne({ email: email });
@@ -183,9 +183,10 @@ const loggedUser = req.loggedUser
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
-  static attendance = async (req: Request, res: Response) => {
+  static attendance = async (req: any, res: Response) => {
     try {
-      const attendance = await TeamAttendandance.find().populate("memberId");
+      const loggedUser = req.loggedUser
+      const attendance = await TeamAttendandance.find({institution:loggedUser.institution}).populate("memberId");
       res.status(200).json(attendance);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });

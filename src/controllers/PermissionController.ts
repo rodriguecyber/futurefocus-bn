@@ -54,8 +54,7 @@ export class PermissionCointroller {
   };
   static ViewPermission = async (req: any, res: Response) => {
     try {
-      const {institution} = req.loggedUser
-      const permissions = await Permission.find({institution}).populate("feature");
+      const permissions = await Permission.find().populate("feature");
       res.status(200).json(permissions);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
