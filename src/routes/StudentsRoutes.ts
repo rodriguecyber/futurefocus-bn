@@ -13,7 +13,7 @@ StudentRoutes.post('/past',isloggedIn,StudentControllers.pastRecord)
 StudentRoutes.post('/techup',StudentControllers.techupapply)
 StudentRoutes.post('/techup/notify',isloggedIn, StudentControllers.notifyTechups)
 StudentRoutes.get('/techup',StudentControllers.techUpStudent)
-StudentRoutes.get("/",isloggedIn, isVerified,
+StudentRoutes.get("/", isVerified,isloggedIn,
     // (req,res,next)=>hasAcces(req,res,next,'student'),
     StudentControllers.students)
 StudentRoutes.delete('/:id',isloggedIn,StudentControllers.delete)

@@ -10,7 +10,6 @@ export const isVerified = async (
   try {
    
     const loggedUser = req.loggedUser
-    console.log(loggedUser||'no user')
     const user = await Team.findById(loggedUser._id);
     if (!user) {
       return res.status(401).json({ message: "user not found" });

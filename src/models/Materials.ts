@@ -55,7 +55,6 @@ const MaterialSchema = new Schema<IMaterial>(
     amount: { type: Number, required: true, default: 0 },
     SN: { type: String },
     type: { type: String },
-
     rent: { type: Number, required: true, default: 0 },
   },
   {

@@ -23,9 +23,8 @@ export class inventoryControllers {
       await Material.create(data);
       res.status(200).json({ message: "suucesfuly added item" }); 
 
-    } catch (error) {
-        console.log(error)
-      res.status(500).json({ message: "internal server error" });
+    } catch (error:any) {
+      res.status(500).json({ message: `${error.message}` });
     }
   };
   static rentItems = async (req: any, res: Response) => {
@@ -33,7 +32,6 @@ export class inventoryControllers {
     const items:IMaterialRent[] = req.body.items
     const { returnDate, cost, render, rendeeName } = req.body;  
 const loggedUser = req.loggedUser
-    // const {materialId} = req.params; 
     try {
   for (const item of items) {
     await MaterialRent.create({
