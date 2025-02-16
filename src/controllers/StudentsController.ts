@@ -10,12 +10,13 @@ import { sendEmail } from "../utils/sendEmail";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
 import { sendMessage } from "../utils/sendSms";
 import { MessageTemplate } from "../utils/messageBod";
-import techUp from "../models/techUp";
 import { ObjectId } from "mongoose";
+import { StudentTypes } from "../types/Types";
+import { Institution } from "../models/institution";
 
 export class StudentControllers {
   static apply = async (req: Request, res: Response) => {
-    const studentData
+    const studentData:StudentTypes
      = req.body;
   
     try {
@@ -26,15 +27,14 @@ export class StudentControllers {
       }
       studentData.selectedCourse= studentData.selectedCourse as ObjectId
       studentData.selectedShift = studentData.selectedShift as ObjectId
+      studentData.institution = studentData.institution as ObjectId
+
       await Student.create(studentData);
       await sendMessage(
         MessageTemplate({
           name: studentData.name,
-          amount: 0,
-          remain: 0,
-          course: studentData.selectedCourse,
         }).apply,
-        [studentData.phone]
+        [studentData.phone.toString()]
       );
       return res.status(200).json({ message: "Your application submitted" });
     } catch (error: any) {
@@ -65,42 +65,7 @@ export class StudentControllers {
         .json({ message: `failed to insert! try again ${error.message}` });
     }
   };
-  static techupapply = async (req: Request, res: Response) => {
-    const student = req.body;
-  
-    try {
-      const alreadyExist =
-        (await Student.findOne({ phone: student.phone })) ||
-        (await Student.findOne({ email: student.email }));
-      if (alreadyExist) {
-        return res.status(400).json({ message: "You have already applied " });
-      }
-      await techUp.create(student);
-      await sendMessage(
-        MessageTemplate({
-          name: student.name,
-          amount: 0,
-          remain: 0,
-          course: student.selectedCourse,
-        }).techup,
-        [student.phone]
-      );
-      return res.status(200).json({ message: "Your application submitted" });
-    } catch (error: any) {
-      return res
-        .status(500)
-        .json({ message: `failed to apply! try again ${error.message}` });
-    }
-  };
-  static  techUpStudent= async(req:Request,res:Response)=>{
-    try {
-      const techUpStudent = await techUp.find();
-      res.status(200).json(techUpStudent)
-    } catch (error) {
-      res.status(500).json({message:"internal server error"});
-      
-    }
-  }
+
   static notifyTechups = async(req:Request,res:Response)=>{
     try {
     
@@ -278,9 +243,6 @@ export class StudentControllers {
       await sendMessage(
         MessageTemplate({
           name: student.name,
-          amount: 0,
-          remain: 0,
-          course: student.selectedCourse,
         }).register,
         [student.phone]
       );

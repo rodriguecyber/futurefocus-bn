@@ -10,9 +10,7 @@ import { isloggedIn } from "../middleware/isLoggedIn";
 export const StudentRoutes =  Router()
 StudentRoutes.post('/apply',StudentControllers.apply)
 StudentRoutes.post('/past',isloggedIn,StudentControllers.pastRecord)
-StudentRoutes.post('/techup',StudentControllers.techupapply)
 StudentRoutes.post('/techup/notify',isloggedIn, StudentControllers.notifyTechups)
-StudentRoutes.get('/techup',StudentControllers.techUpStudent)
 StudentRoutes.get("/", isVerified,isloggedIn,
     // (req,res,next)=>hasAcces(req,res,next,'student'),
     StudentControllers.students)

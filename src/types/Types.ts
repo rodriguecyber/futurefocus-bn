@@ -131,6 +131,7 @@ export interface InstitutionTypes {
   email: string;
   phone: number;
   verified: boolean;
+  website:string
 }
 export interface AccessPaymentTypes{
   institution:ObjectId

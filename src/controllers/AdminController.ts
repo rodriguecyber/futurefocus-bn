@@ -3,6 +3,7 @@ import { SubscriptionEmail } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
 import Subscriber from "../models/subscriber";
 import Intake, { IIntake, Shift } from "../models/Intake";
+import { Institution } from "../models/institution";
 export class AdminControllers {
   static subscribe = async (req: Request, res: Response) => {
     const email = req.body.email;
@@ -75,11 +76,38 @@ export class AdminControllers {
       res.status(500).json({ message: "failed to load intakes" });
     }
   };
+  static getIntakesByWebsite = async (req: any, res: Response) => {
+    try {
+     const {website} = req.params
+          const inst = await Institution.findOne({website})
+          if(!inst){
+           return res.status(400).json({message:"can not find inst with this website"})
+          }
+      const intakes = await Intake.find({institution:inst._id});
+      res.status(200).json({ intakes });
+    } catch (error) {
+      res.status(500).json({ message: "failed to load intakes" });
+    }
+  };
   static getShifts = async (req: any, res: Response) => {
     try {
 
     const loggedUser = req.loggedUser
       const shifts = await Shift.find({institution:loggedUser.institution});
+      res.status(200).json({ shifts });
+    } catch (error) {
+      res.status(500).json({ message: "failed to load shifts" });
+    }
+  };
+  static getShiftsByWebsite = async (req: any, res: Response) => {
+    try {
+
+      const {website} = req.params
+      const inst = await Institution.findOne({website})
+      if(!inst){
+       return res.status(400).json({message:"can not find inst with this website"})
+      }
+      const shifts = await Shift.find({institution:inst._id});
       res.status(200).json({ shifts });
     } catch (error) {
       res.status(500).json({ message: "failed to load shifts" });

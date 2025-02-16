@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Course from "../models/Course";
+import { Institution } from "../models/institution";
 
 
 export class CourseController {
@@ -19,6 +20,19 @@ export class CourseController {
     const loggedUser = req.loggedUser
 
       const courses = await Course.find({institution:loggedUser.institution}).populate('shifts');
+      res.status(200).json(courses);
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message} occured` });
+    }
+  };
+  static getAllByWebsite = async (req: Request, res: Response) => {
+    try {
+      const {website} = req.params
+      const inst = await Institution.findOne({website})
+      if(!inst){
+       return res.status(400).json({message:"can not find inst with this website"})
+      }
+      const courses = await Course.find({institution:inst._id}).populate('shifts');
       res.status(200).json(courses);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });

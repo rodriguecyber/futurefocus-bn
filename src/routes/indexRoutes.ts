@@ -16,15 +16,15 @@ import { isloggedIn } from "../middleware/isLoggedIn";
 
 
 export const indexRouter = Router()
-indexRouter.use("/others",isloggedIn, othersRoute);
+indexRouter.use("/others", othersRoute);
 indexRouter.use("/students", StudentRoutes);
 indexRouter.use("/member", TeamRoute);
 indexRouter.use("/service",isloggedIn, ServiceRoute);
-indexRouter.use("/course",isloggedIn, CourseRoute);
+indexRouter.use("/course", CourseRoute);
 indexRouter.use("/media",isloggedIn, MediaRouter);
 indexRouter.use("/payment",isloggedIn, paymentRouter);
 indexRouter.use("/cashflow",isloggedIn, cashRouter);
-indexRouter.use("/job", isloggedIn,JobRouter);
+// indexRouter.use("/job", isloggedIn,JobRouter);
 indexRouter.use("/role",RoleRouter);
 indexRouter.use("/task",isloggedIn, taskRouter);  
 indexRouter.use("/inventory",isloggedIn, inventoryRouter);
