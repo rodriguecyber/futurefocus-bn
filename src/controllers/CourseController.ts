@@ -33,16 +33,35 @@ export class CourseController {
     try {
       const courseId = req.params.id;
       const data = req.body;
+  
       const course = await Course.findById(courseId);
       if (!course) {
-        return res.status(400).json({ message: "course not found" });
+        return res.status(400).json({ message: "Course not found" });
       }
-      await Course.findByIdAndUpdate(courseId, data);
-      res.status(200).json({ message: "course updated" });
+  
+      const existingCourseWithSameOrder = await Course.findOne({ order: data.index });
+  
+      if (existingCourseWithSameOrder) {
+        const lastItem = await Course.findOne().sort({ order: -1 });
+  
+        existingCourseWithSameOrder.order = course.order || lastItem?.order || 1;
+        await existingCourseWithSameOrder.save();
+  
+        course.order = data.index;
+      } else {
+        course.order = data.index;
+      }
+  
+      Object.assign(course, data);
+  
+      await course.save();
+  
+      res.status(200).json({ message: "Course updated successfully" });
     } catch (error: any) {
-      res.status(500).json({ message: `Error ${error.message}` });
+      res.status(500).json({ message: `Error: ${error.message}` });
     }
   };
+  
   static activate = async (req: Request, res: Response) => {
     try {
       const courseId = req.params.id;
