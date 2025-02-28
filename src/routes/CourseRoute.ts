@@ -8,3 +8,4 @@ CourseRoute.get("/", isloggedIn,CourseController.getAll);
 CourseRoute.get("/:website", CourseController.getAllByWebsite);
 CourseRoute.put("/update/:id",isloggedIn, CourseController.update);
 CourseRoute.delete("/delete/:id",isloggedIn, CourseController.delete);
+CourseRoute.put("/change-order/:id",isloggedIn, CourseController.reorder);

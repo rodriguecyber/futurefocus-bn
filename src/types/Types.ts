@@ -68,6 +68,7 @@ export interface CourseTypes extends Document {
   active: boolean;
   nonScholarship: number;
   shifts: ObjectId[];
+  order:number
 }
 export  interface socialMedias{
   web:string,

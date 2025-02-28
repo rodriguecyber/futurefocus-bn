@@ -5,11 +5,14 @@ import { Institution } from "../models/institution";
 
 export class CourseController {
   static NewCourse = async (req: any, res: Response) => {
-    const { title, image,rating,scholarship,nonScholarship,shifts,active } = req.body;
+    const { title, image,rating,scholarship,nonScholarship,shifts,active,order } = req.body;
     const loggedUser = req.loggedUser
 
     try {
-      await Course.create({ title, rating, image,institution:loggedUser.institution,scholarship,nonScholarship,shifts,active });
+      const last_item = await Course.findOne().sort({order:-1})
+      const next_index = last_item?last_item.order+1:1
+      await Course.create({ title, rating, image,institution:loggedUser.institution,scholarship,nonScholarship,shifts,active,order:next_index });
+
       res.status(200).json({ message: "course Added" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
@@ -60,6 +63,38 @@ export class CourseController {
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
+  };
+  static reorder = async (req: Request, res: Response) => {
+    try {
+      const courseId = req.params.id;
+      const { index } = req.body;
+    
+      const lastItem = await Course.findOne().sort({ order: -1 });
+      
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.status(400).json({ message: "Course not found" });
+      }
+    
+      const course1 = await Course.findOne({ order: index });
+      
+      if (course1) {
+        course1.order = course.order || lastItem?.order || 1; // Move course1's order to the previous course's order
+        await course1.save(); 
+    
+        course.order = index;
+      } else {
+        course.order = index;
+      }
+    
+      await course.save();
+    
+      res.status(200).json({ message: "Course index updated successfully" });
+    
+    } catch (error:any) {
+      res.status(500).json({ message: `Error: ${error.message} occurred` });
+    }
+    
   };
   static addShift = async(req:Request,res:Response)=>{
     const {id} = req.params
