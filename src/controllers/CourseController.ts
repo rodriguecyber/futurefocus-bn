@@ -6,12 +6,15 @@ export class CourseController {
   static NewCourse = async (req: Request, res: Response) => {
     const { title, image, rating, nonScholarship, scholarship } = req.body;
     try {
+      const last_item = await Course.findOne().sort({order:-1})
+      const next_index = last_item?last_item.order+1:1
       await Course.create({
         title,
         rating,
         image,
         nonScholarship,
         scholarship,
+        order:next_index
       });
       res.status(200).json({ message: "course Added" });
     } catch (error: any) {
